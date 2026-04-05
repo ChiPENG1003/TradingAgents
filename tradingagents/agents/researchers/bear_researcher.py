@@ -1,9 +1,11 @@
 
+from tradingagents.agents.utils.agent_utils import get_language_instruction, truncate_history
+
 
 def create_bear_researcher(llm, memory):
     def bear_node(state) -> dict:
         investment_debate_state = state["investment_debate_state"]
-        history = investment_debate_state.get("history", "")
+        history = truncate_history(investment_debate_state.get("history", ""))
         bear_history = investment_debate_state.get("bear_history", "")
 
         current_response = investment_debate_state.get("current_response", "")
@@ -19,27 +21,20 @@ def create_bear_researcher(llm, memory):
         for i, rec in enumerate(past_memories, 1):
             past_memory_str += rec["recommendation"] + "\n\n"
 
-        prompt = f"""You are a Bear Analyst making the case against investing in the stock. Your goal is to present a well-reasoned argument emphasizing risks, challenges, and negative indicators. Leverage the provided research and data to highlight potential downsides and counter bullish arguments effectively.
+        memory_section = (
+            f"Reflections from similar situations and lessons learned: {past_memory_str}\n"
+            if past_memory_str else ""
+        )
 
-Key points to focus on:
+        prompt = f"""You are a Bear Analyst. Make a concise, evidence-based case against investing in the stock, directly countering the bull's latest argument. Speak conversationally.
 
-- Risks and Challenges: Highlight factors like market saturation, financial instability, or macroeconomic threats that could hinder the stock's performance.
-- Competitive Weaknesses: Emphasize vulnerabilities such as weaker market positioning, declining innovation, or threats from competitors.
-- Negative Indicators: Use evidence from financial data, market trends, or recent adverse news to support your position.
-- Bull Counterpoints: Critically analyze the bull argument with specific data and sound reasoning, exposing weaknesses or over-optimistic assumptions.
-- Engagement: Present your argument in a conversational style, directly engaging with the bull analyst's points and debating effectively rather than simply listing facts.
-
-Resources available:
-
-Market research report: {market_research_report}
-Social media sentiment report: {sentiment_report}
-Latest world affairs news: {news_report}
-Company fundamentals report: {fundamentals_report}
-Conversation history of the debate: {history}
+Market report: {market_research_report}
+Sentiment report: {sentiment_report}
+News report: {news_report}
+Fundamentals report: {fundamentals_report}
+Debate history: {history}
 Last bull argument: {current_response}
-Reflections from similar situations and lessons learned: {past_memory_str}
-Use this information to deliver a compelling bear argument, refute the bull's claims, and engage in a dynamic debate that demonstrates the risks and weaknesses of investing in the stock. You must also address reflections and learn from lessons and mistakes you made in the past.
-"""
+{memory_section}{get_language_instruction()}"""
 
         response = llm.invoke(prompt)
 

@@ -29,6 +29,7 @@ _PROVIDER_CONFIG = {
     "xai": ("https://api.x.ai/v1", "XAI_API_KEY"),
     "openrouter": ("https://openrouter.ai/api/v1", "OPENROUTER_API_KEY"),
     "ollama": ("http://localhost:11434/v1", None),
+    "deepseek": ("https://api.deepseek.com/v1", "DEEPSEEK_API_KEY"),
 }
 
 
@@ -74,10 +75,17 @@ class OpenAIClient(BaseLLMClient):
             if key in self.kwargs:
                 llm_kwargs[key] = self.kwargs[key]
 
-        # Native OpenAI: use Responses API for consistent behavior across
-        # all model families. Third-party providers use Chat Completions.
-        if self.provider == "openai":
+        # reasoning_effort with function tools requires the Responses API for native OpenAI
+        if self.provider == "openai" and "reasoning_effort" in llm_kwargs:
             llm_kwargs["use_responses_api"] = True
+
+        # DeepSeek thinking mode: when thinking=True, enable the reasoning channel.
+        if self.provider == "deepseek":
+            thinking = self.kwargs.get("deepseek_thinking")
+            if thinking:
+                existing_extra = llm_kwargs.get("extra_body", {}) or {}
+                existing_extra = {**existing_extra, "thinking": {"type": "enabled"}}
+                llm_kwargs["extra_body"] = existing_extra
 
         return NormalizedChatOpenAI(**llm_kwargs)
 

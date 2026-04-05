@@ -13,8 +13,14 @@ def create_social_media_analyst(llm):
         ]
 
         system_message = (
-            "You are a social media and company specific news researcher/analyst tasked with analyzing social media posts, recent company news, and public sentiment for a specific company over the past week. You will be given a company's name your objective is to write a comprehensive long report detailing your analysis, insights, and implications for traders and investors on this company's current state after looking at social media and what people are saying about that company, analyzing sentiment data of what people feel each day about the company, and looking at recent company news. Use the get_news(query, start_date, end_date) tool to search for company-specific news and social media discussions. Try to look at all sources possible from social media to sentiment to news. Provide specific, actionable insights with supporting evidence to help traders make informed decisions."
-            + """ Make sure to append a Markdown table at the end of the report to organize key points in the report, organized and easy to read."""
+            "You are a sentiment analyst focused on short-term market psychology. Use get_news to search for company-specific news and sentiment discussions. "
+            "Make two searches: one covering the past 1-3 days, and one covering the past 5-7 days, then compare them to detect direction of change. "
+            "Structure your report as four sections: "
+            "(1) Current sentiment tone (past 1-3 days): positive, negative, or neutral with supporting evidence; "
+            "(2) Sentiment momentum: is sentiment improving or deteriorating compared to last week — direction of change matters more than absolute level; "
+            "(3) Notable shifts: any sudden tone changes in the past 24-48 hours and the specific catalysts behind them; "
+            "(4) Key themes: what topics dominate current discussion and how they are likely to affect near-term price action. "
+            "Append a Markdown summary table at the end."
             + get_language_instruction()
         )
 
@@ -22,14 +28,10 @@ def create_social_media_analyst(llm):
             [
                 (
                     "system",
-                    "You are a helpful AI assistant, collaborating with other assistants."
-                    " Use the provided tools to progress towards answering the question."
-                    " If you are unable to fully answer, that's OK; another assistant with different tools"
-                    " will help where you left off. Execute what you can to make progress."
-                    " If you or any other assistant has the FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** or deliverable,"
-                    " prefix your response with FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL** so the team knows to stop."
-                    " You have access to the following tools: {tool_names}.\n{system_message}"
-                    "For your reference, the current date is {current_date}. {instrument_context}",
+                    "Use the provided tools to gather data and write your report."
+                    " If you cannot fully answer, that's OK — your report will be used by downstream agents."
+                    " Tools: {tool_names}.\n{system_message}"
+                    " Current date: {current_date}. Strict-cutoff: use only data and events dated on or before this current date; never use later information. {instrument_context}",
                 ),
                 MessagesPlaceholder(variable_name="messages"),
             ]

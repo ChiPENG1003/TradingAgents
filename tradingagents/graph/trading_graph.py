@@ -3,7 +3,7 @@
 import os
 from pathlib import Path
 import json
-from datetime import date
+from datetime import date, datetime, timedelta
 from typing import Dict, Any, Tuple, List, Optional
 
 from langgraph.prebuilt import ToolNode
@@ -38,6 +38,10 @@ from .setup import GraphSetup
 from .propagation import Propagator
 from .reflection import Reflector
 from .signal_processing import SignalProcessor
+from .structured_signal import (
+    extract_structured_strategy,
+    StructuredStrategyError,
+)
 
 
 class TradingAgentsGraph:
@@ -191,14 +195,24 @@ class TradingAgentsGraph:
             ),
         }
 
-    def propagate(self, company_name, trade_date):
+    def propagate(
+        self,
+        company_name,
+        trade_date,
+        holdings_info: Optional[Dict[str, float]] = None,
+        trading_mode: str = "live",
+    ):
         """Run the trading agents graph for a company on a specific date."""
 
         self.ticker = company_name
+        self.trading_mode = trading_mode
 
         # Initialize state
         init_agent_state = self.propagator.create_initial_state(
-            company_name, trade_date
+            company_name,
+            trade_date,
+            holdings_info=holdings_info,
+            trading_mode=trading_mode,
         )
         args = self.propagator.get_graph_args()
 
@@ -223,8 +237,43 @@ class TradingAgentsGraph:
         # Log state
         self._log_state(trade_date, final_state)
 
+        # In backtest mode, also persist the structured strategy JSON.
+        if trading_mode == "backtest":
+            self._save_backtest_strategy(company_name, trade_date, final_state)
+
         # Return decision and processed signal
         return final_state, self.process_signal(final_state["final_trade_decision"])
+
+    def _save_backtest_strategy(self, ticker: str, trade_date: str, final_state: Dict[str, Any]) -> Path:
+        """Extract and persist the structured strategy JSON to back_test/strategy/{ticker}/."""
+        try:
+            strategy = extract_structured_strategy(
+                final_state.get("structured_strategy"),
+                ticker=ticker,
+                trade_date=str(trade_date),
+            )
+            as_of = datetime.strptime(str(strategy["as_of_date"]), "%Y-%m-%d")
+            strategy["valid_until"] = (as_of + timedelta(days=6)).strftime("%Y-%m-%d")
+        except StructuredStrategyError as e:
+            # Persist a sentinel so the operator knows the run failed extraction.
+            as_of = datetime.strptime(str(trade_date), "%Y-%m-%d")
+            strategy = {
+                "schema_version": "v2",
+                "ticker": ticker,
+                "as_of_date": str(trade_date),
+                "valid_until": (as_of + timedelta(days=6)).strftime("%Y-%m-%d"),
+                "error": f"structured-extraction-failed: {e}",
+                "raw_decision": final_state["final_trade_decision"],
+            }
+
+        # Project root = parent of `tradingagents/` package
+        strategy_dir = Path(__file__).resolve().parents[2] / "back_test" / "strategy" / ticker
+        strategy_dir.mkdir(parents=True, exist_ok=True)
+
+        out_path = strategy_dir / f"{ticker}_{trade_date}.json"
+        with open(out_path, "w", encoding="utf-8") as f:
+            json.dump(strategy, f, indent=2, ensure_ascii=False)
+        return out_path
 
     def _log_state(self, trade_date, final_state):
         """Log the final state to a JSON file."""

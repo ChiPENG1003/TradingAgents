@@ -1,9 +1,11 @@
 
+from tradingagents.agents.utils.agent_utils import get_language_instruction, truncate_history
+
 
 def create_bull_researcher(llm, memory):
     def bull_node(state) -> dict:
         investment_debate_state = state["investment_debate_state"]
-        history = investment_debate_state.get("history", "")
+        history = truncate_history(investment_debate_state.get("history", ""))
         bull_history = investment_debate_state.get("bull_history", "")
 
         current_response = investment_debate_state.get("current_response", "")
@@ -19,25 +21,20 @@ def create_bull_researcher(llm, memory):
         for i, rec in enumerate(past_memories, 1):
             past_memory_str += rec["recommendation"] + "\n\n"
 
-        prompt = f"""You are a Bull Analyst advocating for investing in the stock. Your task is to build a strong, evidence-based case emphasizing growth potential, competitive advantages, and positive market indicators. Leverage the provided research and data to address concerns and counter bearish arguments effectively.
+        memory_section = (
+            f"Reflections from similar situations and lessons learned: {past_memory_str}\n"
+            if past_memory_str else ""
+        )
 
-Key points to focus on:
-- Growth Potential: Highlight the company's market opportunities, revenue projections, and scalability.
-- Competitive Advantages: Emphasize factors like unique products, strong branding, or dominant market positioning.
-- Positive Indicators: Use financial health, industry trends, and recent positive news as evidence.
-- Bear Counterpoints: Critically analyze the bear argument with specific data and sound reasoning, addressing concerns thoroughly and showing why the bull perspective holds stronger merit.
-- Engagement: Present your argument in a conversational style, engaging directly with the bear analyst's points and debating effectively rather than just listing data.
+        prompt = f"""You are a Bull Analyst. Make a concise, evidence-based case for investing in the stock, directly countering the bear's latest argument. Speak conversationally.
 
-Resources available:
-Market research report: {market_research_report}
-Social media sentiment report: {sentiment_report}
-Latest world affairs news: {news_report}
-Company fundamentals report: {fundamentals_report}
-Conversation history of the debate: {history}
+Market report: {market_research_report}
+Sentiment report: {sentiment_report}
+News report: {news_report}
+Fundamentals report: {fundamentals_report}
+Debate history: {history}
 Last bear argument: {current_response}
-Reflections from similar situations and lessons learned: {past_memory_str}
-Use this information to deliver a compelling bull argument, refute the bear's concerns, and engage in a dynamic debate that demonstrates the strengths of the bull position. You must also address reflections and learn from lessons and mistakes you made in the past.
-"""
+{memory_section}{get_language_instruction()}"""
 
         response = llm.invoke(prompt)
 

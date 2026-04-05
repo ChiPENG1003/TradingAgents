@@ -4,7 +4,7 @@ from typing import List, Optional, Tuple, Dict
 from rich.console import Console
 
 from cli.models import AnalystType
-from tradingagents.llm_clients.model_catalog import get_model_options
+from tradingagents.llm_clients.model_catalog import get_model_tiers
 
 console = Console()
 
@@ -174,17 +174,33 @@ def select_openrouter_model() -> str:
     return choice
 
 
-def select_shallow_thinking_agent(provider) -> str:
-    """Select shallow thinking llm engine using an interactive selection."""
+def select_model_tier(provider: str) -> tuple[str, str]:
+    """Select a model tier that sets both quick-thinking and deep-thinking models.
 
-    if provider.lower() == "openrouter":
-        return select_openrouter_model()
+    Returns (quick_model, deep_model).
+    OpenRouter: asks for one model ID used for both roles.
+    """
+    provider_lower = provider.lower()
+
+    if provider_lower == "openrouter":
+        model = select_openrouter_model()
+        return model, model
+
+    tiers = get_model_tiers(provider_lower)
+    if not tiers:
+        console.print(f"\n[yellow]No tier presets for {provider}. Enter model IDs manually.[/yellow]")
+        quick = questionary.text("Quick-thinking model ID:").ask()
+        deep = questionary.text("Deep-thinking model ID:").ask()
+        if not quick or not deep:
+            console.print("\n[red]No model selected. Exiting...[/red]")
+            exit(1)
+        return quick.strip(), deep.strip()
 
     choice = questionary.select(
-        "Select Your [Quick-Thinking LLM Engine]:",
+        "Select Your [Model Tier]:",
         choices=[
-            questionary.Choice(display, value=value)
-            for display, value in get_model_options(provider, "quick")
+            questionary.Choice(display, value=(quick, deep))
+            for display, _, quick, deep in tiers
         ],
         instruction="\n- Use arrow keys to navigate\n- Press Enter to select",
         style=questionary.Style(
@@ -197,41 +213,30 @@ def select_shallow_thinking_agent(provider) -> str:
     ).ask()
 
     if choice is None:
-        console.print(
-            "\n[red]No shallow thinking llm engine selected. Exiting...[/red]"
-        )
+        console.print("\n[red]No model tier selected. Exiting...[/red]")
         exit(1)
 
     return choice
 
 
-def select_deep_thinking_agent(provider) -> str:
-    """Select deep thinking llm engine using an interactive selection."""
+_DEPTH_TO_EFFORT = {1: "low", 3: "medium", 5: "high"}
 
-    if provider.lower() == "openrouter":
-        return select_openrouter_model()
 
-    choice = questionary.select(
-        "Select Your [Deep-Thinking LLM Engine]:",
-        choices=[
-            questionary.Choice(display, value=value)
-            for display, value in get_model_options(provider, "deep")
-        ],
-        instruction="\n- Use arrow keys to navigate\n- Press Enter to select",
-        style=questionary.Style(
-            [
-                ("selected", "fg:magenta noinherit"),
-                ("highlighted", "fg:magenta noinherit"),
-                ("pointer", "fg:magenta noinherit"),
-            ]
-        ),
-    ).ask()
+def derive_reasoning_effort(research_depth: int, provider: str) -> dict:
+    """Derive provider-specific reasoning effort config from research depth.
 
-    if choice is None:
-        console.print("\n[red]No deep thinking llm engine selected. Exiting...[/red]")
-        exit(1)
-
-    return choice
+    Shallow=1→low, Medium=3→medium, Deep=5→high.
+    Google maps low→minimal, medium/high→high (binary API param).
+    """
+    effort = _DEPTH_TO_EFFORT.get(research_depth, "medium")
+    provider_lower = provider.lower()
+    if provider_lower == "openai":
+        return {"openai_reasoning_effort": effort}
+    if provider_lower == "anthropic":
+        return {"anthropic_effort": effort}
+    if provider_lower == "google":
+        return {"google_thinking_level": "minimal" if effort == "low" else "high"}
+    return {}
 
 def select_llm_provider() -> tuple[str, str | None]:
     """Select the LLM provider and its API endpoint."""
@@ -239,6 +244,7 @@ def select_llm_provider() -> tuple[str, str | None]:
         ("OpenAI", "https://api.openai.com/v1"),
         ("Google", None),  # google-genai SDK manages its own endpoint
         ("Anthropic", "https://api.anthropic.com/"),
+        ("DeepSeek", "https://api.deepseek.com/v1"),
         ("xAI", "https://api.x.ai/v1"),
         ("Openrouter", "https://openrouter.ai/api/v1"),
         ("Ollama", "http://localhost:11434/v1"),
@@ -270,16 +276,16 @@ def select_llm_provider() -> tuple[str, str | None]:
     return display_name, url
 
 
-def ask_openai_reasoning_effort() -> str:
-    """Ask for OpenAI reasoning effort level."""
-    choices = [
-        questionary.Choice("Medium (Default)", "medium"),
-        questionary.Choice("High (More thorough)", "high"),
-        questionary.Choice("Low (Faster)", "low"),
-    ]
-    return questionary.select(
-        "Select Reasoning Effort:",
-        choices=choices,
+
+def select_trading_mode() -> str:
+    """Select between live trading and backtest simulation."""
+    choice = questionary.select(
+        "Select Trading Mode:",
+        choices=[
+            questionary.Choice("Live - Real-time analysis for a single date", "live"),
+            questionary.Choice("Backtest - Generate monthly strategies over a date range, then replay on historical OHLCV", "backtest"),
+        ],
+        instruction="\n- Use arrow keys to navigate\n- Press Enter to select",
         style=questionary.Style([
             ("selected", "fg:cyan noinherit"),
             ("highlighted", "fg:cyan noinherit"),
@@ -287,45 +293,49 @@ def ask_openai_reasoning_effort() -> str:
         ]),
     ).ask()
 
+    if choice is None:
+        console.print("\n[red]No trading mode selected. Exiting...[/red]")
+        exit(1)
 
-def ask_anthropic_effort() -> str | None:
-    """Ask for Anthropic effort level.
+    return choice
 
-    Controls token usage and response thoroughness on Claude 4.5+ and 4.6 models.
-    """
-    return questionary.select(
-        "Select Effort Level:",
-        choices=[
-            questionary.Choice("High (recommended)", "high"),
-            questionary.Choice("Medium (balanced)", "medium"),
-            questionary.Choice("Low (faster, cheaper)", "low"),
-        ],
-        style=questionary.Style([
-            ("selected", "fg:cyan noinherit"),
-            ("highlighted", "fg:cyan noinherit"),
-            ("pointer", "fg:cyan noinherit"),
-        ]),
+
+def select_backtest_range() -> Tuple[str, str]:
+    """Prompt the user for backtest start/end dates (YYYY-MM-DD)."""
+    import re
+    from datetime import datetime
+
+    def validate_date(date_str: str) -> bool:
+        if not re.match(r"^\d{4}-\d{2}-\d{2}$", date_str):
+            return False
+        try:
+            datetime.strptime(date_str, "%Y-%m-%d")
+            return True
+        except ValueError:
+            return False
+
+    start = questionary.text(
+        "Enter backtest START date (YYYY-MM-DD):",
+        validate=lambda x: validate_date(x.strip())
+        or "Please enter a valid date in YYYY-MM-DD format.",
+    ).ask()
+    end = questionary.text(
+        "Enter backtest END date (YYYY-MM-DD):",
+        validate=lambda x: validate_date(x.strip())
+        or "Please enter a valid date in YYYY-MM-DD format.",
     ).ask()
 
+    if not start or not end:
+        console.print("\n[red]No backtest range provided. Exiting...[/red]")
+        exit(1)
 
-def ask_gemini_thinking_config() -> str | None:
-    """Ask for Gemini thinking configuration.
+    start = start.strip()
+    end = end.strip()
+    if datetime.strptime(start, "%Y-%m-%d") >= datetime.strptime(end, "%Y-%m-%d"):
+        console.print("\n[red]End date must be after start date. Exiting...[/red]")
+        exit(1)
 
-    Returns thinking_level: "high" or "minimal".
-    Client maps to appropriate API param based on model series.
-    """
-    return questionary.select(
-        "Select Thinking Mode:",
-        choices=[
-            questionary.Choice("Enable Thinking (recommended)", "high"),
-            questionary.Choice("Minimal/Disable Thinking", "minimal"),
-        ],
-        style=questionary.Style([
-            ("selected", "fg:green noinherit"),
-            ("highlighted", "fg:green noinherit"),
-            ("pointer", "fg:green noinherit"),
-        ]),
-    ).ask()
+    return start, end
 
 
 def ask_output_language() -> str:

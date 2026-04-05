@@ -1,6 +1,7 @@
-from typing import Annotated
+from typing import Annotated, Any
 from typing_extensions import TypedDict
 from langgraph.graph import MessagesState
+from typing import Dict
 
 
 # Researcher team state
@@ -70,3 +71,10 @@ class AgentState(MessagesState):
         RiskDebateState, "Current state of the debate on evaluating risk"
     ]
     final_trade_decision: Annotated[str, "Final decision made by the Risk Analysts"]
+    structured_strategy: Annotated[Dict[str, Any], "Structured strategy for backtest persistence"]
+
+    # Optional current position context for the analyzed ticker
+    holdings_info: Annotated[Dict[str, float], "Current holdings context: quantity and avg_buy_price"]
+
+    # Trading mode: 'live' for real-time analysis or 'backtest' for historical replay
+    trading_mode: Annotated[str, "Trading mode: 'live' or 'backtest'"]

@@ -17,6 +17,8 @@ eggs/
 lib/
 lib64/
 parts/
+reports/
+results/
 sdist/
 var/
 wheels/
@@ -54,6 +56,12 @@ cover/
 # Translations
 *.mo
 *.pot
+
+# Backtest results
+back_test/*.json
+back_test/strategy/
+back_test/results/
+
 
 # Django stuff:
 *.log

@@ -24,14 +24,29 @@ def get_language_instruction() -> str:
     """Return a prompt instruction for the configured output language.
 
     Returns empty string when English (default), so no extra tokens are used.
-    Only applied to user-facing agents (analysts, portfolio manager).
-    Internal debate agents stay in English for reasoning quality.
+    Call sites decide where to apply this (reports, debates, manager outputs).
     """
     from tradingagents.dataflows.config import get_config
     lang = get_config().get("output_language", "English")
     if lang.strip().lower() == "english":
         return ""
     return f" Write your entire response in {lang}."
+
+
+def truncate_history(history: str, max_chars: int = 3000) -> str:
+    """Keep only the tail of a debate history string to bound token growth.
+
+    Trims to the last max_chars characters and starts at a clean line boundary
+    so the LLM never receives a half-sentence. Prefixes with an omission notice
+    when truncation occurs.
+    """
+    if len(history) <= max_chars:
+        return history
+    tail = history[-max_chars:]
+    newline = tail.find("\n")
+    if newline != -1:
+        tail = tail[newline + 1:]
+    return "[...earlier history omitted...]\n" + tail
 
 
 def build_instrument_context(ticker: str) -> str:

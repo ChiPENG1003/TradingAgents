@@ -25,6 +25,8 @@ from rich.rule import Rule
 
 from tradingagents.graph.trading_graph import TradingAgentsGraph
 from tradingagents.default_config import DEFAULT_CONFIG
+from tradingagents.dataflows.stockstats_utils import load_ohlcv
+from back_test.calendar import adjust_backtest_window, first_trading_day_on_or_after
 from cli.models import AnalystType
 from cli.utils import *
 from cli.announcements import fetch_announcements, display_announcements
@@ -519,19 +521,47 @@ def get_user_selections():
     )
     analysis_date = get_analysis_date()
 
-    # Step 3: Output language
+    # Step 2.5: Trading Mode (live vs backtest)
     console.print(
         create_question_box(
-            "Step 3: Output Language",
+            "Step 2.5: Trading Mode",
+            "Select whether to run live single-date analysis or a backtest over a date range"
+        )
+    )
+    trading_mode = select_trading_mode()
+    backtest_start = None
+    backtest_end = None
+    if trading_mode == "backtest":
+        console.print(
+            create_question_box(
+                "Step 2.5b: Backtest Range",
+                "Enter the start and end dates for the backtest period"
+            )
+        )
+        backtest_start, backtest_end = select_backtest_range()
+
+    # Step 3: Current Holdings (optional)
+    console.print(
+        create_question_box(
+            "Step 3: Current Holdings (Optional)",
+            "If you already hold this stock, enter quantity and average buy price"
+        )
+    )
+    holdings_info = get_holdings_info()
+
+    # Step 4: Output language
+    console.print(
+        create_question_box(
+            "Step 4: Output Language",
             "Select the language for analyst reports and final decision"
         )
     )
     output_language = ask_output_language()
 
-    # Step 4: Select analysts
+    # Step 5: Select analysts
     console.print(
         create_question_box(
-            "Step 4: Analysts Team", "Select your LLM analyst agents for the analysis"
+            "Step 5: Analysts Team", "Select your LLM analyst agents for the analysis"
         )
     )
     selected_analysts = select_analysts()
@@ -539,75 +569,51 @@ def get_user_selections():
         f"[green]Selected analysts:[/green] {', '.join(analyst.value for analyst in selected_analysts)}"
     )
 
-    # Step 5: Research depth
+    # Step 6: Research depth
     console.print(
         create_question_box(
-            "Step 5: Research Depth", "Select your research depth level"
+            "Step 6: Research Depth", "Select your research depth level"
         )
     )
     selected_research_depth = select_research_depth()
 
-    # Step 6: LLM Provider
+    # Step 7: LLM Provider
     console.print(
         create_question_box(
-            "Step 6: LLM Provider", "Select your LLM provider"
+            "Step 7: LLM Provider", "Select your LLM provider"
         )
     )
     selected_llm_provider, backend_url = select_llm_provider()
 
-    # Step 7: Thinking agents
+    # Step 8: Model tier (sets both quick-thinking and deep-thinking agents)
     console.print(
         create_question_box(
-            "Step 7: Thinking Agents", "Select your thinking agents for analysis"
+            "Step 8: Model Tier",
+            "Select a model tier — sets both quick-thinking and deep-thinking agents"
         )
     )
-    selected_shallow_thinker = select_shallow_thinking_agent(selected_llm_provider)
-    selected_deep_thinker = select_deep_thinking_agent(selected_llm_provider)
+    selected_shallow_thinker, selected_deep_thinker = select_model_tier(selected_llm_provider)
 
-    # Step 8: Provider-specific thinking configuration
-    thinking_level = None
-    reasoning_effort = None
-    anthropic_effort = None
-
-    provider_lower = selected_llm_provider.lower()
-    if provider_lower == "google":
-        console.print(
-            create_question_box(
-                "Step 8: Thinking Mode",
-                "Configure Gemini thinking mode"
-            )
-        )
-        thinking_level = ask_gemini_thinking_config()
-    elif provider_lower == "openai":
-        console.print(
-            create_question_box(
-                "Step 8: Reasoning Effort",
-                "Configure OpenAI reasoning effort level"
-            )
-        )
-        reasoning_effort = ask_openai_reasoning_effort()
-    elif provider_lower == "anthropic":
-        console.print(
-            create_question_box(
-                "Step 8: Effort Level",
-                "Configure Claude effort level"
-            )
-        )
-        anthropic_effort = ask_anthropic_effort()
+    # Derive reasoning effort automatically from research depth (no separate step)
+    effort_config = derive_reasoning_effort(selected_research_depth, selected_llm_provider)
 
     return {
         "ticker": selected_ticker,
         "analysis_date": analysis_date,
+        "holdings_info": holdings_info,
         "analysts": selected_analysts,
         "research_depth": selected_research_depth,
         "llm_provider": selected_llm_provider.lower(),
         "backend_url": backend_url,
         "shallow_thinker": selected_shallow_thinker,
         "deep_thinker": selected_deep_thinker,
-        "google_thinking_level": thinking_level,
-        "openai_reasoning_effort": reasoning_effort,
-        "anthropic_effort": anthropic_effort,
+        "google_thinking_level": effort_config.get("google_thinking_level"),
+        "openai_reasoning_effort": effort_config.get("openai_reasoning_effort"),
+        "anthropic_effort": effort_config.get("anthropic_effort"),
         "output_language": output_language,
+        "trading_mode": trading_mode,
+        "backtest_start": backtest_start,
+        "backtest_end": backtest_end,
     }
 
 
@@ -633,6 +639,44 @@ def get_analysis_date():
             console.print(
                 "[red]Error: Invalid date format. Please use YYYY-MM-DD[/red]"
             )
+
+
+def get_holdings_info():
+    """Get optional holdings info (quantity and average buy price) from user input."""
+    hold_choice = typer.prompt(
+        "Do you currently hold this stock? (Y/N)",
+        default="N",
+    ).strip().upper()
+
+    if hold_choice not in ("Y", "YES"):
+        return {}
+
+    while True:
+        qty_str = typer.prompt("Enter current holding quantity", default="0").strip()
+        try:
+            quantity = float(qty_str)
+            if quantity <= 0:
+                console.print("[red]Error: Quantity must be greater than 0[/red]")
+                continue
+            break
+        except ValueError:
+            console.print("[red]Error: Quantity must be a number[/red]")
+
+    while True:
+        price_str = typer.prompt("Enter average buy price", default="0").strip()
+        try:
+            avg_buy_price = float(price_str)
+            if avg_buy_price <= 0:
+                console.print("[red]Error: Average buy price must be greater than 0[/red]")
+                continue
+            break
+        except ValueError:
+            console.print("[red]Error: Average buy price must be a number[/red]")
+
+    return {
+        "quantity": quantity,
+        "avg_buy_price": avg_buy_price,
+    }
 
 
 def save_report_to_disk(final_state, ticker: str, save_path: Path):
@@ -925,9 +969,163 @@ def format_tool_args(args, max_length=80) -> str:
         return result[:max_length - 3] + "..."
     return result
 
+def _weekly_dates(start: str, end: str) -> list[str]:
+    """Return weekly review dates between start and end (inclusive).
+
+    The first iteration is clamped to `start` itself, then advances by seven
+    calendar days.
+    """
+    s = datetime.datetime.strptime(start, "%Y-%m-%d")
+    e = datetime.datetime.strptime(end, "%Y-%m-%d")
+    dates = []
+    cur = s
+    while cur <= e:
+        dates.append(cur.strftime("%Y-%m-%d"))
+        cur = cur + datetime.timedelta(days=7)
+    return dates
+
+
+def _weekly_trading_dates(start: str, end: str, trading_dates) -> list[str]:
+    """Return weekly review dates adjusted to real trading days."""
+    dates = []
+    seen = set()
+    for calendar_date in _weekly_dates(start, end):
+        trading_date = first_trading_day_on_or_after(trading_dates, calendar_date, end)
+        if trading_date and trading_date not in seen:
+            seen.add(trading_date)
+            dates.append(trading_date)
+    return dates
+
+
+def run_backtest_analysis(selections: dict) -> None:
+    """Run the backtest mode: weekly strategy generation across a date range.
+
+    Each weekly review date triggers a full agent pipeline run. The Portfolio
+    Manager emits a structured JSON which `TradingAgentsGraph._save_backtest_strategy`
+    writes to `back_test/strategy/{ticker}/`.
+    """
+    config = DEFAULT_CONFIG.copy()
+    config["max_debate_rounds"] = selections["research_depth"]
+    config["max_risk_discuss_rounds"] = selections["research_depth"]
+    config["quick_think_llm"] = selections["shallow_thinker"]
+    config["deep_think_llm"] = selections["deep_thinker"]
+    config["backend_url"] = selections["backend_url"]
+    config["llm_provider"] = selections["llm_provider"].lower()
+    config["google_thinking_level"] = selections.get("google_thinking_level")
+    config["openai_reasoning_effort"] = selections.get("openai_reasoning_effort")
+    config["anthropic_effort"] = selections.get("anthropic_effort")
+    config["output_language"] = selections.get("output_language", "English")
+
+    try:
+        price_data = load_ohlcv(selections["ticker"], selections["backtest_end"])
+        effective_start, effective_end = adjust_backtest_window(
+            price_data["Date"],
+            selections["backtest_start"],
+            selections["backtest_end"],
+        )
+    except Exception as e:
+        console.print(f"[red]Unable to resolve trading-day backtest range: {e}[/red]")
+        return
+
+    selected_set = {analyst.value for analyst in selections["analysts"]}
+    selected_analyst_keys = [a for a in ANALYST_ORDER if a in selected_set]
+
+    stats_handler = StatsCallbackHandler()
+    graph = TradingAgentsGraph(
+        selected_analyst_keys,
+        config=config,
+        debug=False,
+        callbacks=[stats_handler],
+    )
+
+    dates = _weekly_trading_dates(effective_start, effective_end, price_data["Date"])
+    console.print(
+        Panel(
+            f"[bold]Backtest mode[/bold]\n"
+            f"Ticker: [cyan]{selections['ticker']}[/cyan]\n"
+            f"Requested range: [cyan]{selections['backtest_start']}[/cyan] → [cyan]{selections['backtest_end']}[/cyan]\n"
+            f"Trading range:   [cyan]{effective_start}[/cyan] → [cyan]{effective_end}[/cyan]\n"
+            f"Will generate [bold]{len(dates)}[/bold] weekly strategies.",
+            border_style="cyan",
+        )
+    )
+
+    overall_start = time.time()
+    prev_stats = stats_handler.get_stats()
+
+    for i, date in enumerate(dates, 1):
+        console.print(
+            f"\n[bold cyan]· Strategy {i}/{len(dates)} — {date}[/bold cyan]"
+        )
+        step_start = time.time()
+        try:
+            final_state, decision = graph.propagate(
+                selections["ticker"],
+                date,
+                holdings_info=selections.get("holdings_info"),
+                trading_mode="backtest",
+            )
+            json_path = (
+                Path(__file__).resolve().parents[1]
+                / "back_test"
+                / "strategy"
+                / selections["ticker"]
+                / f"{selections['ticker']}_{date}.json"
+            )
+            step_elapsed = time.time() - step_start
+            curr_stats = stats_handler.get_stats()
+            step_metrics = (
+                f"⏱ {int(step_elapsed // 60):02d}:{int(step_elapsed % 60):02d}  "
+                f"LLM: {curr_stats['llm_calls'] - prev_stats['llm_calls']}  "
+                f"Tools: {curr_stats['tool_calls'] - prev_stats['tool_calls']}  "
+                f"Tokens: {format_tokens(curr_stats['tokens_in'] - prev_stats['tokens_in'])}↑ "
+                f"{format_tokens(curr_stats['tokens_out'] - prev_stats['tokens_out'])}↓"
+            )
+            prev_stats = curr_stats
+            console.print(f"  [green]✓[/green] decision=[bold]{decision}[/bold]  saved → {json_path}")
+            console.print(f"  [dim]{step_metrics}[/dim]")
+        except Exception as e:
+            step_elapsed = time.time() - step_start
+            console.print(
+                f"  [red]✗ error on {date} after "
+                f"{int(step_elapsed // 60):02d}:{int(step_elapsed % 60):02d}: {e}[/red]"
+            )
+            prev_stats = stats_handler.get_stats()
+
+    overall_elapsed = time.time() - overall_start
+    final_stats = stats_handler.get_stats()
+    console.print(
+        Panel(
+            f"[bold green]Backtest strategy generation complete.[/bold green]\n"
+            f"Strategies generated: [bold]{len(dates)}[/bold]\n"
+            f"Total elapsed: [bold]{int(overall_elapsed // 3600):02d}:"
+            f"{int((overall_elapsed % 3600) // 60):02d}:"
+            f"{int(overall_elapsed % 60):02d}[/bold]\n"
+            f"LLM calls: [bold]{final_stats['llm_calls']}[/bold]   "
+            f"Tool calls: [bold]{final_stats['tool_calls']}[/bold]\n"
+            f"Tokens: [bold]{format_tokens(final_stats['tokens_in'])}[/bold] in / "
+            f"[bold]{format_tokens(final_stats['tokens_out'])}[/bold] out  "
+            f"(total {format_tokens(final_stats['tokens_in'] + final_stats['tokens_out'])})",
+            border_style="green",
+        )
+    )
+    console.print(
+        f"Next steps:\n"
+        f"  1. python -m back_test.run_backtest --ticker {selections['ticker']} "
+        f"--start {effective_start} --end {effective_end}\n"
+        f"  2. python -m back_test.compare_benchmark --ticker {selections['ticker']} "
+        f"--start {effective_start} --end {effective_end}\n"
+    )
+
+
 def run_analysis():
     # First get all user selections
     selections = get_user_selections()
+
+    # Backtest mode takes a separate, simplified path — multi-week strategy generation.
+    if selections.get("trading_mode") == "backtest":
+        run_backtest_analysis(selections)
+        return
 
     # Create config with selected research depth
     config = DEFAULT_CONFIG.copy()
@@ -1043,7 +1241,10 @@ def run_analysis():
 
         # Initialize state and get graph args with callbacks
         init_agent_state = graph.propagator.create_initial_state(
-            selections["ticker"], selections["analysis_date"]
+            selections["ticker"],
+            selections["analysis_date"],
+            selections.get("holdings_info"),
+            trading_mode=selections.get("trading_mode", "live"),
         )
         # Pass callbacks to graph config for tool execution tracking
         # (LLM tracking is handled separately via LLM constructor)

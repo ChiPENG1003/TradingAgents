@@ -1,6 +1,6 @@
 import functools
 
-from tradingagents.agents.utils.agent_utils import build_instrument_context
+from tradingagents.agents.utils.agent_utils import build_instrument_context, get_language_instruction
 
 
 def create_trader(llm, memory):
@@ -12,26 +12,42 @@ def create_trader(llm, memory):
         sentiment_report = state["sentiment_report"]
         news_report = state["news_report"]
         fundamentals_report = state["fundamentals_report"]
+        holdings_info = state.get("holdings_info") or {}
+        if holdings_info:
+            quantity = holdings_info.get("quantity")
+            avg_buy_price = holdings_info.get("avg_buy_price")
+            holdings_str = f"Quantity: {quantity}, Average buy price: {avg_buy_price}"
+        else:
+            holdings_str = "No current holdings."
 
         curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}"
         past_memories = memory.get_memories(curr_situation, n_matches=2)
 
         past_memory_str = ""
-        if past_memories:
-            for i, rec in enumerate(past_memories, 1):
-                past_memory_str += rec["recommendation"] + "\n\n"
-        else:
-            past_memory_str = "No past memories found."
+        for i, rec in enumerate(past_memories, 1):
+            past_memory_str += rec["recommendation"] + "\n\n"
+
+        memory_section = (
+            f" Here are reflections from similar situations you traded in and the lessons learned: {past_memory_str}"
+            if past_memory_str else ""
+        )
 
         context = {
             "role": "user",
-            "content": f"Based on a comprehensive analysis by a team of analysts, here is an investment plan tailored for {company_name}. {instrument_context} This plan incorporates insights from current technical market trends, macroeconomic indicators, and social media sentiment. Use this plan as a foundation for evaluating your next trading decision.\n\nProposed Investment Plan: {investment_plan}\n\nLeverage these insights to make an informed and strategic decision.",
+            "content": f"Investment plan for {company_name}. {instrument_context}\n\nProposed Investment Plan: {investment_plan}",
         }
 
         messages = [
             {
                 "role": "system",
-                "content": f"""You are a trading agent analyzing market data to make investment decisions. Based on your analysis, provide a specific recommendation to buy, sell, or hold. End with a firm decision and always conclude your response with 'FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL**' to confirm your recommendation. Apply lessons from past decisions to strengthen your analysis. Here are reflections from similar situations you traded in and the lessons learned: {past_memory_str}""",
+                "content": f"""You are a short-term trader. Based on the investment plan, provide a trade recommendation that includes all of the following parameters:
+- **Action**: BUY / HOLD / SELL
+- **Entry price range**: specific price level or range to enter the trade
+- **Stop loss**: exact price level to exit and limit losses
+- **Take profit target**: exact price level to take profits
+- **Holding period**: expected hold duration in days or weeks
+- **Holdings management**: current position is {holdings_str} — give explicit instructions on how to manage it
+Always conclude with 'FINAL TRANSACTION PROPOSAL: **BUY/HOLD/SELL**'.{memory_section}{get_language_instruction()}""",
             },
             context,
         ]

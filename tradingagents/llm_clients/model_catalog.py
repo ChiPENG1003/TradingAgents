@@ -7,6 +7,9 @@ from typing import Dict, List, Tuple
 ModelOption = Tuple[str, str]
 ProviderModeOptions = Dict[str, Dict[str, List[ModelOption]]]
 
+# (display_label, tier_key, quick_model, deep_model)
+ModelTier = Tuple[str, str, str, str]
+
 
 MODEL_OPTIONS: ProviderModeOptions = {
     "openai": {
@@ -63,6 +66,18 @@ MODEL_OPTIONS: ProviderModeOptions = {
             ("Grok 4.1 Fast (Non-Reasoning) - Speed optimized, 2M ctx", "grok-4-1-fast-non-reasoning"),
         ],
     },
+    "deepseek": {
+        "quick": [
+            ("DeepSeek V4 Flash-Instant - Fastest, lowest cost", "deepseek-v4-flash-instant"),
+            ("DeepSeek V4 Flash-Thinking - Balanced speed/quality", "deepseek-v4-flash-thinking"),
+            ("DeepSeek V4 Pro - Most capable", "deepseek-v4-pro"),
+        ],
+        "deep": [
+            ("DeepSeek V4 Pro - Most capable", "deepseek-v4-pro"),
+            ("DeepSeek V4 Flash-Thinking - Balanced speed/quality", "deepseek-v4-flash-thinking"),
+            ("DeepSeek V4 Flash-Instant - Fastest, lowest cost", "deepseek-v4-flash-instant"),
+        ],
+    },
     # OpenRouter models are fetched dynamically at CLI runtime.
     # No static entries needed; any model ID is accepted by the validator.
     "ollama": {
@@ -80,9 +95,48 @@ MODEL_OPTIONS: ProviderModeOptions = {
 }
 
 
+MODEL_TIERS: Dict[str, List[ModelTier]] = {
+    "openai": [
+        ("Budget   — gpt-5.4-nano (quick) + gpt-5.4-mini (deep)",  "budget",   "gpt-5.4-nano",               "gpt-5.4-mini"),
+        ("Standard — gpt-5.4-mini (quick) + gpt-5.4 (deep)",       "standard", "gpt-5.4-mini",               "gpt-5.4"),
+        ("Premium  — gpt-5.4 (quick) + gpt-5.4-pro (deep)",        "premium",  "gpt-5.4",                    "gpt-5.4-pro"),
+    ],
+    "anthropic": [
+        ("Budget   — haiku-4-5 (quick) + sonnet-4-6 (deep)",       "budget",   "claude-haiku-4-5",           "claude-sonnet-4-6"),
+        ("Standard — sonnet-4-6 (quick) + opus-4-6 (deep)",        "standard", "claude-sonnet-4-6",          "claude-opus-4-6"),
+        ("Premium  — opus-4-6 × 2 (both roles)",                   "premium",  "claude-opus-4-6",            "claude-opus-4-6"),
+    ],
+    "google": [
+        ("Budget   — 2.5-flash-lite (quick) + 2.5-flash (deep)",   "budget",   "gemini-2.5-flash-lite",      "gemini-2.5-flash"),
+        ("Standard — 2.5-flash (quick) + 2.5-pro (deep)",          "standard", "gemini-2.5-flash",           "gemini-2.5-pro"),
+        ("Premium  — 3-flash (quick) + 3.1-pro (deep)",            "premium",  "gemini-3-flash-preview",     "gemini-3.1-pro-preview"),
+    ],
+    "xai": [
+        ("Budget   — grok-4.1-fast-non-reasoning × 2",             "budget",   "grok-4-1-fast-non-reasoning", "grok-4-1-fast-non-reasoning"),
+        ("Standard — grok-4.1-fast-non-reasoning + grok-4",        "standard", "grok-4-1-fast-non-reasoning", "grok-4-0709"),
+        ("Premium  — grok-4.1-fast-reasoning + grok-4",            "premium",  "grok-4-1-fast-reasoning",     "grok-4-0709"),
+    ],
+    "ollama": [
+        ("Budget   — qwen3:latest × 2",                            "budget",   "qwen3:latest",               "qwen3:latest"),
+        ("Standard — qwen3:latest (quick) + glm-4.7-flash (deep)", "standard", "qwen3:latest",               "glm-4.7-flash:latest"),
+        ("Premium  — gpt-oss:latest (quick) + glm-4.7-flash (deep)", "premium", "gpt-oss:latest",            "glm-4.7-flash:latest"),
+    ],
+    "deepseek": [
+        ("Budget   — flash-instant × 2",                           "budget",   "deepseek-v4-flash-instant",  "deepseek-v4-flash-instant"),
+        ("Standard — flash-instant (quick) + flash-thinking (deep)", "standard", "deepseek-v4-flash-instant", "deepseek-v4-flash-thinking"),
+        ("Premium  — flash-thinking (quick) + v4-pro (deep)",      "premium",  "deepseek-v4-flash-thinking", "deepseek-v4-pro"),
+    ],
+}
+
+
 def get_model_options(provider: str, mode: str) -> List[ModelOption]:
     """Return shared model options for a provider and selection mode."""
     return MODEL_OPTIONS[provider.lower()][mode]
+
+
+def get_model_tiers(provider: str) -> List[ModelTier]:
+    """Return tier presets (display, key, quick_model, deep_model) for a provider."""
+    return MODEL_TIERS.get(provider.lower(), [])
 
 
 def get_known_models() -> Dict[str, List[str]]:

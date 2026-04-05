@@ -1,44 +1,36 @@
 
-from tradingagents.agents.utils.agent_utils import build_instrument_context
+from tradingagents.agents.utils.agent_utils import build_instrument_context, get_language_instruction
 
 
 def create_research_manager(llm, memory):
     def research_manager_node(state) -> dict:
         instrument_context = build_instrument_context(state["company_of_interest"])
         history = state["investment_debate_state"].get("history", "")
-        market_research_report = state["market_report"]
-        sentiment_report = state["sentiment_report"]
-        news_report = state["news_report"]
-        fundamentals_report = state["fundamentals_report"]
-
         investment_debate_state = state["investment_debate_state"]
 
-        curr_situation = f"{market_research_report}\n\n{sentiment_report}\n\n{news_report}\n\n{fundamentals_report}"
+        curr_situation = (
+            f"{state['market_report']}\n\n{state['sentiment_report']}\n\n"
+            f"{state['news_report']}\n\n{state['fundamentals_report']}"
+        )
         past_memories = memory.get_memories(curr_situation, n_matches=2)
 
         past_memory_str = ""
         for i, rec in enumerate(past_memories, 1):
             past_memory_str += rec["recommendation"] + "\n\n"
 
-        prompt = f"""As the portfolio manager and debate facilitator, your role is to critically evaluate this round of debate and make a definitive decision: align with the bear analyst, the bull analyst, or choose Hold only if it is strongly justified based on the arguments presented.
+        memory_section = (
+            f"Here are your past reflections on mistakes:\n\"{past_memory_str}\"\n\n"
+            if past_memory_str else ""
+        )
 
-Summarize the key points from both sides concisely, focusing on the most compelling evidence or reasoning. Your recommendation—Buy, Sell, or Hold—must be clear and actionable. Avoid defaulting to Hold simply because both sides have valid points; commit to a stance grounded in the debate's strongest arguments.
+        prompt = f"""You are the Research Manager. Review the bull/bear debate and deliver a decisive investment recommendation: Buy, Sell, or Hold (only if strongly justified — do not default to Hold). Include your recommendation, rationale, and concrete next steps for the trader.
 
-Additionally, develop a detailed investment plan for the trader. This should include:
+{memory_section}{instrument_context}
 
-Your Recommendation: A decisive stance supported by the most convincing arguments.
-Rationale: An explanation of why these arguments lead to your conclusion.
-Strategic Actions: Concrete steps for implementing the recommendation.
-Take into account your past mistakes on similar situations. Use these insights to refine your decision-making and ensure you are learning and improving. Present your analysis conversationally, as if speaking naturally, without special formatting. 
+Debate history:
+{history}
 
-Here are your past reflections on mistakes:
-\"{past_memory_str}\"
-
-{instrument_context}
-
-Here is the debate:
-Debate History:
-{history}"""
+{get_language_instruction()}"""
         response = llm.invoke(prompt)
 
         new_investment_debate_state = {
