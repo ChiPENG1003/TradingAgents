@@ -42,6 +42,10 @@ def main() -> None:
         "--slippage-bps", type=float, default=0.0,
         help="Slippage in basis points applied against each fill (default 0).",
     )
+    parser.add_argument(
+        "--min-stop-distance-pct", type=float, default=0.0,
+        help="Floor stop-loss distance as fraction of reference price (e.g. 0.025 = 2.5%%). 0 disables.",
+    )
     args = parser.parse_args()
 
     engine = BacktestEngine(
@@ -51,6 +55,7 @@ def main() -> None:
         initial_capital=args.initial_capital,
         commission=args.commission,
         slippage_bps=args.slippage_bps,
+        min_stop_distance_pct=args.min_stop_distance_pct,
     )
     try:
         result = engine.run()

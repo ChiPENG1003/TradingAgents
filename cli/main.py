@@ -27,6 +27,7 @@ from tradingagents.graph.trading_graph import TradingAgentsGraph
 from tradingagents.default_config import DEFAULT_CONFIG
 from tradingagents.dataflows.stockstats_utils import load_ohlcv
 from back_test.calendar import adjust_backtest_window, first_trading_day_on_or_after
+from back_test.engine import BacktestEngine
 from cli.models import AnalystType
 from cli.utils import *
 from cli.announcements import fetch_announcements, display_announcements
@@ -997,6 +998,38 @@ def _weekly_trading_dates(start: str, end: str, trading_dates) -> list[str]:
     return dates
 
 
+def _simulate_backtest_holdings(
+    ticker: str,
+    start: str,
+    end: str,
+    initial_capital: float = 100_000.0,
+) -> dict:
+    """Replay generated strategies through `end` and return current holdings."""
+    engine = BacktestEngine(
+        ticker=ticker,
+        start_date=start,
+        end_date=end,
+        initial_capital=initial_capital,
+    )
+    result = engine.run()
+    if result.equity_curve.empty:
+        return {"quantity": 0.0, "cash": initial_capital}
+
+    last = result.equity_curve.iloc[-1]
+    holdings = {
+        "quantity": float(last["Position"]),
+        "cash": float(last["Cash"]),
+        "mark_price": float(last["MarkPrice"]),
+        "equity": float(last["Equity"]),
+        "as_of_date": last["Date"].strftime("%Y-%m-%d") if hasattr(last["Date"], "strftime") else end,
+    }
+    if result.final_position:
+        holdings["avg_buy_price"] = float(result.final_position["entry_price"])
+        if result.final_position.get("stop_loss") is not None:
+            holdings["stop_loss"] = float(result.final_position["stop_loss"])
+    return holdings
+
+
 def run_backtest_analysis(selections: dict) -> None:
     """Run the backtest mode: weekly strategy generation across a date range.
 
@@ -1052,6 +1085,7 @@ def run_backtest_analysis(selections: dict) -> None:
 
     overall_start = time.time()
     prev_stats = stats_handler.get_stats()
+    simulated_holdings = selections.get("holdings_info") or {}
 
     for i, date in enumerate(dates, 1):
         console.print(
@@ -1062,7 +1096,7 @@ def run_backtest_analysis(selections: dict) -> None:
             final_state, decision = graph.propagate(
                 selections["ticker"],
                 date,
-                holdings_info=selections.get("holdings_info"),
+                holdings_info=simulated_holdings,
                 trading_mode="backtest",
             )
             json_path = (
@@ -1084,6 +1118,24 @@ def run_backtest_analysis(selections: dict) -> None:
             prev_stats = curr_stats
             console.print(f"  [green]✓[/green] decision=[bold]{decision}[/bold]  saved → {json_path}")
             console.print(f"  [dim]{step_metrics}[/dim]")
+            if i < len(dates):
+                simulated_holdings = _simulate_backtest_holdings(
+                    selections["ticker"],
+                    effective_start,
+                    dates[i],
+                )
+                if simulated_holdings.get("quantity", 0.0) > 0:
+                    console.print(
+                        "  [dim]simulated holdings for next strategy: "
+                        f"{simulated_holdings['quantity']:.4f} shares, "
+                        f"avg {simulated_holdings.get('avg_buy_price', 0.0):.2f}, "
+                        f"cash {simulated_holdings.get('cash', 0.0):.2f}[/dim]"
+                    )
+                else:
+                    console.print(
+                        "  [dim]simulated holdings for next strategy: "
+                        f"cash {simulated_holdings.get('cash', 0.0):.2f}, no open position[/dim]"
+                    )
         except Exception as e:
             step_elapsed = time.time() - step_start
             console.print(

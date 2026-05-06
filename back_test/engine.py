@@ -87,9 +87,13 @@ class BacktestResult:
     effective_start_date: Optional[str] = None
     effective_end_date: Optional[str] = None
     report: Optional[dict] = None
+    final_cash: Optional[float] = None
+    final_position: Optional[dict] = None
 
 
 class BacktestEngine:
+    REDUCE_STOP_MAX_SIZE_PCT = 30.0
+
     def __init__(
         self,
         ticker: str,
@@ -99,6 +103,7 @@ class BacktestEngine:
         strategies_dir: Optional[Path] = None,
         commission: float = 0.0,
         slippage_bps: float = 0.0,
+        min_stop_distance_pct: float = 0.0,
     ):
         self.ticker = ticker
         self.start_date = pd.to_datetime(start_date)
@@ -107,10 +112,16 @@ class BacktestEngine:
         self.strategies_dir = strategies_dir or STRATEGIES_ROOT / ticker
         self.commission = float(commission)
         self.slippage_bps = float(slippage_bps)
+        self.min_stop_distance_pct = float(min_stop_distance_pct)
         self.extraction_failures = 0
         self.schema_migrations = 0
         self.schema_rejections = 0
         self.invalid_sell_orders = 0
+        self.reduce_stop_capped = 0
+        self.entry_promoted_to_add = 0
+        self.tp_below_cost_blocked = 0
+        self.tp_downgrades_blocked = 0
+        self.stop_widened = 0
 
     # ----------------------------------------------------------- load helpers
     def load_strategies(self) -> List[dict]:
@@ -179,8 +190,9 @@ class BacktestEngine:
         expired_orders = 0
 
         # Map each strategy to its effective active window. valid_until is the
-        # strategy's real expiry; the next strategy still caps the window so
-        # overlapping plans do not both issue fresh orders.
+        # strategy's real expiry. A newer strategy can replace same-type
+        # pending orders, but it no longer cancels every older pending order
+        # just because the weekly review rotated.
         trading_days = normalize_trading_days(prices["Date"])
         for strat in strategies:
             strat["_active_from"] = self._next_trading_day(trading_days, strat["as_of_date"])
@@ -211,12 +223,15 @@ class BacktestEngine:
             # 1) Activate / rotate strategy if today >= next strategy's as_of_date
             new_active = self._strategy_for_date(strategies, date)
             if new_active is not active_strategy:
-                # Rotation: drop unfilled entry/add/reduce orders from prior strategy
-                expired_orders += len(pending_orders)
-                pending_orders = []
                 active_strategy = new_active
-                if active_strategy is not None:
+                if active_strategy is None:
+                    expired_orders += len(pending_orders)
+                    pending_orders = []
+                else:
                     # Handle SELL action immediately on activation if a position exists
+                    if active_strategy.get("action") == "SELL":
+                        expired_orders += len(pending_orders)
+                        pending_orders = []
                     if active_strategy.get("action") == "SELL" and position is not None:
                         cash, trades = self._close_position_market(
                             position,
@@ -230,11 +245,16 @@ class BacktestEngine:
                             fill_basis="next_open",
                         )
                         position = None
-                        pending_orders = []
                     elif position is not None:
                         self._update_position_risk(position, active_strategy)
-                    pending_orders = self._build_pending_orders(active_strategy, cash, position)
-                    orders_created += len(pending_orders)
+                    new_orders = self._build_pending_orders(active_strategy, cash, position)
+                    expired_count, pending_orders = self._merge_pending_orders(
+                        pending_orders,
+                        new_orders,
+                        position,
+                    )
+                    expired_orders += expired_count
+                    orders_created += len(new_orders)
 
             # 2) Check stop-loss on the open position FIRST (more conservative).
             # A position opened later in this same bar is not checked again until the next bar.
@@ -253,6 +273,11 @@ class BacktestEngine:
                         fill_basis=fill_basis,
                     )
                     position = None
+                    expired_count, pending_orders = self._prune_pending_orders(
+                        pending_orders,
+                        position,
+                    )
+                    expired_orders += expired_count
 
             # 3a) Check reduce_stop (partial sell-on-drop) before take-profit.
             # Defensive trim runs on the same day_low touch as stop_loss but
@@ -279,6 +304,12 @@ class BacktestEngine:
                     else:
                         still_pending.append(order)
                 pending_orders = still_pending
+                if position is None:
+                    expired_count, pending_orders = self._prune_pending_orders(
+                        pending_orders,
+                        position,
+                    )
+                    expired_orders += expired_count
 
             # 3b) Check take_profit (sell-on-rise) after defensive trims.
             if position is not None and pending_orders:
@@ -303,6 +334,12 @@ class BacktestEngine:
                     else:
                         still_pending.append(order)
                 pending_orders = still_pending
+                if position is None:
+                    expired_count, pending_orders = self._prune_pending_orders(
+                        pending_orders,
+                        position,
+                    )
+                    expired_orders += expired_count
 
             # 4) Check entry/add limit-buys after existing-position exits.
             if pending_orders:
@@ -323,6 +360,11 @@ class BacktestEngine:
                     else:
                         still_pending.append(order)
                 pending_orders = still_pending
+                expired_count, pending_orders = self._prune_pending_orders(
+                    pending_orders,
+                    position,
+                )
+                expired_orders += expired_count
 
             # 5) Mark-to-market
             mark_price = day_close
@@ -335,6 +377,17 @@ class BacktestEngine:
                 "Position": position.shares if position else 0.0,
                 "MarkPrice": mark_price,
             })
+
+        final_cash = cash
+        final_position = None
+        if position is not None:
+            final_position = {
+                "entry_date": position.entry_date,
+                "entry_price": position.entry_price,
+                "shares": position.shares,
+                "stop_loss": position.stop_loss,
+                "stop_loss_as_of": position.stop_loss_as_of,
+            }
 
         # Close any leftover open position at final close (mark-to-market exit, not a real fill).
         if position is not None and equity_rows:
@@ -356,8 +409,14 @@ class BacktestEngine:
             "schema_migrations": self.schema_migrations,
             "schema_rejections": self.schema_rejections,
             "invalid_sell_orders": self.invalid_sell_orders,
+            "reduce_stop_capped": self.reduce_stop_capped,
+            "entry_promoted_to_add": self.entry_promoted_to_add,
+            "tp_below_cost_blocked": self.tp_below_cost_blocked,
+            "tp_downgrades_blocked": self.tp_downgrades_blocked,
+            "stop_widened": self.stop_widened,
             "commission": self.commission,
             "slippage_bps": self.slippage_bps,
+            "min_stop_distance_pct": self.min_stop_distance_pct,
             "bias_audit": audit,
         }
         return BacktestResult(
@@ -368,6 +427,8 @@ class BacktestEngine:
             effective_start_date=effective_start_date,
             effective_end_date=effective_end_date,
             report=report,
+            final_cash=final_cash,
+            final_position=final_position,
         )
 
     # ----------------------------------------------------------- helpers
@@ -428,8 +489,8 @@ class BacktestEngine:
                 active = s
         return active
 
-    @staticmethod
     def _build_pending_orders(
+        self,
         strategy: dict,
         cash: float,
         existing_position: Optional[Position],
@@ -444,16 +505,34 @@ class BacktestEngine:
 
         if existing_position is None:
             entry = strategy.get("entry") or {}
-            entry_order = BacktestEngine._build_order("entry", strategy, entry, stop_loss)
+            entry_order = self._build_order("entry", strategy, entry, stop_loss)
             if entry_order is not None:
                 orders.append(entry_order)
         else:
             add = strategy.get("add_position") or {}
+            add_size = float(add.get("size_pct") or 0)
+            if add_size <= 0:
+                # LLMs sometimes write a fresh "entry" while a position exists.
+                # Map it onto add_position rather than silently dropping it.
+                entry = strategy.get("entry") or {}
+                if float(entry.get("size_pct") or 0) > 0:
+                    add = entry
+                    self.entry_promoted_to_add += 1
+
             take_profit = strategy.get("take_profit") or {}
+            tp_price = take_profit.get("price")
+            if tp_price is not None:
+                if float(tp_price) < existing_position.entry_price:
+                    self.tp_below_cost_blocked += 1
+                    take_profit = {"price": None, "size_pct": 0}
+                elif add.get("price") is not None and float(tp_price) < float(add["price"]):
+                    self.tp_below_cost_blocked += 1
+                    take_profit = {"price": None, "size_pct": 0}
+
             reduce_stop = strategy.get("reduce_stop") or {}
-            add_order = BacktestEngine._build_order("add", strategy, add, stop_loss)
-            tp_order = BacktestEngine._build_order("take_profit", strategy, take_profit, stop_loss)
-            rs_order = BacktestEngine._build_order("reduce_stop", strategy, reduce_stop, stop_loss)
+            add_order = self._build_order("add", strategy, add, stop_loss)
+            tp_order = self._build_order("take_profit", strategy, take_profit, stop_loss)
+            rs_order = self._build_order("reduce_stop", strategy, reduce_stop, stop_loss)
             if add_order is not None:
                 orders.append(add_order)
             if tp_order is not None:
@@ -463,12 +542,20 @@ class BacktestEngine:
 
         return orders
 
-    @staticmethod
-    def _build_order(order_type: str, strategy: dict, block: dict, stop_loss: Optional[float]) -> Optional[PendingOrder]:
+    def _build_order(
+        self,
+        order_type: str,
+        strategy: dict,
+        block: dict,
+        stop_loss: Optional[float],
+    ) -> Optional[PendingOrder]:
         price = block.get("price")
-        size_pct = block.get("size_pct") or 0.0
+        size_pct = float(block.get("size_pct") or 0.0)
         if size_pct <= 0:
             return None
+        if order_type == "reduce_stop" and size_pct > self.REDUCE_STOP_MAX_SIZE_PCT:
+            size_pct = self.REDUCE_STOP_MAX_SIZE_PCT
+            self.reduce_stop_capped += 1
         return PendingOrder(
             order_type=order_type,
             strategy_as_of=strategy["as_of_date"],
@@ -477,13 +564,83 @@ class BacktestEngine:
             stop_loss=stop_loss,
         )
 
+    def _merge_pending_orders(
+        self,
+        pending_orders: List[PendingOrder],
+        new_orders: List[PendingOrder],
+        existing_position: Optional[Position],
+    ) -> tuple[int, List[PendingOrder]]:
+        """Replace only pending orders that a new strategy explicitly updates."""
+        if not new_orders:
+            return BacktestEngine._prune_pending_orders(pending_orders, existing_position)
+
+        # Block TP downgrades: if a new TP would replace an existing pending TP
+        # at a lower limit price, keep the higher TP instead.
+        existing_tp = next(
+            (o for o in pending_orders
+             if o.order_type == "take_profit" and o.limit_price is not None),
+            None,
+        )
+        filtered_new: List[PendingOrder] = []
+        for order in new_orders:
+            if (
+                order.order_type == "take_profit"
+                and order.limit_price is not None
+                and existing_tp is not None
+                and order.limit_price < existing_tp.limit_price
+            ):
+                self.tp_downgrades_blocked += 1
+                continue
+            filtered_new.append(order)
+        new_orders = filtered_new
+
+        replacement_types = {order.order_type for order in new_orders}
+        kept = [
+            order for order in pending_orders
+            if order.order_type not in replacement_types
+        ]
+        expired = len(pending_orders) - len(kept)
+        kept.extend(new_orders)
+        prune_expired, pruned = BacktestEngine._prune_pending_orders(kept, existing_position)
+        return expired + prune_expired, pruned
+
     @staticmethod
-    def _update_position_risk(position: Position, strategy: dict) -> None:
+    def _prune_pending_orders(
+        pending_orders: List[PendingOrder],
+        existing_position: Optional[Position],
+    ) -> tuple[int, List[PendingOrder]]:
+        """Drop order types that no longer match the current position state."""
+        if existing_position is None:
+            valid_types = {"entry"}
+        else:
+            valid_types = {"add", "take_profit", "reduce_stop"}
+        kept = [
+            order for order in pending_orders
+            if order.order_type in valid_types
+        ]
+        return len(pending_orders) - len(kept), kept
+
+    def _update_position_risk(self, position: Position, strategy: dict) -> None:
         """Update an open position's stop-loss from a non-null strategy field."""
         sl = strategy.get("stop_loss") or {}
         if sl.get("price") is not None:
-            position.stop_loss = float(sl["price"])
+            new_stop = self._widen_stop(float(sl["price"]), position.entry_price)
+            position.stop_loss = new_stop
             position.stop_loss_as_of = strategy["as_of_date"]
+
+    def _widen_stop(
+        self,
+        stop_loss: Optional[float],
+        reference_price: float,
+    ) -> Optional[float]:
+        """Floor a stop-loss to be at least min_stop_distance_pct below reference."""
+        if stop_loss is None or self.min_stop_distance_pct <= 0 or reference_price <= 0:
+            return stop_loss
+        min_stop = reference_price * (1.0 - self.min_stop_distance_pct)
+        if stop_loss > min_stop:
+            self.stop_widened += 1
+            return min_stop
+        return stop_loss
 
     @staticmethod
     def _is_empty_strategy(strategy: dict) -> bool:
@@ -557,19 +714,23 @@ class BacktestEngine:
         fill_basis: str,
     ) -> tuple[float, Optional[Position]]:
         execution_price = self._buy_execution_price(fill_price)
-        spend = cash * (order.size_pct / 100.0)
+        position_value = position.shares * fill_price if position else 0.0
+        equity = cash + position_value
+        target_spend = equity * (order.size_pct / 100.0)
+        spend = min(cash, target_spend)
         notional = max(0.0, spend - self.commission)
         if notional <= 0 or execution_price <= 0:
             return cash, position
         shares = notional / execution_price
         cash -= shares * execution_price + self.commission
+        effective_stop = self._widen_stop(order.stop_loss, execution_price)
         if position is None:
             position = Position(
                 entry_date=entry_date,
                 entry_price=execution_price,
                 shares=shares,
-                stop_loss=order.stop_loss,
-                stop_loss_as_of=order.strategy_as_of if order.stop_loss is not None else None,
+                stop_loss=effective_stop,
+                stop_loss_as_of=order.strategy_as_of if effective_stop is not None else None,
                 entry_commission=self.commission,
             )
             self._record_execution(
@@ -582,8 +743,8 @@ class BacktestEngine:
         position.shares += shares
         position.entry_price = total_cost / position.shares
         position.entry_commission += self.commission
-        if order.stop_loss is not None:
-            position.stop_loss = order.stop_loss
+        if effective_stop is not None:
+            position.stop_loss = effective_stop
             position.stop_loss_as_of = order.strategy_as_of
         self._record_execution(
             executions, "BUY", order.order_type, order.strategy_as_of, entry_date,

@@ -7,23 +7,35 @@ import numbers
 import os
 import sys
 import tempfile
+from datetime import datetime
+from pathlib import Path
+
+if __package__ in (None, ""):
+    script_dir = Path(__file__).resolve().parent
+    project_root = script_dir.parent
+    script_dir_str = str(script_dir)
+    if script_dir_str in sys.path:
+        sys.path.remove(script_dir_str)
+    project_root_str = str(project_root)
+    if project_root_str not in sys.path:
+        sys.path.insert(0, project_root_str)
 
 os.environ.setdefault("MPLCONFIGDIR", os.path.join(tempfile.gettempdir(), "matplotlib"))
 
-try:
-    import matplotlib.pyplot as plt
-except ModuleNotFoundError as exc:
-    if exc.name != "matplotlib":
-        raise
-    plt = None
+import matplotlib.pyplot as plt
+
 
 import pandas as pd
 import yfinance as yf
 
 from tradingagents.dataflows.stockstats_utils import load_ohlcv, yf_retry
 
-from .engine import PROJECT_ROOT
-from .metrics import summarize
+try:
+    from .engine import PROJECT_ROOT
+    from .metrics import summarize
+except ImportError:
+    from back_test.engine import PROJECT_ROOT
+    from back_test.metrics import summarize
 
 
 RESULTS_DIR = PROJECT_ROOT / "back_test" / "results"
@@ -170,20 +182,17 @@ def main() -> None:
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    benchmark_slug = "_".join(_benchmark_slug(b) for b in all_benchmarks)
-
-    metrics_path = (
-        RESULTS_DIR
-        / f"{args.ticker}_vs_{benchmark_slug}_{args.start}_{args.end}_metrics.json"
+    run_tag = datetime.now().strftime("%Y%m%d-%H%M%S")
+    base_stem = (
+        f"{args.ticker}_vs_index_{args.start}_{args.end}_{run_tag}"
     )
+
+    metrics_path = RESULTS_DIR / f"{base_stem}_metrics.json"
 
     with open(metrics_path, "w", encoding="utf-8") as f:
         json.dump(comparison, f, indent=2, allow_nan=False)
 
-    plot_path = (
-        RESULTS_DIR
-        / f"{args.ticker}_vs_{benchmark_slug}_{args.start}_{args.end}.png"
-    )
+    plot_path = RESULTS_DIR / f"{base_stem}.png"
 
     plot_written = False
 

@@ -222,6 +222,7 @@ def create_portfolio_manager(llm, memory):
         research_plan = state["investment_plan"]
         trader_plan = state["trader_investment_plan"]
         trading_mode = state.get("trading_mode", "live")
+        holdings_info = state.get("holdings_info") or {}
 
         curr_situation = (
             f"{state['market_report']}\n\n{state['sentiment_report']}\n\n"
@@ -234,6 +235,32 @@ def create_portfolio_manager(llm, memory):
             past_memory_str += rec["recommendation"] + "\n\n"
 
         lessons_section = f"- Lessons from past decisions: **{past_memory_str}**\n" if past_memory_str else ""
+        holdings_section = ""
+        if holdings_info:
+            quantity = float(holdings_info.get("quantity") or 0.0)
+            cash = holdings_info.get("cash")
+            avg_buy_price = holdings_info.get("avg_buy_price")
+            mark_price = holdings_info.get("mark_price")
+            equity = holdings_info.get("equity")
+            stop_loss = holdings_info.get("stop_loss")
+            if quantity > 0:
+                holdings_section = (
+                    "- Current simulated holdings: "
+                    f"{quantity:g} shares"
+                    + (f", average buy price {float(avg_buy_price):g}" if avg_buy_price is not None else "")
+                    + (f", mark price {float(mark_price):g}" if mark_price is not None else "")
+                    + (f", active stop {float(stop_loss):g}" if stop_loss is not None else "")
+                    + (f", cash {float(cash):g}" if cash is not None else "")
+                    + (f", equity {float(equity):g}" if equity is not None else "")
+                    + ". Manage this existing position; do not behave as if the portfolio is flat.\n"
+                )
+            else:
+                holdings_section = (
+                    "- Current simulated holdings: no open position"
+                    + (f", cash {float(cash):g}" if cash is not None else "")
+                    + (f", equity {float(equity):g}" if equity is not None else "")
+                    + ". If the regime is favorable, prioritize establishing a starter position.\n"
+                )
 
         core_prompt = f"""You are the Portfolio Manager. Synthesize the risk analysts' debate and deliver the final short-term trading decision.
 
@@ -245,6 +272,7 @@ def create_portfolio_manager(llm, memory):
 - Research Manager's plan: {research_plan}
 - Trader's proposal: {trader_plan}
 {lessons_section}
+{holdings_section}
 **Risk Analysts Debate:**
 {history}
 
@@ -285,8 +313,11 @@ Aggressiveness rules (lean aggressive; HOLD is reserved for genuinely balanced s
 - Treat HOLD as a fallback only when bull and bear cases are roughly symmetric AND no entry within 10% of current price is justifiable. Indecision is not a HOLD; pick a side.
 - Pull entry.price within 6% of the current price by default so the order actually fills; only stretch beyond 6% when there is a clear technical reason (support shelf, prior breakout retest).
 - In a confirmed uptrend, missed participation is a real risk. Prefer entry.price=null with a meaningful size_pct over a pullback limit that is unlikely to fill.
-- For broad index ETFs or highly diversified instruments, if current_price > SMA20 and SMA50 > SMA200, default to participating long rather than waiting for an ideal pullback.
-- For broad index ETFs or highly diversified instruments, if current_price > SMA50 and SMA50 > SMA200, SELL requires clear trend damage or severe macro/technical deterioration; ordinary overbought readings are not enough.
+- In a confirmed uptrend, prefer next-open entry over waiting for a deep pullback.
+- For broad index ETFs or highly diversified instruments, if current_price > SMA20 > SMA50 > SMA200, or current_price > SMA50 and SMA50 > SMA200, default action should be BUY or HOLD-with-position-management, not SELL.
+- For broad index ETFs or highly diversified instruments in that regime, if no position exists, use entry.price=null with entry.size_pct between 50 and 80 unless downside risk is extreme.
+- For broad index ETFs or highly diversified instruments in that regime, do not require a pullback entry in a strong trend.
+- For broad index ETFs or highly diversified instruments in that regime, SELL requires clear trend damage or severe macro/technical deterioration; ordinary overbought readings are not enough.
 - If confidence is low/medium and entry.price is within 8% of current, allow entry.size_pct between 35 and 55.
 - If confidence is medium and entry.price is within 6% of current, allow entry.size_pct between 50 and 70.
 - If confidence is high and the setup is trend-following, breakout, or strong momentum, allow entry.size_pct between 70 and 90.
