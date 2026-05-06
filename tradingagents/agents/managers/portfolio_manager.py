@@ -271,6 +271,8 @@ Backtest structured-output rules:
 - SELL only closes an existing long position; this system does not support opening short positions.
 - entry.size_pct and add_position.size_pct are percentages of available cash.
 - take_profit and reduce_stop size_pct are percentages of current shares.
+- price=null with size_pct>0 means execute that order at the next trading day's open.
+- price=null with size_pct=0 means no order in that block.
 - take_profit fires when price rises to its level (sell-on-rise). Its price MUST be above the current price.
 - reduce_stop fires when price drops to its level (partial defensive trim before the full stop). Its price MUST sit between stop_loss.price and the current price (stop_loss < reduce_stop < current).
 - stop_loss is a full-close stop; a separate reduce_stop can scale out a portion before that level is hit.
@@ -282,15 +284,20 @@ Aggressiveness rules (lean aggressive; HOLD is reserved for genuinely balanced s
 - Default to a strong long bias whenever the thesis is even mildly positive and downside risk is bounded by a defined stop.
 - Treat HOLD as a fallback only when bull and bear cases are roughly symmetric AND no entry within 10% of current price is justifiable. Indecision is not a HOLD; pick a side.
 - Pull entry.price within 6% of the current price by default so the order actually fills; only stretch beyond 6% when there is a clear technical reason (support shelf, prior breakout retest).
+- In a confirmed uptrend, missed participation is a real risk. Prefer entry.price=null with a meaningful size_pct over a pullback limit that is unlikely to fill.
+- For broad index ETFs or highly diversified instruments, if current_price > SMA20 and SMA50 > SMA200, default to participating long rather than waiting for an ideal pullback.
+- For broad index ETFs or highly diversified instruments, if current_price > SMA50 and SMA50 > SMA200, SELL requires clear trend damage or severe macro/technical deterioration; ordinary overbought readings are not enough.
 - If confidence is low/medium and entry.price is within 8% of current, allow entry.size_pct between 35 and 55.
 - If confidence is medium and entry.price is within 6% of current, allow entry.size_pct between 50 and 70.
 - If confidence is high and the setup is trend-following, breakout, or strong momentum, allow entry.size_pct between 70 and 90.
 - If already holding a long position and the bullish thesis remains valid, default to add_position rather than HOLD-doing-nothing.
 - For add_position, allow size_pct between 25 and 50 when price is within 6% of current; up to 60 when within 3% and momentum is confirming.
-- Use take_profit aggressively to lock in gains: set it at the next clear resistance / measured-move target with size_pct between 30 and 60 for partial profit-taking, or 100 only when the target is the full upside thesis.
+- In a strong uptrend, take_profit is optional. If used, set it farther than the nearest minor resistance and usually sell only 20-30%; do not repeatedly cap upside in a trending market.
+- Use larger take_profit sizes only when the upside thesis is mature, momentum is fading, or price is materially extended from SMA20/ATR bands.
 - Use reduce_stop sparingly: only when the thesis is fragile and you want to trim before the hard stop. Typical size_pct is 25-50.
 - Do not emit reduce_stop just for "feeling cautious"; if the bull case holds, lean on stop_loss alone.
 - Stop loss must always be present for BUY or ADD actions, but place it at a structural level, not so tight that normal volatility shakes you out.
+- For index ETFs, stop_loss should normally be at least 1.5 ATR below entry unless the thesis is explicitly short-lived; in strong uptrends, prefer a stop below a recent swing low, SMA20/SMA50, or another structural level rather than a tight nearest-support stop.
 - Avoid oversized entries only when the stop distance is genuinely wide (>8% of entry price); otherwise, larger sizes are preferred."""
             
             structured_llm = llm.with_structured_output(PortfolioStrategy)
