@@ -53,6 +53,7 @@ class TradingAgentsGraph:
         debug=False,
         config: Dict[str, Any] = None,
         callbacks: Optional[List] = None,
+        trading_mode: str = "live",
     ):
         """Initialize the trading agents graph and components.
 
@@ -61,10 +62,13 @@ class TradingAgentsGraph:
             debug: Whether to run in debug mode
             config: Configuration dictionary. If None, uses default config
             callbacks: Optional list of callback handlers (e.g., for tracking LLM/tool stats)
+            trading_mode: "backtest" wires the state-first Portfolio Manager;
+                anything else uses the legacy live Portfolio Manager.
         """
         self.debug = debug
         self.config = config or DEFAULT_CONFIG
         self.callbacks = callbacks or []
+        self.trading_mode = trading_mode
 
         # Update the interface's config
         set_config(self.config)
@@ -123,6 +127,7 @@ class TradingAgentsGraph:
             self.invest_judge_memory,
             self.portfolio_manager_memory,
             self.conditional_logic,
+            trading_mode=self.trading_mode,
         )
 
         self.propagator = Propagator()
@@ -240,6 +245,7 @@ class TradingAgentsGraph:
         # In backtest mode, also persist the structured strategy JSON.
         if trading_mode == "backtest":
             self._save_backtest_strategy(company_name, trade_date, final_state)
+            self._remember_backtest_portfolio_decision(trade_date, final_state)
 
         # Return decision and processed signal
         return final_state, self.process_signal(final_state["final_trade_decision"])
@@ -261,6 +267,9 @@ class TradingAgentsGraph:
             )
             as_of = datetime.strptime(str(strategy["as_of_date"]), "%Y-%m-%d")
             strategy["valid_until"] = (as_of + timedelta(days=valid_window_days)).strftime("%Y-%m-%d")
+            market_state = final_state.get("market_state")
+            if market_state:
+                strategy["market_state"] = market_state
         except StructuredStrategyError as e:
             # Persist a sentinel so the operator knows the run failed extraction.
             as_of = datetime.strptime(str(trade_date), "%Y-%m-%d")
@@ -281,6 +290,29 @@ class TradingAgentsGraph:
         with open(out_path, "w", encoding="utf-8") as f:
             json.dump(strategy, f, indent=2, ensure_ascii=False)
         return out_path
+
+    def _remember_backtest_portfolio_decision(self, trade_date: str, final_state: Dict[str, Any]) -> None:
+        """Record the just-finalized portfolio decision without outcome reflection.
+
+        Backtest strategy generation must not use future trades/returns to
+        revise earlier decisions. This stores only the as-of reports and the
+        finalized decision so later review dates can retrieve prior policy
+        context, while `reflect_portfolio_manager()` remains reserved for
+        explicit post-outcome reflection.
+        """
+        situation = (
+            f"{final_state['market_report']}\n\n{final_state['sentiment_report']}\n\n"
+            f"{final_state['news_report']}\n\n{final_state['fundamentals_report']}"
+        )
+        decision = final_state["risk_debate_state"]["judge_decision"]
+        market_state = final_state.get("market_state")
+        market_state_text = f"\nMarketState: {market_state}" if market_state else ""
+        recommendation = (
+            f"As-of {trade_date} portfolio decision recorded immediately after strategy finalization. "
+            "No realized returns, future prices, fills, or post-trade reflection were used.\n"
+            f"{decision}{market_state_text}"
+        )
+        self.portfolio_manager_memory.add_situations([(situation, recommendation)])
 
     def _log_state(self, trade_date, final_state):
         """Log the final state to a JSON file."""

@@ -52,13 +52,16 @@ def get_global_news(curr_date, look_back_days: int = 7, limit: int = 50) -> dict
     return _make_api_request("NEWS_SENTIMENT", params)
 
 
-def get_insider_transactions(symbol: str) -> dict[str, str] | str:
-    """Returns latest and historical insider transactions by key stakeholders.
+def get_insider_transactions(symbol: str, curr_date: str = None) -> dict[str, str] | str:
+    """Returns insider transactions by key stakeholders, filtered by curr_date.
 
-    Covers transactions by founders, executives, board members, etc.
+    Alpha Vantage returns ALL historical insider transactions; without a date
+    filter this leaks future transactions into a backtest. We drop any
+    transaction whose `transaction_date` is strictly after curr_date.
 
     Args:
         symbol: Ticker symbol. Example: "IBM".
+        curr_date: Current date you are trading at, yyyy-mm-dd.
 
     Returns:
         Dictionary containing insider transaction data or JSON string.
@@ -68,4 +71,15 @@ def get_insider_transactions(symbol: str) -> dict[str, str] | str:
         "symbol": symbol,
     }
 
-    return _make_api_request("INSIDER_TRANSACTIONS", params)
+    result = _make_api_request("INSIDER_TRANSACTIONS", params)
+
+    if curr_date and isinstance(result, dict) and isinstance(result.get("data"), list):
+        cutoff = curr_date  # ISO YYYY-MM-DD strings compare lexicographically
+        result = dict(result)
+        result["data"] = [
+            tx for tx in result["data"]
+            if str(tx.get("transaction_date", "")) <= cutoff
+        ]
+        result["_as_of_date"] = curr_date
+
+    return result

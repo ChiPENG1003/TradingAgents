@@ -7,6 +7,9 @@ from dateutil.relativedelta import relativedelta
 from .stockstats_utils import yf_retry
 
 
+YFINANCE_NEWS_COUNT = 250
+
+
 def _extract_article_data(article: dict) -> dict:
     """Extract article data from yfinance news format (handles nested 'content' structure)."""
     # Handle nested content structure
@@ -66,7 +69,7 @@ def get_news_yfinance(
     """
     try:
         stock = yf.Ticker(ticker)
-        news = yf_retry(lambda: stock.get_news(count=20))
+        news = yf_retry(lambda: stock.get_news(count=YFINANCE_NEWS_COUNT))
 
         if not news:
             return f"No news found for {ticker}"

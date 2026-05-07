@@ -22,7 +22,7 @@ from .engine import BacktestEngine, PROJECT_ROOT
 from .metrics import summarize
 
 
-RESULTS_DIR = PROJECT_ROOT / "back_test" / "results"
+RESULTS_DIR = PROJECT_ROOT / "back_test" / "trade_route"
 
 
 def main() -> None:

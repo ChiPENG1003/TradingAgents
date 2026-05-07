@@ -8,7 +8,26 @@ from tradingagents.agents.utils.agent_utils import (
     get_insider_transactions,
     get_language_instruction,
 )
+from tradingagents.dataflows.y_finance import _is_historical_curr_date
 from tradingagents.dataflows.config import get_config
+
+
+def _sanitize_fundamentals_report(report: str, current_date: str) -> str:
+    if not report:
+        return report
+
+    lines = report.splitlines()
+    if _is_historical_curr_date(current_date):
+        blocked_phrases = ("52 Week High", "52 Week Low")
+        lines = [
+            line for line in lines
+            if not any(phrase.lower() in line.lower() for phrase in blocked_phrases)
+        ]
+
+    if not any(line.strip().startswith("# As-of date:") for line in lines):
+        lines.insert(0, f"# As-of date: {current_date}")
+
+    return "\n".join(lines).strip()
 
 
 def create_fundamentals_analyst(llm):
@@ -25,7 +44,10 @@ def create_fundamentals_analyst(llm):
 
         system_message = (
             "You are a fundamentals analyst. Use the available tools to retrieve financial statements and company data. "
-            "Write a report covering key financial metrics and fundamental health. Append a Markdown summary table at the end."
+            f"Begin the report with exactly this line: # As-of date: {current_date}. "
+            "Write a report covering key financial metrics and fundamental health. "
+            "For historical dates, do not include real-time snapshot fields such as 52 Week High or 52 Week Low. "
+            "Append a Markdown summary table at the end."
             + get_language_instruction()
         )
 
@@ -55,6 +77,7 @@ def create_fundamentals_analyst(llm):
 
         if len(result.tool_calls) == 0:
             report = result.content
+            report = _sanitize_fundamentals_report(report, current_date)
 
         return {
             "messages": [result],

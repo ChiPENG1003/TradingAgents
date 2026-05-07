@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import argparse
 import json
 import math
 import numbers
@@ -22,6 +21,7 @@ if __package__ in (None, ""):
 
 os.environ.setdefault("MPLCONFIGDIR", os.path.join(tempfile.gettempdir(), "matplotlib"))
 
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 
 
@@ -37,9 +37,11 @@ except ImportError:
     from back_test.engine import PROJECT_ROOT
     from back_test.metrics import summarize
 
-
+DATA_DIR = PROJECT_ROOT / "back_test" / "trade_route"
 RESULTS_DIR = PROJECT_ROOT / "back_test" / "results"
-BENCHMARKS = ["^IXIC", "^GSPC"]
+PLOTS_DIR = RESULTS_DIR / "plots"
+METRICS_DIR = RESULTS_DIR / "metrics"
+BENCHMARKS = ["^GSPC"] # "^IXIC"
 
 
 def _replace_nonfinite_numbers(value):
@@ -52,10 +54,6 @@ def _replace_nonfinite_numbers(value):
         if not math.isfinite(numeric):
             return 0.0
     return value
-
-
-def _benchmark_slug(benchmark: str) -> str:
-    return benchmark.replace("^", "").lower()
 
 
 def _load_benchmark_close(benchmark: str, start: str, end: str) -> pd.Series:
@@ -91,49 +89,110 @@ def _load_benchmark_close(benchmark: str, start: str, end: str) -> pd.Series:
     return fresh["Close"].rename(benchmark)
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Compare strategy equity curve to ^IXIC and ^GSPC in one plot."
+def _strategy_path_from_spec(ticker: str, start: str, end: str, spec: str) -> Path:
+    path = Path(spec).expanduser()
+    if path.exists():
+        return path
+    return DATA_DIR / f"{ticker}_{start}_{end}_{spec}.json"
+
+
+def _strategy_label_from_path(ticker: str, start: str, end: str, path: Path) -> str:
+    prefix = f"{ticker}_{start}_{end}_"
+    stem = path.stem
+    if stem.startswith(prefix):
+        return stem[len(prefix):]
+    return stem
+
+
+def _discover_strategy_specs(ticker: str, start: str, end: str) -> list[str]:
+    prefix = f"{ticker}_{start}_{end}_"
+    return sorted(
+        path.stem[len(prefix):]
+        for path in DATA_DIR.glob(f"{prefix}*.json")
     )
-    parser.add_argument("--ticker", required=True)
-    parser.add_argument("--start", required=True)
-    parser.add_argument("--end", required=True)
-    args = parser.parse_args()
 
-    results_path = RESULTS_DIR / f"{args.ticker}_{args.start}_{args.end}.json"
 
-    if not results_path.exists():
+def _load_strategy_equity(path: Path, label: str) -> tuple[pd.Series, list]:
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    strat_df = pd.DataFrame(data["equity_curve"])
+    if strat_df.empty:
+        raise ValueError(f"Strategy file has an empty equity_curve: {path}")
+
+    strat_df["date"] = pd.to_datetime(strat_df["date"])
+    strat_df = strat_df.set_index("date").sort_index()
+    return strat_df["equity"].rename(label), data.get("trades")
+
+
+def _prompt_for_inputs() -> tuple[str, str, str, list[str]]:
+    ticker = input("Ticker (e.g. SPY): ").strip().upper()
+    start = input("Start date (YYYY-MM-DD): ").strip()
+    end = input("End date (YYYY-MM-DD): ").strip()
+
+    discovered = _discover_strategy_specs(ticker, start, end)
+    if discovered:
+        print("Available strategy labels:", ", ".join(discovered))
+
+    raw_specs = input(
+        "Strategy labels or JSON paths, comma-separated "
+        "(blank = all available labels): "
+    ).strip()
+    specs = [item.strip() for item in raw_specs.split(",") if item.strip()]
+    if not specs:
+        specs = discovered
+
+    return ticker, start, end, specs
+
+
+def main(ticker: str, start: str, end: str, strategy_specs: list[str]) -> None:
+    if not strategy_specs:
         print(
-            f"ERROR: Results file not found: {results_path}\n"
-            f"Run `python -m back_test.run_backtest --ticker {args.ticker} "
-            f"--start {args.start} --end {args.end}` first.",
+            f"ERROR: No strategy files selected and none found in {DATA_DIR} "
+            f"for {ticker}_{start}_{end}_*.json",
             file=sys.stderr,
         )
         sys.exit(1)
 
-    with open(results_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
+    strategy_series = []
+    strategy_trades = {}
+    missing_paths = []
 
-    strat_df = pd.DataFrame(data["equity_curve"])
-    strat_df["date"] = pd.to_datetime(strat_df["date"])
-    strat_df = strat_df.set_index("date").sort_index()
-    strat_equity = strat_df["equity"].rename("strategy")
+    for spec in strategy_specs:
+        path = _strategy_path_from_spec(ticker, start, end, spec)
+        if not path.exists():
+            missing_paths.append(path)
+            continue
+        label = _strategy_label_from_path(ticker, start, end, path)
+        series, trades = _load_strategy_equity(path, label)
+        strategy_series.append(series)
+        strategy_trades[label] = trades
 
-    buy_hold_label = f"{args.ticker}_buy_hold"
+    if missing_paths:
+        print("ERROR: Strategy file(s) not found:", file=sys.stderr)
+        for path in missing_paths:
+            print(f"  {path}", file=sys.stderr)
+        sys.exit(1)
+
+    if not strategy_series:
+        print("ERROR: No strategy data loaded.", file=sys.stderr)
+        sys.exit(1)
+
+    buy_hold_label = f"{ticker}_buy_hold"
     ticker_buy_hold = _load_benchmark_close(
-        args.ticker,
-        args.start,
-        args.end,
+        ticker,
+        start,
+        end,
     ).rename(buy_hold_label)
 
     benchmark_series = [
-        _load_benchmark_close(benchmark, args.start, args.end)
+        _load_benchmark_close(benchmark, start, end)
         for benchmark in BENCHMARKS
     ]
     all_benchmarks = [buy_hold_label] + BENCHMARKS
 
     aligned = pd.concat(
-        [strat_equity, ticker_buy_hold] + benchmark_series,
+        strategy_series + [ticker_buy_hold] + benchmark_series,
         axis=1,
         join="inner",
     ).dropna()
@@ -145,9 +204,12 @@ def main() -> None:
         )
         sys.exit(1)
 
-    strat_aligned = aligned["strategy"]
-
-    strat_metrics = summarize(strat_aligned, data.get("trades"))
+    strategy_metrics = {}
+    for series in strategy_series:
+        strategy_metrics[series.name] = summarize(
+            aligned[series.name],
+            strategy_trades.get(series.name),
+        )
 
     benchmark_metrics = {}
     alpha = {}
@@ -155,37 +217,43 @@ def main() -> None:
     for benchmark in all_benchmarks:
         bench_aligned = aligned[benchmark]
         bench_metrics = summarize(bench_aligned)
-
         benchmark_metrics[benchmark] = bench_metrics
-        alpha[benchmark] = {
-            "alpha_total": (
-                strat_metrics["total_return"]
-                - bench_metrics["total_return"]
-            ),
-            "alpha_annualized": (
-                strat_metrics["annualized_return"]
-                - bench_metrics["annualized_return"]
-            ),
-        }
+
+    for strategy_label, strat_metrics in strategy_metrics.items():
+        alpha[strategy_label] = {}
+        for benchmark in all_benchmarks:
+            bench_metrics = benchmark_metrics[benchmark]
+            alpha[strategy_label][benchmark] = {
+                "alpha_total": (
+                    strat_metrics["total_return"]
+                    - bench_metrics["total_return"]
+                ),
+                "alpha_annualized": (
+                    strat_metrics["annualized_return"]
+                    - bench_metrics["annualized_return"]
+                ),
+            }
 
     comparison = {
-        "ticker": args.ticker,
+        "ticker": ticker,
+        "strategies": list(strategy_metrics.keys()),
         "benchmarks": all_benchmarks,
-        "start_date": args.start,
-        "end_date": args.end,
-        "strategy": strat_metrics,
+        "start_date": start,
+        "end_date": end,
+        "strategy_metrics": strategy_metrics,
         "benchmark_metrics": benchmark_metrics,
         "alpha": alpha,
     }
 
     comparison = _replace_nonfinite_numbers(comparison)
 
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    PLOTS_DIR.mkdir(parents=True, exist_ok=True)
+    METRICS_DIR.mkdir(parents=True, exist_ok=True)
 
     run_tag = datetime.now().strftime("%H%M%S")
 
-    start_dt = pd.to_datetime(args.start)
-    end_dt = pd.to_datetime(args.end)
+    start_dt = pd.to_datetime(start)
+    end_dt = pd.to_datetime(end)
 
     start_year = start_dt.year
     start_date_str = start_dt.strftime("%Y-%m-%d")
@@ -194,34 +262,36 @@ def main() -> None:
 
     if start_year == end_year:
         year = f"{start_year}"
+        label_part = "_".join(comparison["strategies"])
         base_stem = (
-            f"{args.ticker}_{year}_{start_date_str}_{end_date_str}_{run_tag}"
+            f"{ticker}_compare_{label_part}_{year}_{start_date_str}_{end_date_str}_{run_tag}"
         )
     elif start_year != end_year:
+        label_part = "_".join(comparison["strategies"])
         base_stem = (
-            f"{args.ticker}_{start_year}_{end_year}_{run_tag}"
+            f"{ticker}_compare_{label_part}_{start_year}_{end_year}_{run_tag}"
         )
 
-    metrics_path = RESULTS_DIR / f"{base_stem}_metrics.json"
+    metrics_path = METRICS_DIR / f"{base_stem}_metrics.json"
 
     with open(metrics_path, "w", encoding="utf-8") as f:
         json.dump(comparison, f, indent=2, allow_nan=False)
 
-    plot_path = RESULTS_DIR / f"{base_stem}.png"
+    plot_path = PLOTS_DIR / f"{base_stem}.png"
 
     plot_written = False
 
     if plt is not None:
-        fig, ax = plt.subplots(figsize=(12, 6))
+        fig, ax = plt.subplots(figsize=(20, 6))
 
         for column in aligned.columns:
             norm = aligned[column] / aligned[column].iloc[0] * 100.0
 
-            if column == "strategy":
-                label = f"{args.ticker} strategy"
-                linewidth = 1.5
+            if column in comparison["strategies"]:
+                label = f"{ticker} {column}"
+                linewidth = 1.0
             elif column == buy_hold_label:
-                label = f"{args.ticker} buy & hold"
+                label = f"{ticker} buy & hold"
                 linewidth = 0.6
             else:
                 label = column
@@ -236,11 +306,13 @@ def main() -> None:
             )
 
         ax.set_title(
-            f"strategy for {args.ticker} vs buy & hold, ^IXIC, and ^GSPC "
-            f"({args.start} → {args.end})"
+            f"strategies for {ticker} vs buy & hold, ^IXIC, and ^GSPC "
+            f"({start} → {end})"
         )
         ax.set_xlabel("Date")
         ax.set_ylabel("Normalized value (start = 100)")
+        ax.xaxis.set_major_locator(mdates.DayLocator(interval=3))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%m-%d"))
         ax.grid(True, alpha=0.3)
         ax.legend()
 
@@ -249,25 +321,34 @@ def main() -> None:
         plt.close(fig)
         plot_written = True
 
-    print(f"\n=== Strategy vs Benchmarks ({args.start} → {args.end}) ===")
-    print(
-        f"  Strategy total:      {comparison['strategy']['total_return']:>8.2%}   "
-        f"annualized {comparison['strategy']['annualized_return']:>7.2%}   "
-        f"sharpe {comparison['strategy']['sharpe_ratio']:.3f}"
-    )
+    print(f"\n=== Strategies vs Benchmarks ({start} → {end}) ===")
+    for strategy_label, metrics in comparison["strategy_metrics"].items():
+        print(
+            f"  {strategy_label:<19}total:{metrics['total_return']:>9.2%}   "
+            f"annualized {metrics['annualized_return']:>7.2%}   "
+            f"sharpe {metrics['sharpe_ratio']:.3f}"
+        )
 
     for benchmark in all_benchmarks:
         bench_metrics = comparison["benchmark_metrics"][benchmark]
-        alpha_metrics = comparison["alpha"][benchmark]
-        label = f"{args.ticker} buy & hold" if benchmark == buy_hold_label else benchmark
+        label = f"{ticker} buy & hold" if benchmark == buy_hold_label else benchmark
 
         print(
             f"  {label:<19}total:{bench_metrics['total_return']:>9.2%}   "
             f"annualized {bench_metrics['annualized_return']:>7.2%}   "
             f"sharpe {bench_metrics['sharpe_ratio']:.3f}"
         )
-        print(f"  Alpha vs {label:<19} total:      {alpha_metrics['alpha_total']:>8.2%}")
-        print(f"  Alpha vs {label:<19} annualized: {alpha_metrics['alpha_annualized']:>8.2%}")
+
+    print("\n=== Alpha ===")
+    for strategy_label, alpha_by_benchmark in comparison["alpha"].items():
+        for benchmark in all_benchmarks:
+            alpha_metrics = alpha_by_benchmark[benchmark]
+            label = f"{ticker} buy & hold" if benchmark == buy_hold_label else benchmark
+            print(
+                f"  {strategy_label} vs {label:<19}"
+                f"total: {alpha_metrics['alpha_total']:>8.2%}   "
+                f"annualized: {alpha_metrics['alpha_annualized']:>8.2%}"
+            )
 
     if plot_written:
         print(f"\nPlot:    {plot_path}")
@@ -278,4 +359,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    ticker, start, end, strategy_specs = _prompt_for_inputs()
+    main(ticker, start, end, strategy_specs)

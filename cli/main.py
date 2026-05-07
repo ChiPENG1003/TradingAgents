@@ -6,9 +6,6 @@ from pathlib import Path
 from functools import wraps
 from rich.console import Console
 from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
 from rich.panel import Panel
 from rich.spinner import Spinner
 from rich.live import Live
@@ -34,6 +31,7 @@ from cli.utils import *
 from cli.announcements import fetch_announcements, display_announcements
 from cli.stats_handler import StatsCallbackHandler
 
+load_dotenv()
 console = Console()
 
 app = typer.Typer(
@@ -718,6 +716,7 @@ def save_report_to_disk(final_state, ticker: str, save_path: Path):
     if final_state.get("fundamentals_report"):
         analysts_dir.mkdir(exist_ok=True)
         (analysts_dir / "fundamentals.md").write_text(final_state["fundamentals_report"])
+        (analysts_dir / "fundamentals_report.md").write_text(final_state["fundamentals_report"])
         analyst_parts.append(("Fundamentals Analyst", final_state["fundamentals_report"]))
     if analyst_parts:
         content = "\n\n".join(f"### {name}\n{text}" for name, text in analyst_parts)
@@ -1089,6 +1088,7 @@ def run_backtest_analysis(selections: dict) -> None:
         config=config,
         debug=False,
         callbacks=[stats_handler],
+        trading_mode="backtest",
     )
 
     dates = _review_trading_dates(
@@ -1125,6 +1125,13 @@ def run_backtest_analysis(selections: dict) -> None:
                 holdings_info=simulated_holdings,
                 trading_mode="backtest",
             )
+            report_dir = (
+                Path(config["results_dir"])
+                / selections["ticker"]
+                / date
+                / "reports"
+            )
+            save_report_to_disk(final_state, selections["ticker"], report_dir)
             json_path = (
                 Path(__file__).resolve().parents[1]
                 / "back_test"
@@ -1153,14 +1160,17 @@ def run_backtest_analysis(selections: dict) -> None:
                 if simulated_holdings.get("quantity", 0.0) > 0:
                     console.print(
                         "  [dim]simulated holdings for next strategy: "
-                        f"{simulated_holdings['quantity']:.4f} shares, "
+                        f"{int(simulated_holdings['quantity'])} shares, "
                         f"avg {simulated_holdings.get('avg_buy_price', 0.0):.2f}, "
-                        f"cash {simulated_holdings.get('cash', 0.0):.2f}[/dim]"
+                        f"cash {simulated_holdings.get('cash', 0.0):.2f}, "
+                        f"equity {simulated_holdings.get('equity', 0.0):.2f}[/dim]"
                     )
                 else:
                     console.print(
                         "  [dim]simulated holdings for next strategy: "
-                        f"cash {simulated_holdings.get('cash', 0.0):.2f}, no open position[/dim]"
+                        f"cash {simulated_holdings.get('cash', 0.0):.2f}, "
+                        f"equity {simulated_holdings.get('equity', 0.0):.2f}, "
+                        "no open position[/dim]"
                     )
         except Exception as e:
             step_elapsed = time.time() - step_start

@@ -8,6 +8,23 @@ from tradingagents.agents.utils.agent_utils import build_instrument_context, get
 from tradingagents.dataflows.stockstats_utils import load_ohlcv
 
 
+BROAD_INDEX_TICKERS = {
+    "SPY",
+    "VOO",
+    "IVV",
+    "QQQ",
+    "QQQM",
+    "DIA",
+    "IWM",
+    "VTI",
+    "VT",
+    "^GSPC",
+    "^IXIC",
+    "^DJI",
+    "^RUT",
+}
+
+
 class PriceSizeBlock(BaseModel):
     price: Optional[float] = Field(default=None, description="Plain numeric limit price, or null when unused.")
     size_pct: float = Field(default=0.0, ge=0.0, le=100.0)
@@ -97,6 +114,7 @@ def _compute_market_anchors(ticker: str, trade_date: str, lookback_days: int = 2
     high = df["High"].astype(float)
     low = df["Low"].astype(float)
     close = df["Close"].astype(float)
+    volume = pd.to_numeric(df.get("Volume"), errors="coerce") if "Volume" in df else None
 
     prev_close = close.shift(1)
     true_range = pd.concat(
@@ -126,6 +144,24 @@ def _compute_market_anchors(ticker: str, trade_date: str, lookback_days: int = 2
 
     resistance = _nearest_resistance(20) or _nearest_resistance(60)
     support = _nearest_support(20) or _nearest_support(60)
+    latest_volume = float(volume.iloc[-1]) if volume is not None and pd.notna(volume.iloc[-1]) else None
+    volume_50_sma = (
+        float(volume.tail(50).mean())
+        if volume is not None and len(volume.dropna()) >= 50
+        else None
+    )
+    volume_ratio = (
+        latest_volume / volume_50_sma
+        if latest_volume is not None and volume_50_sma not in (None, 0)
+        else None
+    )
+    volume_ratio_3d = None
+    if volume is not None and volume_50_sma not in (None, 0) and len(volume.dropna()) >= 50:
+        volume_50_series = volume.rolling(50).mean()
+        ratio_series = volume / volume_50_series
+        recent_ratios = ratio_series.tail(3).dropna()
+        if len(recent_ratios) == 3:
+            volume_ratio_3d = [round(float(v), 3) for v in recent_ratios.tolist()]
 
     return {
         "as_of_close_date": pd.to_datetime(last["Date"]).strftime("%Y-%m-%d"),
@@ -139,12 +175,20 @@ def _compute_market_anchors(ticker: str, trade_date: str, lookback_days: int = 2
         "recent_low_20d": round(float(low.tail(20).min()), 4),
         "nearest_resistance": round(resistance, 4) if resistance is not None else None,
         "nearest_support": round(support, 4) if support is not None else None,
+        "latest_volume": round(latest_volume, 4) if latest_volume is not None else None,
+        "volume_50_sma": round(volume_50_sma, 4) if volume_50_sma is not None else None,
+        "volume_ratio": round(volume_ratio, 3) if volume_ratio is not None else None,
+        "volume_ratio_3d": volume_ratio_3d,
     }
 
 
 def _format_market_anchors(anchors: dict) -> str:
     def _fmt(value):
-        return "n/a" if value is None else f"{value:g}"
+        if value is None:
+            return "n/a"
+        if isinstance(value, list):
+            return "[" + ", ".join(f"{item:g}" for item in value) + "]"
+        return f"{value:g}"
 
     return (
         "**Market anchors (precomputed from OHLCV through "
@@ -155,9 +199,214 @@ def _format_market_anchors(anchors: dict) -> str:
         f"- 20-day range: high {_fmt(anchors['recent_high_20d'])}, low {_fmt(anchors['recent_low_20d'])}\n"
         f"- nearest resistance above current: {_fmt(anchors['nearest_resistance'])}\n"
         f"- nearest support below current: {_fmt(anchors['nearest_support'])}\n"
+        f"- latest_volume / volume_50_sma / volume_ratio: {_fmt(anchors.get('latest_volume'))} / "
+        f"{_fmt(anchors.get('volume_50_sma'))} / {_fmt(anchors.get('volume_ratio'))}\n"
+        f"- last 3 volume ratios vs 50-day average: {_fmt(anchors.get('volume_ratio_3d'))}\n"
         "- proximity rule: a price P is \"within X%\" iff |P - current_price| / current_price <= X/100. "
         "Use this for all distance-to-current checks; do not estimate from the report.\n"
     )
+
+
+def _is_broad_index_instrument(ticker: str) -> bool:
+    normalized = ticker.upper()
+    return normalized in BROAD_INDEX_TICKERS or normalized.endswith((".INDEX", ".IDX"))
+
+
+def _classify_volume_regime(volume_ratio: Optional[float]) -> str:
+    if volume_ratio is None:
+        return "unavailable"
+    if volume_ratio >= 1.5:
+        return "expanding"
+    if volume_ratio < 0.7:
+        return "shrinking"
+    if volume_ratio >= 0.9:
+        return "normal"
+    return "soft"
+
+
+def _is_strong_uptrend(anchors: dict) -> bool:
+    current = anchors.get("current_price")
+    sma20 = anchors.get("sma20")
+    sma50 = anchors.get("sma50")
+    sma200 = anchors.get("sma200")
+    if current is None or sma50 is None or sma200 is None:
+        return False
+    return (
+        sma20 is not None and current > sma20 > sma50 > sma200
+    ) or current > sma50 > sma200
+
+
+def _is_new_high_with_weak_volume(anchors: dict) -> bool:
+    current = anchors.get("current_price")
+    recent_high = anchors.get("recent_high_20d")
+    ratios = anchors.get("volume_ratio_3d")
+    if current is None or recent_high is None or not ratios:
+        return False
+    return current >= recent_high and all(ratio < 0.8 for ratio in ratios)
+
+
+def _derive_rule_constraints(anchors: Optional[dict], holdings_info: dict, ticker: str) -> dict:
+    if not anchors:
+        return {
+            "available": False,
+            "allowed_actions": ["BUY", "HOLD", "SELL"],
+            "entry_mode": "llm_discretion",
+            "max_entry_size_pct": 35,
+            "max_add_position_size_pct": 35,
+            "volume_regime": "unavailable",
+            "notes": ["Market anchors unavailable; cap new/add exposure at 35%."],
+        }
+
+    has_position = float(holdings_info.get("quantity") or 0.0) > 0
+    volume_ratio = anchors.get("volume_ratio")
+    volume_regime = _classify_volume_regime(volume_ratio)
+    strong_uptrend = _is_strong_uptrend(anchors)
+    broad_index = _is_broad_index_instrument(ticker)
+    bearish_volume_divergence = _is_new_high_with_weak_volume(anchors)
+
+    allowed_actions = ["BUY", "HOLD", "SELL"]
+    entry_mode = "normal"
+    max_entry_size_pct = 70
+    max_add_position_size_pct = 50
+    notes = []
+
+    if volume_regime == "unavailable":
+        max_entry_size_pct = 35
+        max_add_position_size_pct = 35
+        notes.append("Volume ratio unavailable; cap entry and add-position size at 35%.")
+    elif volume_regime == "shrinking":
+        max_entry_size_pct = 35
+        max_add_position_size_pct = 25
+        entry_mode = "pullback_or_small_only"
+        notes.append("Shrinking volume limits new/add exposure.")
+    elif volume_regime == "soft":
+        max_entry_size_pct = 55
+        max_add_position_size_pct = 35
+        entry_mode = "pullback_or_reduced_size"
+        notes.append("Sub-normal volume confirmation caps entries at 55% and adds at 35%.")
+
+    if broad_index and strong_uptrend:
+        allowed_actions = ["BUY", "HOLD"] if not has_position else ["BUY", "HOLD", "SELL"]
+        if volume_regime in ("normal", "expanding"):
+            max_entry_size_pct = max(max_entry_size_pct, 80)
+        notes.append("Broad index uptrend forbids fresh bearish positioning; SELL needs existing position management.")
+
+    if bearish_volume_divergence:
+        max_entry_size_pct = 0
+        max_add_position_size_pct = 0
+        entry_mode = "no_new_or_add"
+        notes.append("New high on weak 3-day volume ratio blocks new entries and adds.")
+
+    return {
+        "available": True,
+        "allowed_actions": allowed_actions,
+        "entry_mode": entry_mode,
+        "max_entry_size_pct": max_entry_size_pct,
+        "max_add_position_size_pct": max_add_position_size_pct,
+        "volume_regime": volume_regime,
+        "strong_uptrend": strong_uptrend,
+        "broad_index": broad_index,
+        "bearish_volume_divergence": bearish_volume_divergence,
+        "notes": notes,
+    }
+
+
+def _format_rule_constraints(constraints: dict) -> str:
+    notes = constraints.get("notes") or []
+    notes_text = "\n".join(f"- {note}" for note in notes) if notes else "- none"
+    return (
+        "\n\n**Deterministic rule constraints (hard limits; obey these over debate wording):**\n"
+        f"- allowed_actions: {', '.join(constraints['allowed_actions'])}\n"
+        f"- entry_mode: {constraints['entry_mode']}\n"
+        f"- max_entry_size_pct: {constraints['max_entry_size_pct']:g}\n"
+        f"- max_add_position_size_pct: {constraints['max_add_position_size_pct']:g}\n"
+        f"- volume_regime: {constraints['volume_regime']}\n"
+        f"- strong_uptrend: {constraints.get('strong_uptrend', 'n/a')}\n"
+        f"- broad_index: {constraints.get('broad_index', 'n/a')}\n"
+        f"- bearish_volume_divergence: {constraints.get('bearish_volume_divergence', 'n/a')}\n"
+        f"- notes:\n{notes_text}\n"
+    )
+
+
+def _clamp_size(block: dict, max_size: float) -> None:
+    block["size_pct"] = min(float(block.get("size_pct") or 0.0), float(max_size))
+    if block["size_pct"] <= 0:
+        block["size_pct"] = 0.0
+        block["price"] = None
+
+
+def _distance_pct(price: Optional[float], current_price: Optional[float]) -> Optional[float]:
+    if price is None or current_price in (None, 0):
+        return None
+    return abs(float(price) - float(current_price)) / float(current_price) * 100.0
+
+
+def _append_rule_note(strategy: dict, note: str) -> None:
+    rationale = strategy.get("rationale_summary") or ""
+    if note not in rationale:
+        strategy["rationale_summary"] = (rationale + " Rule adjustment: " + note).strip()
+
+
+def _clear_entry_orders(strategy: dict) -> None:
+    strategy["entry"] = PriceSizeBlock().model_dump()
+    strategy["add_position"] = PriceSizeBlock().model_dump()
+
+
+def _enforce_strategy_rules(strategy: dict, anchors: Optional[dict], constraints: dict, holdings_info: dict) -> dict:
+    strategy = PortfolioStrategy.model_validate(strategy).model_dump()
+    has_position = float(holdings_info.get("quantity") or 0.0) > 0
+    current_price = anchors.get("current_price") if anchors else None
+
+    if strategy["action"] not in constraints["allowed_actions"]:
+        original_action = strategy["action"]
+        strategy["action"] = "HOLD" if original_action == "SELL" or has_position else "BUY"
+        if strategy["action"] not in constraints["allowed_actions"]:
+            strategy["action"] = constraints["allowed_actions"][0]
+        _append_rule_note(
+            strategy,
+            f"{original_action} was outside allowed_actions={constraints['allowed_actions']}; action set to {strategy['action']}.",
+        )
+        if original_action == "SELL":
+            _clear_entry_orders(strategy)
+
+    _clamp_size(strategy["entry"], constraints["max_entry_size_pct"])
+    _clamp_size(strategy["add_position"], constraints["max_add_position_size_pct"])
+
+    if constraints["entry_mode"] == "no_new_or_add":
+        _clear_entry_orders(strategy)
+        if not has_position and strategy["action"] == "BUY":
+            strategy["action"] = "HOLD"
+        _append_rule_note(strategy, "new entries and adds blocked by deterministic volume divergence rule.")
+
+    entry_distance = _distance_pct(strategy["entry"].get("price"), current_price)
+    if entry_distance is not None and entry_distance > 10:
+        strategy["entry"]["size_pct"] = 0.0
+        strategy["entry"]["price"] = None
+        _append_rule_note(strategy, "entry more than 10% from current price was removed.")
+
+    add_distance = _distance_pct(strategy["add_position"].get("price"), current_price)
+    if add_distance is not None and add_distance > 10:
+        strategy["add_position"]["size_pct"] = 0.0
+        strategy["add_position"]["price"] = None
+        _append_rule_note(strategy, "add-position level more than 10% from current price was removed.")
+
+    if strategy["action"] == "BUY" and strategy["entry"]["size_pct"] <= 0 and strategy["add_position"]["size_pct"] <= 0:
+        strategy["action"] = "HOLD"
+        _append_rule_note(strategy, "BUY without an executable entry/add was converted to HOLD.")
+
+    if strategy["action"] in ("BUY", "HOLD") and (
+        strategy["entry"]["size_pct"] > 0 or strategy["add_position"]["size_pct"] > 0
+    ):
+        if strategy["stop_loss"]["price"] is None and anchors:
+            reference = strategy["entry"]["price"] or current_price
+            stop = min(
+                anchors.get("nearest_support") or reference,
+                float(reference) - 1.5 * float(anchors["atr14"]),
+            )
+            strategy["stop_loss"]["price"] = round(max(stop, 0.01), 4)
+            _append_rule_note(strategy, "missing stop_loss was filled from support/ATR anchor.")
+
+    return PortfolioStrategy.model_validate(strategy).model_dump()
 
 
 def _strategy_response_to_dict(response) -> dict:
@@ -289,7 +538,13 @@ Be decisive and ground every parameter in specific evidence from the debate.{get
         if trading_mode == "backtest":
             anchors = _compute_market_anchors(state["company_of_interest"], state["trade_date"])
             anchors_block = ("\n\n" + _format_market_anchors(anchors)) if anchors else ""
-            structured_prompt = core_prompt + anchors_block + f"""
+            constraints = _derive_rule_constraints(
+                anchors,
+                holdings_info,
+                state["company_of_interest"],
+            )
+            constraints_block = _format_rule_constraints(constraints)
+            structured_prompt = core_prompt + anchors_block + constraints_block + f"""
 
 Backtest structured-output rules:
 - Emit the structured strategy object only through the configured schema.
@@ -346,6 +601,7 @@ Aggressiveness rules (lean aggressive; HOLD is reserved for genuinely balanced s
                 )
                 response = structured_llm.invoke(structured_prompt)
             strategy = _strategy_response_to_dict(response)
+            strategy = _enforce_strategy_rules(strategy, anchors, constraints, holdings_info)
             decision_text = (
                 f"Decision: {strategy['action']}\n"
                 f"Rationale: {strategy.get('rationale_summary', '')}\n"

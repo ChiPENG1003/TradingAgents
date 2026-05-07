@@ -1,0 +1,276 @@
+You are working in an existing Python trading-agent codebase.
+
+Goal:
+Refactor the portfolio manager so that the LLM no longer directly outputs executable trade orders. Instead, the LLM should output a structured market-state interpretation, and deterministic Python policy code should convert that market state into the existing PortfolioStrategy order schema.
+
+Current problem:
+The existing portfolio manager asks the LLM to output PortfolioStrategy directly, including entry price, add-position price, take-profit price, reduce-stop price, stop-loss price, and position size. This is wrong because the LLM should not control precise timing, pricing, sizing, or order construction. The LLM should only classify the market state and explain the qualitative thesis. Python should handle trading policy, risk limits, sizing, and order generation.
+
+Existing assets to preserve and reuse (do NOT reinvent):
+- _compute_market_anchors — produces current_price, atr14, SMAs, support/resistance, volume_ratio, volume_ratio_3d.
+- _classify_volume_regime — buckets volume_ratio into expanding / normal / soft / shrinking / unavailable.
+- _is_strong_uptrend — SMA-hierarchy uptrend check.
+- _is_new_high_with_weak_volume — bearish volume divergence detector.
+- _derive_rule_constraints — produces allowed_actions, entry_mode, max_entry_size_pct, max_add_position_size_pct, broad-index handling, divergence flags.
+- _enforce_strategy_rules — final post-policy gate that clamps sizes, removes far-from-current entries, fills missing stops, and converts BUY-without-executable-entry to HOLD.
+- BROAD_INDEX_TICKERS set.
+
+These represent real risk-control signals iterated on top of past failures. The refactor MUST keep them in the loop. The mistake to avoid is having the LLM re-classify things that anchors already measure (volume regime, SMA hierarchy, divergence).
+
+Please implement the following refactor carefully.
+
+Step 1 — Add a new Pydantic schema named MarketState.
+
+Place it in the same module as PortfolioStrategy.
+
+Important schema rule: MarketState contains ONLY fields that require qualitative judgment. Fields that are pure arithmetic on OHLCV (volume regime, SMA hierarchy, divergence flags) MUST NOT be in this schema; they are computed from anchors and passed into the policy directly.
+
+Use this schema:
+
+from typing import Literal
+
+class MarketState(BaseModel):
+    schema_version: Literal["state_v1"] = "state_v1"
+    ticker: str
+    as_of_date: str  # MUST equal anchors["as_of_close_date"], not state["trade_date"], to keep order timing aligned with the OHLCV bar the policy is reasoning over.
+
+    regime: Literal[
+        "strong_uptrend",
+        "weak_uptrend",
+        "range",
+        "breakdown_risk",
+        "downtrend",
+        "event_driven",
+        "unclear",
+    ]
+
+    trend_score: float = Field(ge=-1.0, le=1.0)
+    risk_score: float = Field(ge=0.0, le=1.0)
+    momentum_score: float = Field(ge=-1.0, le=1.0)
+    event_score: float = Field(ge=-1.0, le=1.0)
+    confidence: float = Field(ge=0.0, le=1.0)
+
+    horizon_days: int = Field(ge=1, le=60)
+
+    thesis: str
+    invalidation_condition: str
+    key_risks: list[str]
+
+Note that volume_confirmation is intentionally NOT in this schema. Volume confirmation is computed deterministically from anchors via _classify_volume_regime and passed into the policy as a separate argument. Asking the LLM to bucket volume_ratio would re-introduce the exact arithmetic problem this refactor is trying to remove.
+
+Step 2 — Add a robust extractor for MarketState.
+
+There is already a helper pattern (_strategy_response_to_dict, _find_portfolio_strategy). Add equivalents:
+- _market_state_response_to_model(response) -> MarketState
+- _find_market_state(value, seen: Optional[set[int]] = None) -> Optional[MarketState]
+
+Mirror _find_portfolio_strategy exactly:
+- accept an existing MarketState
+- try MarketState.model_validate on dicts
+- recursively search dict values
+- search attributes parsed, content, output
+- search lists and tuples
+- search additional_kwargs
+
+Step 3 — Add deterministic policy function.
+
+Signature (note the explicit volume_regime input — it comes from anchors, not the LLM):
+
+def policy_from_market_state(
+    state: MarketState,
+    anchors: dict,
+    holdings_info: dict,
+    constraints: dict,   # output of _derive_rule_constraints
+    volume_regime: str,  # output of _classify_volume_regime(anchors["volume_ratio"])
+) -> PortfolioStrategy:
+
+Implementation rules:
+
+A. Cross-check LLM regime against anchors. If state.regime in {"strong_uptrend", "weak_uptrend"} but _is_strong_uptrend(anchors) is False, downgrade the effective regime used by the policy to "range" and append a note to rationale_summary. Do this BEFORE computing target_weight. The LLM may not override SMA structure.
+
+B. Hard-overrides driven by regime, not by raw_signal. These take priority over the linear formula:
+   - If state.regime == "downtrend" and has_position: action = SELL, return early with empty blocks.
+   - If state.regime == "breakdown_risk" and has_position: action = SELL with stop_loss only (no new entry blocks).
+   - If state.regime in {"breakdown_risk", "downtrend"} and not has_position: action = HOLD, return empty.
+
+C. For all remaining regimes, compute a raw signal (treat the weights as v1, calibrate later):
+
+   raw_signal = (
+       0.50 * state.trend_score
+       + 0.25 * state.momentum_score
+       + 0.15 * state.event_score
+       - 0.40 * state.risk_score
+   )
+   target_weight = max(0.0, raw_signal) * state.confidence
+
+   Then apply regime ceilings/floors:
+     - strong_uptrend: target_weight = max(target_weight, 0.60), capped at 0.90
+     - weak_uptrend:   target_weight = max(target_weight, 0.35), capped at 0.70
+     - range / unclear: target_weight = min(target_weight, 0.35)
+     - event_driven:    target_weight = min(target_weight, 0.50)
+
+D. Apply volume_regime as a multiplier (deterministic, from anchors):
+     - expanding → x1.0
+     - normal    → x1.0
+     - soft      → x0.7
+     - shrinking → x0.5
+     - unavailable → x0.5 and clamp at 0.35
+   Also: if constraints.get("bearish_volume_divergence"): set target_weight = 0 for new entries; emit a reduce_stop for 25-30% if has_position.
+
+E. Convert target_weight to action:
+   - target_weight <= 0.05 and has_position → HOLD (do not flip to SELL on weak signal alone; SELL is regime-driven in step B)
+   - target_weight <= 0.05 and not has_position → HOLD
+   - target_weight > 0.05 → BUY
+
+F. Build orders for BUY:
+   - Entry price:
+       * strong_uptrend AND volume_regime in {"normal", "expanding"} AND not has_position → entry_price = None (next-open fill)
+       * else → entry_price = round(max(current - 0.5*atr, support or current*0.98), 2)
+   - entry_size: round(target_weight * 100.0, 1) if not has_position else 0.0
+   - add_size: round(min(30.0, target_weight * 50.0), 1) if has_position else 0.0
+   - Stop loss (always present for BUY):
+       stop_base = support if support is not None else current - 2.0*atr
+       stop_price = round(min(stop_base, current - 1.5*atr), 2)
+   - Take-profit:
+       * strong_uptrend → take_profit_price = round(current + 3.0*atr, 2), size = 25.0
+       * else → take_profit_price = round(resistance if resistance is not None else current + 2.0*atr, 2), size = 40.0
+   - reduce_stop: empty by default, EXCEPT when bearish_volume_divergence and has_position → set price between stop_price and current, size_pct = 25-30.
+
+G. rationale_summary must include: thesis, regime (and downgraded-regime note if applicable), all four scores, confidence, invalidation_condition, key_risks, and the volume_regime used.
+
+Important:
+- Keep this policy deterministic. No LLM calls inside.
+- Do not over-engineer; this is v1.
+- Return PortfolioStrategy so existing validation (PriceSizeBlock, StopLossBlock, validators) stays active.
+- Do NOT inline-reimplement anchors / volume / SMA logic; call the existing helpers.
+
+Step 4 — Replace the backtest LLM call.
+
+Currently, in trading_mode == "backtest", the code builds structured_prompt and calls llm.with_structured_output(PortfolioStrategy) followed by _enforce_strategy_rules.
+
+Replace the LLM portion with:
+
+1. anchors = _compute_market_anchors(...)
+2. constraints = _derive_rule_constraints(anchors, holdings_info, ticker)
+3. volume_regime = _classify_volume_regime(anchors.get("volume_ratio")) if anchors else "unavailable"
+4. Build state_prompt (see step 4a below). Inject anchors_block + constraints_block as CONTEXT for thesis quality, but make clear the LLM does not output prices.
+5. structured_llm = llm.with_structured_output(MarketState)
+6. response = structured_llm.invoke(state_prompt) (keep the existing pydantic-warning suppression)
+7. market_state = _market_state_response_to_model(response)
+8. strategy = policy_from_market_state(market_state, anchors, holdings_info, constraints, volume_regime).model_dump()
+9. strategy = _enforce_strategy_rules(strategy, anchors, constraints, holdings_info)  ← keep this as the final gate. It is cheap and provides a safety net for future changes.
+
+Step 4a — state_prompt content.
+
+The state_prompt should say:
+
+You are the Portfolio Manager. In backtest mode your job is NOT to create executable orders. You only classify the market state.
+
+You are NOT allowed to output:
+- entry/add/take-profit/reduce-stop/stop-loss prices
+- position sizes
+- BUY/SELL/HOLD trade orders
+- target prices or allocation percentages
+
+Your only job: classify the market state and compress the analyst debate into stable, testable state variables.
+
+Return only a MarketState object through the configured schema.
+
+Definitions:
+- regime: current market condition. Choose strong_uptrend / weak_uptrend only when SMA hierarchy and momentum agree; otherwise prefer range or unclear.
+- trend_score [-1, 1]: directional trend strength.
+- risk_score [0, 1]: downside, event, macro, technical, and liquidity risk combined.
+- momentum_score [-1, 1]: recent price/volume momentum.
+- event_score [-1, 1]: whether news, sentiment, and fundamentals support or hurt the long thesis.
+- confidence [0, 1]: reliability of the state classification, NOT how much to buy.
+- horizon_days: expected validity period of this state.
+- invalidation_condition: qualitative ("loses SMA50 on closing basis"), not a precise stop price.
+- key_risks: short bullet phrases.
+
+Use ticker exactly: {state["company_of_interest"]}.
+Use as_of_date exactly: {anchors["as_of_close_date"]}.   <-- IMPORTANT: align with anchors, not trade_date.
+
+Anchors and rule constraints below are CONTEXT for forming your thesis. DO NOT echo numbers as orders.
+
+{anchors_block}
+{constraints_block}
+
+Do not output trading orders, prices, sizes, or markdown. Do not output text outside the schema.
+
+Step 5 — Keep live mode unchanged in this PR.
+
+For trading_mode != "backtest", keep the existing live_prompt behavior. Note in the PR description that live and backtest now use different paths and a follow-up will unify them.
+
+Step 6 — Update returned fields.
+
+In the backtest branch, after deriving the strategy:
+
+decision_text = (
+    f"Decision: {strategy['action']}\n"
+    f"MarketState: regime={market_state.regime}, "
+    f"trend={market_state.trend_score:.2f}, "
+    f"momentum={market_state.momentum_score:.2f}, "
+    f"risk={market_state.risk_score:.2f}, "
+    f"event={market_state.event_score:.2f}, "
+    f"confidence={market_state.confidence:.2f}, "
+    f"volume_regime={volume_regime}\n"
+    f"Rationale: {strategy.get('rationale_summary', '')}\n"
+    f"Structured strategy schema_version={strategy['schema_version']}"
+)
+
+return {
+    "risk_debate_state": new_risk_debate_state,
+    "final_trade_decision": decision_text,
+    "market_state": market_state.model_dump() if market_state else None,
+    "structured_strategy": strategy,
+}
+
+In live mode, market_state is None.
+
+Step 7 — Remove old order-construction prompt rules from backtest only.
+
+The aggressiveness rules currently embedded in structured_prompt (entry.size_pct bands, breakout volume gates, ATR stop distances, broad-ETF sizing rules, next-open entry rules, reduce_stop usage rules) move out of the prompt:
+- Anything that is pure arithmetic on anchors → already lives in _derive_rule_constraints / _enforce_strategy_rules; keep there.
+- Anything that is sizing/pricing logic → moves into policy_from_market_state.
+- Nothing of this kind should remain in the backtest LLM prompt.
+
+Live prompt is untouched.
+
+Step 8 — Maintain existing schema validation and rule enforcement.
+
+- Keep PortfolioStrategy, PriceSizeBlock, StopLossBlock, and their validators.
+- Keep _enforce_strategy_rules in the backtest pipeline as the final gate after policy_from_market_state. Even though policy output is deterministic, this gate guards against future code drift and is cheap.
+- Keep _derive_rule_constraints and feed its output into the policy.
+
+Step 9 — Tests.
+
+Add tests covering:
+1. MarketState validates from a dict.
+2. policy_from_market_state with regime=strong_uptrend, volume_regime in {normal, expanding}, no position → BUY with entry.price=None.
+3. Low target_weight, no position → HOLD.
+4. Low target_weight, has position → HOLD (NOT SELL — SELL is regime-driven).
+5. regime=downtrend + has_position → SELL with empty entry/add/take_profit/reduce_stop blocks.
+6. regime=breakdown_risk + has_position → SELL.
+7. bearish_volume_divergence=True + has_position → reduce_stop.size_pct in [25, 30], no new entry.
+8. LLM claims regime=strong_uptrend but _is_strong_uptrend(anchors)=False → policy downgrades to range; rationale_summary mentions the downgrade.
+9. For BUY, stop_loss.price is not None.
+10. as_of_date in returned PortfolioStrategy equals anchors["as_of_close_date"].
+11. Returned PortfolioStrategy passes Pydantic validation (validators run).
+12. Broad-index ticker (e.g. SPY) in weak_uptrend with normal volume is not over-clamped below the broad-index floor set by _derive_rule_constraints.
+
+Step 10 — Scope discipline.
+
+Do not refactor unrelated files.
+Do not change the backtest engine.
+Do not change data loading.
+Do not change memory behavior.
+Do not change report generation.
+Do not introduce new dependencies.
+Do not modify live mode prompt in this PR.
+
+After implementation, show:
+1. The exact files changed.
+2. The new MarketState schema (and confirmation that volume_confirmation is NOT in it).
+3. The new policy_from_market_state function (and confirmation it consumes constraints + volume_regime as inputs, and calls _enforce_strategy_rules at the end via the caller).
+4. The modified backtest branch.
+5. The tests added.

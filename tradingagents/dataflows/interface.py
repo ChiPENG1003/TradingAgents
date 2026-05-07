@@ -2,6 +2,7 @@ from typing import Annotated
 
 # Import from vendor-specific modules
 from .y_finance import (
+    _is_historical_curr_date,
     get_YFin_data_online,
     get_stock_stats_indicators_window,
     get_fundamentals as get_yfinance_fundamentals,
@@ -137,6 +138,15 @@ def route_to_vendor(method: str, *args, **kwargs):
     vendor_config = get_vendor(category, method)
     primary_vendors = [v.strip() for v in vendor_config.split(',')]
 
+    if method == "get_news" and len(args) >= 3 and _is_historical_curr_date(args[2]):
+        primary_vendors = ["alpha_vantage"] + [
+            vendor for vendor in primary_vendors if vendor != "alpha_vantage"
+        ]
+    elif method == "get_global_news" and args and _is_historical_curr_date(args[0]):
+        primary_vendors = ["alpha_vantage"] + [
+            vendor for vendor in primary_vendors if vendor != "alpha_vantage"
+        ]
+
     if method not in VENDOR_METHODS:
         raise ValueError(f"Method '{method}' not supported")
 
@@ -158,5 +168,9 @@ def route_to_vendor(method: str, *args, **kwargs):
             return impl_func(*args, **kwargs)
         except AlphaVantageRateLimitError:
             continue  # Only rate limits trigger fallback
+        except ValueError as e:
+            if vendor == "alpha_vantage" and "ALPHA_VANTAGE_API_KEY" in str(e):
+                continue
+            raise
 
     raise RuntimeError(f"No available vendor for '{method}'")

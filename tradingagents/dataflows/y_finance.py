@@ -6,6 +6,27 @@ import yfinance as yf
 import os
 from .stockstats_utils import StockstatsUtils, _clean_dataframe, yf_retry, load_ohlcv, filter_financials_by_date
 
+
+def _is_historical_curr_date(curr_date: str | None) -> bool:
+    """Return True iff curr_date is meaningfully in the past (i.e. backtest mode).
+
+    yfinance / Alpha Vantage `info` and `OVERVIEW` payloads are real-time
+    snapshots: 52-week high/low, market cap, TTM ratios, 50/200d MAs, etc.
+    are computed against TODAY. When curr_date is in the past, returning
+    those fields would leak future information into a historical decision.
+
+    A 2-day buffer covers "today's data freshly available" cases without
+    misclassifying genuine backtests.
+    """
+    if not curr_date:
+        return False
+    try:
+        target = pd.to_datetime(curr_date).normalize()
+        today = pd.Timestamp.today().normalize()
+        return (today - target).days > 2
+    except Exception:
+        return False
+
 def get_YFin_data_online(
     symbol: Annotated[str, "ticker symbol of the company"],
     start_date: Annotated[str, "Start date in yyyy-mm-dd format"],
@@ -40,10 +61,10 @@ def get_YFin_data_online(
     # Convert DataFrame to CSV string
     csv_string = data.to_csv()
 
-    # Add header information
+    # Header timestamps the data window only; do NOT print datetime.now() since
+    # the LLM would learn the real wall-clock date during a backtest.
     header = f"# Stock data for {symbol.upper()} from {start_date} to {end_date}\n"
-    header += f"# Total records: {len(data)}\n"
-    header += f"# Data retrieved on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+    header += f"# Total records: {len(data)}\n\n"
 
     return header + csv_string
 
@@ -257,9 +278,17 @@ def get_stockstats_indicator(
 
 def get_fundamentals(
     ticker: Annotated[str, "ticker symbol of the company"],
-    curr_date: Annotated[str, "current date (not used for yfinance)"] = None
+    curr_date: Annotated[str, "current date you are trading at, yyyy-mm-dd"] = None
 ):
-    """Get company fundamentals overview from yfinance."""
+    """Get company fundamentals overview from yfinance.
+
+    yfinance `info` is a real-time snapshot — every numeric field (52W
+    high/low, market cap, TTM ratios, MAs) is measured against TODAY, so
+    returning the full payload during a historical backtest leaks future
+    information. When curr_date is in the past, only structural fields
+    (name/sector/industry/business summary) are returned, with an explicit
+    notice to the LLM that historical fundamentals are unavailable.
+    """
     try:
         ticker_obj = yf.Ticker(ticker.upper())
         info = yf_retry(lambda: ticker_obj.info)
@@ -267,10 +296,17 @@ def get_fundamentals(
         if not info:
             return f"No fundamentals data found for symbol '{ticker}'"
 
-        fields = [
+        is_historical = _is_historical_curr_date(curr_date)
+
+        # Time-invariant identification fields. Safe at any date.
+        structural_fields = [
             ("Name", info.get("longName")),
             ("Sector", info.get("sector")),
             ("Industry", info.get("industry")),
+        ]
+
+        # Time-variant fields. Returning these during a backtest is a leak.
+        time_variant_fields = [
             ("Market Cap", info.get("marketCap")),
             ("PE Ratio (TTM)", info.get("trailingPE")),
             ("Forward PE", info.get("forwardPE")),
@@ -298,13 +334,23 @@ def get_fundamentals(
             ("Free Cash Flow", info.get("freeCashflow")),
         ]
 
+        fields = structural_fields if is_historical else structural_fields + time_variant_fields
+
         lines = []
         for label, value in fields:
             if value is not None:
                 lines.append(f"{label}: {value}")
 
         header = f"# Company Fundamentals for {ticker.upper()}\n"
-        header += f"# Data retrieved on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+        header += f"# As-of date: {curr_date or 'live'}\n"
+        if is_historical:
+            header += (
+                "# NOTE: Real-time fundamentals (52W high/low, market cap, TTM ratios, "
+                "MAs, etc.) are NOT available for historical dates and have been omitted "
+                "to prevent look-ahead bias. Use balance_sheet/cashflow/income_statement "
+                "for filed historical figures.\n"
+            )
+        header += "\n"
 
         return header + "\n".join(lines)
 
@@ -334,12 +380,13 @@ def get_balance_sheet(
         # Convert to CSV string for consistency with other functions
         csv_string = data.to_csv()
         
-        # Add header information
+        # Header uses curr_date (the simulated trading date), not datetime.now(),
+        # to avoid leaking the real wall-clock date to the LLM during backtest.
         header = f"# Balance Sheet data for {ticker.upper()} ({freq})\n"
-        header += f"# Data retrieved on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
-        
+        header += f"# As-of date: {curr_date or 'live'}\n\n"
+
         return header + csv_string
-        
+
     except Exception as e:
         return f"Error retrieving balance sheet for {ticker}: {str(e)}"
 
@@ -366,12 +413,11 @@ def get_cashflow(
         # Convert to CSV string for consistency with other functions
         csv_string = data.to_csv()
         
-        # Add header information
         header = f"# Cash Flow data for {ticker.upper()} ({freq})\n"
-        header += f"# Data retrieved on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
-        
+        header += f"# As-of date: {curr_date or 'live'}\n\n"
+
         return header + csv_string
-        
+
     except Exception as e:
         return f"Error retrieving cash flow for {ticker}: {str(e)}"
 
@@ -398,34 +444,52 @@ def get_income_statement(
         # Convert to CSV string for consistency with other functions
         csv_string = data.to_csv()
         
-        # Add header information
         header = f"# Income Statement data for {ticker.upper()} ({freq})\n"
-        header += f"# Data retrieved on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
-        
+        header += f"# As-of date: {curr_date or 'live'}\n\n"
+
         return header + csv_string
-        
+
     except Exception as e:
         return f"Error retrieving income statement for {ticker}: {str(e)}"
 
 
 def get_insider_transactions(
-    ticker: Annotated[str, "ticker symbol of the company"]
+    ticker: Annotated[str, "ticker symbol of the company"],
+    curr_date: Annotated[str, "current date you are trading at, yyyy-mm-dd"] = None,
 ):
-    """Get insider transactions data from yfinance."""
+    """Get insider transactions data from yfinance, filtered by curr_date.
+
+    yfinance returns ALL historical insider transactions; without filtering
+    this leaks future transactions into a backtest. We drop any row whose
+    transaction date is strictly after curr_date.
+    """
     try:
         ticker_obj = yf.Ticker(ticker.upper())
         data = yf_retry(lambda: ticker_obj.insider_transactions)
-        
+
         if data is None or data.empty:
             return f"No insider transactions data found for symbol '{ticker}'"
-            
-        # Convert to CSV string for consistency with other functions
+
+        # Filter rows to those whose transaction date is on or before curr_date.
+        # yfinance uses "Start Date" as the transaction-effective date.
+        if curr_date:
+            cutoff = pd.to_datetime(curr_date).normalize()
+            date_col = next(
+                (c for c in ("Start Date", "Date", "start_date", "date") if c in data.columns),
+                None,
+            )
+            if date_col is not None:
+                dates = pd.to_datetime(data[date_col], errors="coerce")
+                data = data[dates.notna() & (dates <= cutoff)]
+
+        if data.empty:
+            return f"No insider transactions for {ticker} on or before {curr_date}"
+
         csv_string = data.to_csv()
-        
-        # Add header information
+
         header = f"# Insider Transactions data for {ticker.upper()}\n"
-        header += f"# Data retrieved on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
-        
+        header += f"# As-of date: {curr_date or 'live'}\n\n"
+
         return header + csv_string
         
     except Exception as e:

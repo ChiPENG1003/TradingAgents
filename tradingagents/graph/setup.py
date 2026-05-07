@@ -24,8 +24,15 @@ class GraphSetup:
         invest_judge_memory,
         portfolio_manager_memory,
         conditional_logic: ConditionalLogic,
+        trading_mode: str = "live",
     ):
-        """Initialize with required components."""
+        """Initialize with required components.
+
+        trading_mode selects which Portfolio Manager implementation is wired
+        in: "backtest" uses the state-first agent (LLM emits MarketState,
+        Python policy builds orders); anything else uses the legacy live
+        portfolio manager.
+        """
         self.quick_thinking_llm = quick_thinking_llm
         self.deep_thinking_llm = deep_thinking_llm
         self.tool_nodes = tool_nodes
@@ -35,6 +42,7 @@ class GraphSetup:
         self.invest_judge_memory = invest_judge_memory
         self.portfolio_manager_memory = portfolio_manager_memory
         self.conditional_logic = conditional_logic
+        self.trading_mode = trading_mode
 
     def setup_graph(
         self, selected_analysts=["market", "social", "news", "fundamentals"]
@@ -100,9 +108,14 @@ class GraphSetup:
         aggressive_analyst = create_aggressive_debator(self.quick_thinking_llm)
         neutral_analyst = create_neutral_debator(self.quick_thinking_llm)
         conservative_analyst = create_conservative_debator(self.quick_thinking_llm)
-        portfolio_manager_node = create_portfolio_manager(
-            self.deep_thinking_llm, self.portfolio_manager_memory
-        )
+        if self.trading_mode == "backtest":
+            portfolio_manager_node = create_portfolio_state_manager(
+                self.deep_thinking_llm, self.portfolio_manager_memory
+            )
+        else:
+            portfolio_manager_node = create_portfolio_manager(
+                self.deep_thinking_llm, self.portfolio_manager_memory
+            )
 
         # Create workflow
         workflow = StateGraph(AgentState)

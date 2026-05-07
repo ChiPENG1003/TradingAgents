@@ -13,6 +13,7 @@ develop-eggs/
 dist/
 downloads/
 eggs/
+back_test/trade_route/
 .eggs/
 lib/
 lib64/
