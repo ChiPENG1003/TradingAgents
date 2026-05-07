@@ -182,10 +182,25 @@ def main() -> None:
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    run_tag = datetime.now().strftime("%Y%m%d-%H%M%S")
-    base_stem = (
-        f"{args.ticker}_vs_index_{args.start}_{args.end}_{run_tag}"
-    )
+    run_tag = datetime.now().strftime("%H%M%S")
+
+    start_dt = pd.to_datetime(args.start)
+    end_dt = pd.to_datetime(args.end)
+
+    start_year = start_dt.year
+    start_date_str = start_dt.strftime("%Y-%m-%d")
+    end_year = end_dt.year
+    end_date_str = end_dt.strftime("%Y-%m-%d")
+
+    if start_year == end_year:
+        year = f"{start_year}"
+        base_stem = (
+            f"{args.ticker}_{year}_{start_date_str}_{end_date_str}_{run_tag}"
+        )
+    elif start_year != end_year:
+        base_stem = (
+            f"{args.ticker}_{start_year}_{end_year}_{run_tag}"
+        )
 
     metrics_path = RESULTS_DIR / f"{base_stem}_metrics.json"
 
@@ -221,7 +236,7 @@ def main() -> None:
             )
 
         ax.set_title(
-            f"{args.ticker} strategy vs buy & hold, ^IXIC, and ^GSPC "
+            f"strategy for {args.ticker} vs buy & hold, ^IXIC, and ^GSPC "
             f"({args.start} → {args.end})"
         )
         ax.set_xlabel("Date")

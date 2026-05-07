@@ -40,7 +40,9 @@ def get_indicator(
         "boll_ub": ("Bollinger Upper Band", "close"),
         "boll_lb": ("Bollinger Lower Band", "close"),
         "atr": ("ATR", None),
-        "vwma": ("VWMA", "close")
+        "vwma": ("VWMA", "close"),
+        "volume": ("VOL", None),
+        "volume_50_sma": ("MAVOL_50", None),
     }
 
     indicator_descriptions = {
@@ -56,7 +58,9 @@ def get_indicator(
         "boll_lb": "Bollinger Lower Band: Typically 2 standard deviations below the middle line. Usage: Indicates potential oversold conditions. Tips: Use additional analysis to avoid false reversal signals.",
         "atr": "ATR: Averages true range to measure volatility. Usage: Set stop-loss levels and adjust position sizes based on current market volatility. Tips: It's a reactive measure, so use it as part of a broader risk management strategy.",
         "vwma": "VWMA: A moving average weighted by volume. Usage: Confirm trends by integrating price action with volume data. Tips: Watch for skewed results from volume spikes; use in combination with other volume analyses.",
-        "kdj": "KDJ: A momentum oscillator derived from stochastic values (K, D, and J) to identify overbought/oversold conditions and potential turning points. Tips: In strong trends, KDJ may stay extreme and produce false reversals; confirm with trend and volume indicators."
+        "kdj": "KDJ: A momentum oscillator derived from stochastic values (K, D, and J) to identify overbought/oversold conditions and potential turning points. Tips: In strong trends, KDJ may stay extreme and produce false reversals; confirm with trend and volume indicators.",
+        "volume": "VOL: Raw daily traded volume. Usage: Gauge participation behind a price move; large up-days on expanding volume confirm trend. Tips: Compare to a moving-average baseline (volume_50_sma) — single readings are noisy without context.",
+        "volume_50_sma": "MAVOL (50): 50-day SMA of volume. Usage: Baseline for 'normal' participation; today's volume / MAVOL >1.5x with a price hold above key support is the classical 放量站稳 signal. Tips: Pair with price-structure indicators so volume context confirms — not replaces — the price signal."
     }
 
     if indicator not in supported_indicators:
@@ -148,6 +152,17 @@ def get_indicator(
             # Alpha Vantage doesn't have direct VWMA, so we'll return an informative message
             # In a real implementation, this would need to be calculated from OHLCV data
             return f"## VWMA (Volume Weighted Moving Average) for {symbol}:\n\nVWMA calculation requires OHLCV data and is not directly available from Alpha Vantage API.\nThis indicator would need to be calculated from the raw stock data using volume-weighted price averaging.\n\n{indicator_descriptions.get('vwma', 'No description available.')}"
+        elif indicator in ("volume", "volume_50_sma"):
+            # Alpha Vantage daily endpoint already returns Volume in the OHLCV response;
+            # a separate volume / volume MA endpoint does not exist. Direct callers should
+            # derive these from get_stock_data, or use the stockstats-backed vendor.
+            return (
+                f"## {indicator.upper()} for {symbol}:\n\n"
+                "Alpha Vantage does not expose a dedicated volume / volume-MA endpoint. "
+                "Read the Volume column from get_stock_data and (for MAVOL) compute the rolling SMA, "
+                "or switch the technical_indicators vendor to the stockstats-backed source.\n\n"
+                f"{indicator_descriptions.get(indicator, 'No description available.')}"
+            )
         else:
             return f"Error: Indicator {indicator} not implemented yet."
 

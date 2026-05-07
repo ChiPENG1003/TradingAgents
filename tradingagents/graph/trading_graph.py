@@ -246,6 +246,13 @@ class TradingAgentsGraph:
 
     def _save_backtest_strategy(self, ticker: str, trade_date: str, final_state: Dict[str, Any]) -> Path:
         """Extract and persist the structured strategy JSON to back_test/strategy/{ticker}/."""
+        # valid_until needs to comfortably cover the next review cadence even when
+        # the cadence straddles a weekend or holiday. 2x cadence + 1 day works for
+        # any cadence from 1 to ~30 trading days; the engine caps it tighter via
+        # the next strategy's _active_from anyway.
+        cadence = int(self.config.get("review_cadence_trading_days") or 5)
+        valid_window_days = max(cadence * 2 + 1, 6)
+
         try:
             strategy = extract_structured_strategy(
                 final_state.get("structured_strategy"),
@@ -253,7 +260,7 @@ class TradingAgentsGraph:
                 trade_date=str(trade_date),
             )
             as_of = datetime.strptime(str(strategy["as_of_date"]), "%Y-%m-%d")
-            strategy["valid_until"] = (as_of + timedelta(days=6)).strftime("%Y-%m-%d")
+            strategy["valid_until"] = (as_of + timedelta(days=valid_window_days)).strftime("%Y-%m-%d")
         except StructuredStrategyError as e:
             # Persist a sentinel so the operator knows the run failed extraction.
             as_of = datetime.strptime(str(trade_date), "%Y-%m-%d")
@@ -261,7 +268,7 @@ class TradingAgentsGraph:
                 "schema_version": "v2",
                 "ticker": ticker,
                 "as_of_date": str(trade_date),
-                "valid_until": (as_of + timedelta(days=6)).strftime("%Y-%m-%d"),
+                "valid_until": (as_of + timedelta(days=valid_window_days)).strftime("%Y-%m-%d"),
                 "error": f"structured-extraction-failed: {e}",
                 "raw_decision": final_state["final_trade_decision"],
             }

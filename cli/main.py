@@ -1,5 +1,6 @@
 from typing import Optional
 import datetime
+import pandas as pd
 import typer
 from pathlib import Path
 from functools import wraps
@@ -26,7 +27,7 @@ from rich.rule import Rule
 from tradingagents.graph.trading_graph import TradingAgentsGraph
 from tradingagents.default_config import DEFAULT_CONFIG
 from tradingagents.dataflows.stockstats_utils import load_ohlcv
-from back_test.calendar import adjust_backtest_window, first_trading_day_on_or_after
+from back_test.calendar import adjust_backtest_window
 from back_test.engine import BacktestEngine
 from cli.models import AnalystType
 from cli.utils import *
@@ -511,58 +512,71 @@ def get_user_selections():
     )
     selected_ticker = get_ticker()
 
-    # Step 2: Analysis date
-    default_date = datetime.datetime.now().strftime("%Y-%m-%d")
+    # Step 2: Trading Mode (live vs backtest) — decides which follow-up questions to ask
     console.print(
         create_question_box(
-            "Step 2: Analysis Date",
-            "Enter the analysis date (YYYY-MM-DD)",
-            default_date,
-        )
-    )
-    analysis_date = get_analysis_date()
-
-    # Step 2.5: Trading Mode (live vs backtest)
-    console.print(
-        create_question_box(
-            "Step 2.5: Trading Mode",
+            "Step 2: Trading Mode",
             "Select whether to run live single-date analysis or a backtest over a date range"
         )
     )
     trading_mode = select_trading_mode()
+
+    analysis_date = None
+    holdings_info = None
     backtest_start = None
     backtest_end = None
+    review_cadence_trading_days = 5
+
     if trading_mode == "backtest":
+        # Backtest only needs a date range and review cadence; analysis_date and
+        # holdings come from the strategy replay, not the user.
         console.print(
             create_question_box(
-                "Step 2.5b: Backtest Range",
+                "Step 3: Backtest Range",
                 "Enter the start and end dates for the backtest period"
             )
         )
         backtest_start, backtest_end = select_backtest_range()
-
-    # Step 3: Current Holdings (optional)
-    console.print(
-        create_question_box(
-            "Step 3: Current Holdings (Optional)",
-            "If you already hold this stock, enter quantity and average buy price"
+        console.print(
+            create_question_box(
+                "Step 4: Review Cadence",
+                "Choose how often (in trading days) the agent pipeline regenerates the strategy"
+            )
         )
-    )
-    holdings_info = get_holdings_info()
+        review_cadence_trading_days = select_review_cadence()
+    else:
+        # Live: ask for the single analysis date and current holdings.
+        default_date = datetime.datetime.now().strftime("%Y-%m-%d")
+        console.print(
+            create_question_box(
+                "Step 3: Analysis Date",
+                "Enter the analysis date (YYYY-MM-DD)",
+                default_date,
+            )
+        )
+        analysis_date = get_analysis_date()
 
-    # Step 4: Output language
+        console.print(
+            create_question_box(
+                "Step 4: Current Holdings (Optional)",
+                "If you already hold this stock, enter quantity and average buy price"
+            )
+        )
+        holdings_info = get_holdings_info()
+
+    # Step 5: Output language
     console.print(
         create_question_box(
-            "Step 4: Output Language",
+            "Step 5: Output Language",
             "Select the language for analyst reports and final decision"
         )
     )
     output_language = ask_output_language()
 
-    # Step 5: Select analysts
+    # Step 6: Select analysts
     console.print(
         create_question_box(
-            "Step 5: Analysts Team", "Select your LLM analyst agents for the analysis"
+            "Step 6: Analysts Team", "Select your LLM analyst agents for the analysis"
         )
     )
     selected_analysts = select_analysts()
@@ -570,26 +584,26 @@ def get_user_selections():
         f"[green]Selected analysts:[/green] {', '.join(analyst.value for analyst in selected_analysts)}"
     )
 
-    # Step 6: Research depth
+    # Step 7: Research depth
     console.print(
         create_question_box(
-            "Step 6: Research Depth", "Select your research depth level"
+            "Step 7: Research Depth", "Select your research depth level"
         )
     )
     selected_research_depth = select_research_depth()
 
-    # Step 7: LLM Provider
+    # Step 8: LLM Provider
     console.print(
         create_question_box(
-            "Step 7: LLM Provider", "Select your LLM provider"
+            "Step 8: LLM Provider", "Select your LLM provider"
         )
     )
     selected_llm_provider, backend_url = select_llm_provider()
 
-    # Step 8: Model tier (sets both quick-thinking and deep-thinking agents)
+    # Step 9: Model tier (sets both quick-thinking and deep-thinking agents)
     console.print(
         create_question_box(
-            "Step 8: Model Tier",
+            "Step 9: Model Tier",
             "Select a model tier — sets both quick-thinking and deep-thinking agents"
         )
     )
@@ -615,6 +629,7 @@ def get_user_selections():
         "trading_mode": trading_mode,
         "backtest_start": backtest_start,
         "backtest_end": backtest_end,
+        "review_cadence_trading_days": review_cadence_trading_days,
     }
 
 
@@ -970,32 +985,34 @@ def format_tool_args(args, max_length=80) -> str:
         return result[:max_length - 3] + "..."
     return result
 
-def _weekly_dates(start: str, end: str) -> list[str]:
-    """Return weekly review dates between start and end (inclusive).
+def _review_trading_dates(
+    start: str,
+    end: str,
+    trading_dates,
+    cadence_trading_days: int = 5,
+) -> list[str]:
+    """Return review dates by stepping `cadence_trading_days` trading days at a time.
 
-    The first iteration is clamped to `start` itself, then advances by seven
-    calendar days.
+    The first review is clamped to the first trading day on or after `start`;
+    subsequent reviews step by `cadence_trading_days` positions in the trading
+    calendar so weekends and holidays do not bleed off cadence (a calendar-day
+    step would, e.g., land "+7 days" on a non-trading day and require a forward
+    bump that compresses or expands the spacing).
     """
-    s = datetime.datetime.strptime(start, "%Y-%m-%d")
-    e = datetime.datetime.strptime(end, "%Y-%m-%d")
-    dates = []
-    cur = s
-    while cur <= e:
-        dates.append(cur.strftime("%Y-%m-%d"))
-        cur = cur + datetime.timedelta(days=7)
-    return dates
+    if cadence_trading_days < 1:
+        raise ValueError(f"cadence_trading_days must be >= 1, got {cadence_trading_days}")
 
-
-def _weekly_trading_dates(start: str, end: str, trading_dates) -> list[str]:
-    """Return weekly review dates adjusted to real trading days."""
-    dates = []
-    seen = set()
-    for calendar_date in _weekly_dates(start, end):
-        trading_date = first_trading_day_on_or_after(trading_dates, calendar_date, end)
-        if trading_date and trading_date not in seen:
-            seen.add(trading_date)
-            dates.append(trading_date)
-    return dates
+    start_ts = pd.Timestamp(start)
+    end_ts = pd.Timestamp(end)
+    in_range = [
+        d for d in pd.to_datetime(trading_dates)
+        if start_ts <= d <= end_ts
+    ]
+    in_range = sorted(set(in_range))
+    return [
+        in_range[i].strftime("%Y-%m-%d")
+        for i in range(0, len(in_range), cadence_trading_days)
+    ]
 
 
 def _simulate_backtest_holdings(
@@ -1031,12 +1048,14 @@ def _simulate_backtest_holdings(
 
 
 def run_backtest_analysis(selections: dict) -> None:
-    """Run the backtest mode: weekly strategy generation across a date range.
+    """Run the backtest mode: per-cadence strategy generation across a date range.
 
-    Each weekly review date triggers a full agent pipeline run. The Portfolio
+    Each review date triggers a full agent pipeline run. The Portfolio
     Manager emits a structured JSON which `TradingAgentsGraph._save_backtest_strategy`
-    writes to `back_test/strategy/{ticker}/`.
+    writes to `back_test/strategy/{ticker}/`. The cadence between reviews is
+    configurable via `selections["review_cadence_trading_days"]` (default 5).
     """
+    cadence = int(selections.get("review_cadence_trading_days") or 5)
     config = DEFAULT_CONFIG.copy()
     config["max_debate_rounds"] = selections["research_depth"]
     config["max_risk_discuss_rounds"] = selections["research_depth"]
@@ -1048,6 +1067,7 @@ def run_backtest_analysis(selections: dict) -> None:
     config["openai_reasoning_effort"] = selections.get("openai_reasoning_effort")
     config["anthropic_effort"] = selections.get("anthropic_effort")
     config["output_language"] = selections.get("output_language", "English")
+    config["review_cadence_trading_days"] = cadence
 
     try:
         price_data = load_ohlcv(selections["ticker"], selections["backtest_end"])
@@ -1071,14 +1091,20 @@ def run_backtest_analysis(selections: dict) -> None:
         callbacks=[stats_handler],
     )
 
-    dates = _weekly_trading_dates(effective_start, effective_end, price_data["Date"])
+    dates = _review_trading_dates(
+        effective_start,
+        effective_end,
+        price_data["Date"],
+        cadence_trading_days=cadence,
+    )
     console.print(
         Panel(
             f"[bold]Backtest mode[/bold]\n"
             f"Ticker: [cyan]{selections['ticker']}[/cyan]\n"
             f"Requested range: [cyan]{selections['backtest_start']}[/cyan] → [cyan]{selections['backtest_end']}[/cyan]\n"
             f"Trading range:   [cyan]{effective_start}[/cyan] → [cyan]{effective_end}[/cyan]\n"
-            f"Will generate [bold]{len(dates)}[/bold] weekly strategies.",
+            f"Review cadence:  every [cyan]{cadence}[/cyan] trading day(s)\n"
+            f"Will generate [bold]{len(dates)}[/bold] strategies.",
             border_style="cyan",
         )
     )

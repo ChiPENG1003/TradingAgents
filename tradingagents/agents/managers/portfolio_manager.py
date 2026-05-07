@@ -318,6 +318,12 @@ Aggressiveness rules (lean aggressive; HOLD is reserved for genuinely balanced s
 - For broad index ETFs or highly diversified instruments in that regime, if no position exists, use entry.price=null with entry.size_pct between 50 and 80 unless downside risk is extreme.
 - For broad index ETFs or highly diversified instruments in that regime, do not require a pullback entry in a strong trend.
 - For broad index ETFs or highly diversified instruments in that regime, SELL requires clear trend damage or severe macro/technical deterioration; ordinary overbought readings are not enough.
+- Volume confirmation (放量站稳) is a HARD gate. Compute volume_ratio = latest daily volume / volume_50_sma from the market analyst's Volume confirmation section, and apply the next four rules BEFORE the confidence-based size bands below. Volume can downgrade size or veto an entry; it can never upgrade beyond the bands.
+- Breakout-class entries — a close above multi-week resistance, an SMA20 reclaim from below, a touch/close above boll_ub, or a gap-up open above the prior range — REQUIRE volume_ratio >= 1.5. If the setup is breakout-class but volume_ratio < 1.5, do NOT chase: emit HOLD, or place entry.price as a pullback limit BELOW the breakout level so it only fills on a retest.
+- Trend-continuation entries (price already above SMA20 > SMA50 and you are buying a shallow pullback rather than a fresh breakout) only require volume_ratio >= 0.9; do not impose the 1.5x gate on these.
+- For add_position above the current cost basis when volume_ratio < 0.7 (price extending on shrinking participation), cut the planned add_position.size_pct in half — e.g., 50 becomes 25.
+- If price prints a new high but volume_ratio has stayed below 0.8 for the last 3 sessions, treat it as bearish divergence: prefer a reduce_stop sized 25-30% over outright SELL, and do NOT initiate a new add_position regardless of confidence.
+- If the market analyst report does not include a usable volume_ratio, state that volume confirmation is unavailable in rationale_summary and conservatively cap entry.size_pct and add_position.size_pct at 35.
 - If confidence is low/medium and entry.price is within 8% of current, allow entry.size_pct between 35 and 55.
 - If confidence is medium and entry.price is within 6% of current, allow entry.size_pct between 50 and 70.
 - If confidence is high and the setup is trend-following, breakout, or strong momentum, allow entry.size_pct between 70 and 90.

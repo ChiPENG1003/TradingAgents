@@ -127,6 +127,16 @@ def get_stock_stats_indicators_window(
             "Usage: Identify overbought (>80) or oversold (<20) conditions and confirm the strength of trends or reversals. "
             "Tips: Use alongside RSI or MACD to confirm signals; divergence between price and MFI can indicate potential reversals."
         ),
+        "volume": (
+            "VOL: Raw daily traded volume. "
+            "Usage: Gauge participation behind a price move; large up-days on expanding volume confirm trend, while breakouts on shrinking volume often fail. "
+            "Tips: Compare today's volume to a moving-average baseline (e.g. volume_50_sma); single readings are noisy without a reference level."
+        ),
+        "volume_50_sma": (
+            "MAVOL (50): 50-day simple moving average of volume, the standard baseline for 'normal' participation. "
+            "Usage: Treat today's volume / MAVOL ratio as a volume z-score — >1.5x with a price hold above key support is the classical 放量站稳 signal; <0.7x on a breakout suggests weak conviction. "
+            "Tips: Pair with price-structure indicators (boll_ub, close_50_sma) so volume context confirms — not replaces — the price signal."
+        ),
     }
 
     if indicator not in best_ind_params:

@@ -338,6 +338,49 @@ def select_backtest_range() -> Tuple[str, str]:
     return start, end
 
 
+def select_review_cadence() -> int:
+    """Ask how many trading days between strategy reviews. Default 5 (weekly)."""
+    presets = [
+        questionary.Choice("Daily — every 1 trading day", "1"),
+        questionary.Choice("Every 2 trading days", "2"),
+        questionary.Choice("Every 3 trading days", "3"),
+        questionary.Choice("Weekly — every 5 trading days (default)", "5"),
+        questionary.Choice("Bi-weekly — every 10 trading days", "10"),
+        questionary.Choice("Monthly — every 21 trading days", "21"),
+        questionary.Choice("Custom integer", "custom"),
+    ]
+    choice = questionary.select(
+        "Select strategy review cadence (in trading days):",
+        choices=presets,
+        default=presets[3],
+        instruction="\n- Higher cadence = fewer LLM calls / lower cost\n- Lower cadence = more reactive to market changes",
+        style=questionary.Style([
+            ("selected", "fg:cyan noinherit"),
+            ("highlighted", "fg:cyan noinherit"),
+            ("pointer", "fg:cyan noinherit"),
+        ]),
+    ).ask()
+
+    if choice is None:
+        console.print("\n[red]No cadence selected. Exiting...[/red]")
+        exit(1)
+
+    if choice == "custom":
+        raw = questionary.text(
+            "Enter review cadence in trading days (1-60):",
+            default="5",
+            validate=lambda x: (
+                x.strip().isdigit() and 1 <= int(x.strip()) <= 60
+            ) or "Please enter an integer between 1 and 60.",
+        ).ask()
+        if not raw:
+            console.print("\n[red]No cadence provided. Exiting...[/red]")
+            exit(1)
+        return int(raw.strip())
+
+    return int(choice)
+
+
 def ask_output_language() -> str:
     """Ask for report output language."""
     choice = questionary.select(

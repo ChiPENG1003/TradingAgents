@@ -48,32 +48,54 @@ def _clean_dataframe(data: pd.DataFrame) -> pd.DataFrame:
 def load_ohlcv(symbol: str, curr_date: str) -> pd.DataFrame:
     """Fetch OHLCV data with caching, filtered to prevent look-ahead bias.
 
-    Downloads 15 years of data up to today and caches per symbol. On
-    subsequent calls the cache is reused. Rows after curr_date are
-    filtered out so backtests never see future prices.
+    Downloads 5 years of data and caches per symbol. The cache is reused
+    when (a) it already covers curr_date, or (b) it was refreshed within
+    LIVE_CACHE_TTL_SECONDS. Rows after curr_date are filtered out so
+    backtests never see future prices, but live runs that ask for today
+    will trigger a refresh after the TTL expires so today's bar is picked
+    up once yfinance publishes it (typically right after the US close).
     """
     config = get_config()
-    curr_date_dt = pd.to_datetime(curr_date)
+    curr_date_dt = pd.to_datetime(curr_date).normalize()
 
-    # Cache uses a fixed window (15y to today) so one file per symbol
-    today_date = pd.Timestamp.today()
+    today_date = pd.Timestamp.today().normalize()
     start_date = today_date - pd.DateOffset(years=5)
     start_str = start_date.strftime("%Y-%m-%d")
-    end_str = today_date.strftime("%Y-%m-%d")
+    cache_end_str = today_date.strftime("%Y-%m-%d")
+    # yfinance treats `end` as exclusive, so push it one day past today to
+    # actually include today's daily bar once it is published.
+    fetch_end_str = (today_date + pd.Timedelta(days=1)).strftime("%Y-%m-%d")
 
     os.makedirs(config["data_cache_dir"], exist_ok=True)
     data_file = os.path.join(
         config["data_cache_dir"],
-        f"{symbol}-YFin-data-{start_str}-{end_str}.csv",
+        f"{symbol}-YFin-data-{start_str}-{cache_end_str}.csv",
     )
 
-    if os.path.exists(data_file):
-        data = pd.read_csv(data_file, on_bad_lines="skip")
-    else:
+    LIVE_CACHE_TTL_SECONDS = 2 * 60 * 60  # 2h: bound refetch frequency on weekends/holidays
+
+    needs_fetch = not os.path.exists(data_file)
+    data = None
+    if not needs_fetch:
+        try:
+            data = pd.read_csv(data_file, on_bad_lines="skip")
+            cached = _clean_dataframe(data)
+            cached_max = cached["Date"].max() if not cached.empty else pd.NaT
+            age_seconds = time.time() - os.path.getmtime(data_file)
+            stale = (
+                pd.isna(cached_max)
+                or (cached_max < curr_date_dt and age_seconds > LIVE_CACHE_TTL_SECONDS)
+            )
+            if stale:
+                needs_fetch = True
+        except Exception:
+            needs_fetch = True
+
+    if needs_fetch:
         data = yf_retry(lambda: yf.download(
             symbol,
             start=start_str,
-            end=end_str,
+            end=fetch_end_str,
             multi_level_index=False,
             progress=False,
             auto_adjust=True,

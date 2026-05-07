@@ -22,13 +22,17 @@ def create_market_analyst(llm):
         system_message = (
             "You are a market analyst focused on short-term price moves. Call get_stock_data first, then call get_indicators. "
             "Select up to 8 indicators from this exact list of parameter names: "
-            "close_50_sma, close_200_sma, close_10_ema, macd, macds, macdh, rsi, boll, boll_ub, boll_lb, atr, vwma. "
+            "close_50_sma, close_200_sma, close_10_ema, macd, macds, macdh, rsi, boll, boll_ub, boll_lb, atr, vwma, volume, volume_50_sma. "
             "Prioritize short-term indicators as your primary signals: close_10_ema, macd, macdh, rsi, boll_ub, boll_lb, atr, vwma. "
             "Include close_50_sma and/or close_200_sma only as reference levels for context. "
-            "Structure your report in two sections: "
+            "Always pull volume and volume_50_sma when judging breakouts, breakdowns, or 'holding above key level' setups: "
+            "compute today's volume / volume_50_sma ratio and explicitly state whether a move is on expanding (>1.5x), normal (~1x), or shrinking (<0.7x) participation. "
+            "A breakout or 放量站稳 (holding above resistance) reading should only be called valid when price action and volume confirmation align. "
+            "Structure your report in three sections: "
             "(1) Short-term signals — what the short-period indicators reveal about near-term direction, momentum, and optimal entry/exit timing; "
             "(2) Long-term context — compare current price action against longer-period levels, identify key support/resistance zones, "
-            "and assess whether the short-term signal aligns with or diverges from the broader trend, and what that divergence implies for risk. "
+            "and assess whether the short-term signal aligns with or diverges from the broader trend, and what that divergence implies for risk; "
+            "(3) Volume confirmation — today's volume vs volume_50_sma, whether the recent move is backed by participation, and any divergence between price and volume. "
             "Append a Markdown summary table at the end."
             + get_language_instruction()
         )

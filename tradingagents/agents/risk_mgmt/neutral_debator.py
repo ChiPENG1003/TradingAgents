@@ -1,5 +1,5 @@
 
-from tradingagents.agents.utils.agent_utils import truncate_history
+from tradingagents.agents.utils.agent_utils import truncate_history, get_language_instruction
 
 
 def create_neutral_debator(llm):
@@ -19,7 +19,7 @@ Trader's decision: {trader_decision}
 
 Debate history: {history}
 Last aggressive argument: {current_aggressive_response}
-Last conservative argument: {current_conservative_response}"""
+Last conservative argument: {current_conservative_response}{get_language_instruction()}"""
 
         response = llm.invoke(prompt)
 
