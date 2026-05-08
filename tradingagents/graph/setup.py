@@ -210,5 +210,4 @@ class GraphSetup:
 
         workflow.add_edge("Portfolio Manager", END)
 
-        # Compile and return
-        return workflow.compile()
+        return workflow

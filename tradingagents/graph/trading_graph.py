@@ -1,5 +1,6 @@
 # TradingAgents/graph/trading_graph.py
 
+import logging
 import os
 from pathlib import Path
 import json
@@ -13,6 +14,7 @@ from tradingagents.llm_clients import create_llm_client
 from tradingagents.agents import *
 from tradingagents.default_config import DEFAULT_CONFIG
 from tradingagents.agents.utils.memory import FinancialSituationMemory
+from tradingagents.dataflows.utils import safe_ticker_component
 from tradingagents.agents.utils.agent_states import (
     AgentState,
     InvestDebateState,
@@ -33,6 +35,7 @@ from tradingagents.agents.utils.agent_utils import (
     get_global_news
 )
 
+from .checkpointer import checkpoint_step, clear_checkpoint, get_checkpointer, thread_id
 from .conditional_logic import ConditionalLogic
 from .setup import GraphSetup
 from .propagation import Propagator
@@ -42,6 +45,9 @@ from .structured_signal import (
     extract_structured_strategy,
     StructuredStrategyError,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class TradingAgentsGraph:
@@ -139,8 +145,11 @@ class TradingAgentsGraph:
         self.ticker = None
         self.log_states_dict = {}  # date to full state dict
 
-        # Set up the graph
-        self.graph = self.graph_setup.setup_graph(selected_analysts)
+        # Set up the graph. Keep the workflow so checkpoint mode can recompile
+        # it with a saver for this ticker/date.
+        self.workflow = self.graph_setup.setup_graph(selected_analysts)
+        self.graph = self.workflow.compile()
+        self._checkpointer_ctx = None
 
     def _get_provider_kwargs(self) -> Dict[str, Any]:
         """Get provider-specific kwargs for LLM client creation."""
@@ -212,43 +221,77 @@ class TradingAgentsGraph:
         self.ticker = company_name
         self.trading_mode = trading_mode
 
-        # Initialize state
-        init_agent_state = self.propagator.create_initial_state(
-            company_name,
-            trade_date,
-            holdings_info=holdings_info,
-            trading_mode=trading_mode,
-        )
-        args = self.propagator.get_graph_args()
+        if self.config.get("checkpoint_enabled"):
+            self._checkpointer_ctx = get_checkpointer(
+                self.config["data_cache_dir"], company_name
+            )
+            saver = self._checkpointer_ctx.__enter__()
+            self.graph = self.workflow.compile(checkpointer=saver)
 
-        if self.debug:
-            # Debug mode with tracing
-            trace = []
-            for chunk in self.graph.stream(init_agent_state, **args):
-                if len(chunk["messages"]) == 0:
-                    pass
-                else:
-                    chunk["messages"][-1].pretty_print()
-                    trace.append(chunk)
+            step = checkpoint_step(
+                self.config["data_cache_dir"], company_name, str(trade_date)
+            )
+            if step is not None:
+                logger.info(
+                    "Resuming from step %d for %s on %s",
+                    step,
+                    company_name,
+                    trade_date,
+                )
+            else:
+                logger.info("Starting fresh for %s on %s", company_name, trade_date)
 
-            final_state = trace[-1]
-        else:
-            # Standard mode without tracing
-            final_state = self.graph.invoke(init_agent_state, **args)
+        try:
+            # Initialize state
+            init_agent_state = self.propagator.create_initial_state(
+                company_name,
+                trade_date,
+                holdings_info=holdings_info,
+                trading_mode=trading_mode,
+            )
+            args = self.propagator.get_graph_args()
+            if self.config.get("checkpoint_enabled"):
+                tid = thread_id(company_name, str(trade_date))
+                args.setdefault("config", {}).setdefault("configurable", {})["thread_id"] = tid
 
-        # Store current state for reflection
-        self.curr_state = final_state
+            if self.debug:
+                # Debug mode with tracing
+                trace = []
+                for chunk in self.graph.stream(init_agent_state, **args):
+                    if len(chunk["messages"]) == 0:
+                        pass
+                    else:
+                        chunk["messages"][-1].pretty_print()
+                        trace.append(chunk)
 
-        # Log state
-        self._log_state(trade_date, final_state)
+                final_state = trace[-1]
+            else:
+                # Standard mode without tracing
+                final_state = self.graph.invoke(init_agent_state, **args)
 
-        # In backtest mode, also persist the structured strategy JSON.
-        if trading_mode == "backtest":
-            self._save_backtest_strategy(company_name, trade_date, final_state)
-            self._remember_backtest_portfolio_decision(trade_date, final_state)
+            # Store current state for reflection
+            self.curr_state = final_state
 
-        # Return decision and processed signal
-        return final_state, self.process_signal(final_state["final_trade_decision"])
+            # Log state
+            self._log_state(trade_date, final_state)
+
+            # In backtest mode, also persist the structured strategy JSON.
+            if trading_mode == "backtest":
+                self._save_backtest_strategy(company_name, trade_date, final_state)
+                self._remember_backtest_portfolio_decision(trade_date, final_state)
+
+            if self.config.get("checkpoint_enabled"):
+                clear_checkpoint(
+                    self.config["data_cache_dir"], company_name, str(trade_date)
+                )
+
+            # Return decision and processed signal
+            return final_state, self.process_signal(final_state["final_trade_decision"])
+        finally:
+            if self._checkpointer_ctx is not None:
+                self._checkpointer_ctx.__exit__(None, None, None)
+                self._checkpointer_ctx = None
+                self.graph = self.workflow.compile()
 
     def _save_backtest_strategy(self, ticker: str, trade_date: str, final_state: Dict[str, Any]) -> Path:
         """Extract and persist the structured strategy JSON to back_test/strategy/{ticker}/."""
@@ -283,10 +326,11 @@ class TradingAgentsGraph:
             }
 
         # Project root = parent of `tradingagents/` package
-        strategy_dir = Path(__file__).resolve().parents[2] / "back_test" / "strategy" / ticker
+        safe_ticker = safe_ticker_component(ticker)
+        strategy_dir = Path(__file__).resolve().parents[2] / "back_test" / "strategy" / safe_ticker
         strategy_dir.mkdir(parents=True, exist_ok=True)
 
-        out_path = strategy_dir / f"{ticker}_{trade_date}.json"
+        out_path = strategy_dir / f"{safe_ticker}_{trade_date}.json"
         with open(out_path, "w", encoding="utf-8") as f:
             json.dump(strategy, f, indent=2, ensure_ascii=False)
         return out_path
@@ -347,7 +391,8 @@ class TradingAgentsGraph:
         }
 
         # Save to file
-        directory = Path(self.config["results_dir"]) / self.ticker / "TradingAgentsStrategy_logs"
+        safe_ticker = safe_ticker_component(self.ticker)
+        directory = Path(self.config["results_dir"]) / safe_ticker / "TradingAgentsStrategy_logs"
         directory.mkdir(parents=True, exist_ok=True)
 
         log_path = directory / f"full_states_log_{trade_date}.json"

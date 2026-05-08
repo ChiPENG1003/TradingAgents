@@ -185,6 +185,16 @@ def select_model_tier(provider: str) -> tuple[str, str]:
     if provider_lower == "openrouter":
         model = select_openrouter_model()
         return model, model
+    if provider_lower == "azure":
+        deployment = questionary.text(
+            "Enter Azure deployment name:",
+            validate=lambda x: len(x.strip()) > 0 or "Please enter a deployment name.",
+        ).ask()
+        if not deployment:
+            console.print("\n[red]No Azure deployment selected. Exiting...[/red]")
+            exit(1)
+        deployment = deployment.strip()
+        return deployment, deployment
 
     tiers = get_model_tiers(provider_lower)
     if not tiers:
@@ -240,21 +250,24 @@ def derive_reasoning_effort(research_depth: int, provider: str) -> dict:
 
 def select_llm_provider() -> tuple[str, str | None]:
     """Select the LLM provider and its API endpoint."""
-    BASE_URLS = [
-        ("OpenAI", "https://api.openai.com/v1"),
-        ("Google", None),  # google-genai SDK manages its own endpoint
-        ("Anthropic", "https://api.anthropic.com/"),
-        ("DeepSeek", "https://api.deepseek.com/v1"),
-        ("xAI", "https://api.x.ai/v1"),
-        ("Openrouter", "https://openrouter.ai/api/v1"),
-        ("Ollama", "http://localhost:11434/v1"),
+    PROVIDERS = [
+        ("OpenAI", "openai", "https://api.openai.com/v1"),
+        ("Google", "google", None),
+        ("Anthropic", "anthropic", "https://api.anthropic.com/"),
+        ("xAI", "xai", "https://api.x.ai/v1"),
+        ("DeepSeek", "deepseek", "https://api.deepseek.com/v1"),
+        ("Qwen", "qwen", "https://dashscope.aliyuncs.com/compatible-mode/v1"),
+        ("GLM", "glm", "https://open.bigmodel.cn/api/paas/v4/"),
+        ("OpenRouter", "openrouter", "https://openrouter.ai/api/v1"),
+        ("Azure OpenAI", "azure", None),
+        ("Ollama", "ollama", "http://localhost:11434/v1"),
     ]
     
     choice = questionary.select(
         "Select your LLM Provider:",
         choices=[
-            questionary.Choice(display, value=(display, value))
-            for display, value in BASE_URLS
+            questionary.Choice(display, value=(provider_key, url))
+            for display, provider_key, url in PROVIDERS
         ],
         instruction="\n- Use arrow keys to navigate\n- Press Enter to select",
         style=questionary.Style(
@@ -267,13 +280,11 @@ def select_llm_provider() -> tuple[str, str | None]:
     ).ask()
     
     if choice is None:
-        console.print("\n[red]no OpenAI backend selected. Exiting...[/red]")
+        console.print("\n[red]No LLM provider selected. Exiting...[/red]")
         exit(1)
     
-    display_name, url = choice
-    print(f"You selected: {display_name}\tURL: {url}")
-
-    return display_name, url
+    provider, url = choice
+    return provider, url
 
 
 

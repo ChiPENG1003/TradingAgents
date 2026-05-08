@@ -71,11 +71,38 @@ MODEL_OPTIONS: ProviderModeOptions = {
             ("DeepSeek V4 Flash-Instant - Fastest, lowest cost", "deepseek-v4-flash-instant"),
             ("DeepSeek V4 Flash-Thinking - Balanced speed/quality", "deepseek-v4-flash-thinking"),
             ("DeepSeek V4 Pro - Most capable", "deepseek-v4-pro"),
+            ("Custom model ID", "custom"),
         ],
         "deep": [
             ("DeepSeek V4 Pro - Most capable", "deepseek-v4-pro"),
             ("DeepSeek V4 Flash-Thinking - Balanced speed/quality", "deepseek-v4-flash-thinking"),
             ("DeepSeek V4 Flash-Instant - Fastest, lowest cost", "deepseek-v4-flash-instant"),
+            ("Custom model ID", "custom"),
+        ],
+    },
+    "qwen": {
+        "quick": [
+            ("Qwen 3.5 Flash", "qwen3.5-flash"),
+            ("Qwen Plus", "qwen-plus"),
+            ("Custom model ID", "custom"),
+        ],
+        "deep": [
+            ("Qwen 3.6 Plus", "qwen3.6-plus"),
+            ("Qwen 3.5 Plus", "qwen3.5-plus"),
+            ("Qwen 3 Max", "qwen3-max"),
+            ("Custom model ID", "custom"),
+        ],
+    },
+    "glm": {
+        "quick": [
+            ("GLM-4.7", "glm-4.7"),
+            ("GLM-5", "glm-5"),
+            ("Custom model ID", "custom"),
+        ],
+        "deep": [
+            ("GLM-5.1", "glm-5.1"),
+            ("GLM-5", "glm-5"),
+            ("Custom model ID", "custom"),
         ],
     },
     # OpenRouter models are fetched dynamically at CLI runtime.
@@ -125,6 +152,16 @@ MODEL_TIERS: Dict[str, List[ModelTier]] = {
         ("Budget   — flash-instant × 2",                           "budget",   "deepseek-v4-flash-instant",  "deepseek-v4-flash-instant"),
         ("Standard — flash-instant (quick) + flash-thinking (deep)", "standard", "deepseek-v4-flash-instant", "deepseek-v4-flash-thinking"),
         ("Premium  — flash-thinking (quick) + v4-pro (deep)",      "premium",  "deepseek-v4-flash-thinking", "deepseek-v4-pro"),
+    ],
+    "qwen": [
+        ("Budget   — qwen-plus × 2",                               "budget",   "qwen-plus",                  "qwen-plus"),
+        ("Standard — qwen3.5-flash (quick) + qwen3.5-plus (deep)", "standard", "qwen3.5-flash",             "qwen3.5-plus"),
+        ("Premium  — qwen-plus (quick) + qwen3-max (deep)",        "premium",  "qwen-plus",                  "qwen3-max"),
+    ],
+    "glm": [
+        ("Budget   — glm-4.7 × 2",                                  "budget",   "glm-4.7",                   "glm-4.7"),
+        ("Standard — glm-4.7 (quick) + glm-5 (deep)",               "standard", "glm-4.7",                   "glm-5"),
+        ("Premium  — glm-5 (quick) + glm-5.1 (deep)",              "premium",  "glm-5",                     "glm-5.1"),
     ],
 }
 

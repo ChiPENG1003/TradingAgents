@@ -54,17 +54,12 @@ STRATEGIES_ROOT = PROJECT_ROOT / "back_test" / "strategy"
 SCHEMA_VERSION = "v3"
 
 
-def _round_shares(x: float) -> int:
-    """四舍五入: round-half-up to integer shares (always non-negative)."""
-    return int(x + 0.5) if x >= 0 else -int(-x + 0.5)
-
-
 @dataclass
 class Position:
     """A filled position waiting to be exited."""
     entry_date: str
     entry_price: float
-    shares: int
+    shares: float
     stop_loss: Optional[float] = None
     stop_loss_as_of: Optional[str] = None
     exit_date: Optional[str] = None
@@ -726,10 +721,7 @@ class BacktestEngine:
         notional = max(0.0, spend - self.commission)
         if notional <= 0 or execution_price <= 0:
             return cash, position
-        # 四舍五入到整股；若舍入后超出预算则回退一股，保证现金不变负。
-        shares = _round_shares(notional / execution_price)
-        while shares > 0 and shares * execution_price + self.commission > spend:
-            shares -= 1
+        shares = notional / execution_price
         if shares <= 0:
             return cash, position
         cash -= shares * execution_price + self.commission
@@ -750,7 +742,7 @@ class BacktestEngine:
             return cash, position
 
         total_cost = position.entry_price * position.shares + execution_price * shares
-        position.shares = position.shares + shares  # int + int → int
+        position.shares = position.shares + shares
         position.entry_price = total_cost / position.shares
         position.entry_commission += self.commission
         if effective_stop is not None:
@@ -767,9 +759,7 @@ class BacktestEngine:
         signal_date=None, fill_basis="limit_touch",
         order_type="take_profit", reason="take_profit",
     ):
-        # 四舍五入到整股；夹在 [0, position.shares] 区间内。
-        shares_to_sell = _round_shares(position.shares * (size_pct / 100.0))
-        shares_to_sell = max(0, min(position.shares, shares_to_sell))
+        shares_to_sell = max(0.0, min(position.shares, position.shares * (size_pct / 100.0)))
         if shares_to_sell <= 0:
             return cash, trades, position
         execution_price = self._sell_execution_price(fill_price)
@@ -777,7 +767,7 @@ class BacktestEngine:
         proceeds = max(0.0, shares_to_sell * execution_price - self.commission)
         pnl = (execution_price - position.entry_price) * shares_to_sell - self.commission - entry_commission
         cash += proceeds
-        position.shares = position.shares - shares_to_sell  # int - int → int
+        position.shares = position.shares - shares_to_sell
         position.entry_commission -= entry_commission
         trades.append({
             "entry_date": position.entry_date,
