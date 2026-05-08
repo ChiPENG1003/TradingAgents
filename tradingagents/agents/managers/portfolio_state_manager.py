@@ -344,11 +344,18 @@ def policy_from_market_state(
         )
 
     # C. Linear signal + regime ceilings/floors.
+    # Bull/bear-leaning score weights are intentionally halved relative to v1:
+    # the LLM tends to amplify bullish/bearish advocacy from analyst reports
+    # and risk-debate framing into score extremes, which then propagates into
+    # target_weight. By halving these coefficients we keep the LLM's
+    # qualitative judgment as a tilt, not a driver — regime/phase floors and
+    # caps (set by SMA-anchored Python) carry the structural sizing decision.
+    # risk_score weight is preserved so genuinely high-risk states still cut.
     raw_signal = (
-        0.50 * state.trend_score
-        + 0.25 * state.momentum_score
-        + 0.15 * state.event_score
-        - 0.40 * state.risk_score
+        0.25 * state.trend_score      # was 0.50
+        + 0.125 * state.momentum_score  # was 0.25
+        + 0.075 * state.event_score     # was 0.15
+        - 0.40 * state.risk_score       # unchanged: risk should still bite
     )
     target_weight = max(0.0, raw_signal) * state.confidence
 
@@ -640,6 +647,26 @@ You are NOT allowed to output:
 Your only job: classify the market state and compress the analyst debate into stable, testable state variables.
 
 Return only a MarketState object through the configured schema.
+
+**Anti-advocacy directive — read this BEFORE scoring:**
+The inputs below contain three advocacy channels that you must NOT take at face value:
+  (a) Bull / Bear researcher arguments embedded in the Research Manager's plan.
+  (b) Aggressive / Conservative / Neutral analysts in the Risk Analysts Debate.
+  (c) Subjective adjectives like "bullish" / "bearish" / "strong upside" in news, sentiment, or fundamentals reports.
+These channels are RHETORIC, not evidence. They are designed to take a side. Do NOT let the volume, intensity, or polarity of bullish or bearish framing decide your scores.
+
+When scoring, base your judgment on:
+  1. Anchors (price structure, SMA hierarchy, volume ratio, ATR, support/resistance) — primary.
+  2. Concrete events (filings, earnings results, macro prints, policy decisions) — supporting.
+  3. Substantive analyst observations grounded in (1) or (2).
+NOT on:
+  - How confidently the bull researcher / aggressive analyst phrased their case.
+  - Whether news headlines used the word "bullish" or "bearish".
+  - The number of paragraphs each side spent advocating.
+
+If the anchors say "price < SMA50", you must NOT label trend_score > 0 just because the bull researcher made a passionate case. If anchors say "SMA hierarchy bullish + volume normal", you must NOT label trend_score < 0 just because the bear researcher cited a tail-risk scenario.
+
+Equal advocacy on both sides → that is evidence of "unclear" / "range", not a reason to pick the louder side.
 
 Definitions:
 - regime: current market condition. Choose strong_uptrend / weak_uptrend only when SMA hierarchy and momentum agree; otherwise prefer range or unclear.
