@@ -26,6 +26,10 @@ DEFAULT_CONFIG = {
     "max_debate_rounds": 1,
     "max_risk_discuss_rounds": 1,
     "max_recur_limit": 100,
+    # Backtest-only state-first portfolio policy knobs. Leave empty to use
+    # PortfolioStatePolicyConfig defaults, including ^GSPC market context.
+    # Override market_context_ticker or set market_context_enabled=False as needed.
+    "portfolio_state_policy": {},
     # Data vendor configuration
     # Category-level configuration (default for all tools in category)
     "data_vendors": {

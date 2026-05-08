@@ -99,7 +99,7 @@ class BacktestEngine:
         ticker: str,
         start_date: str,
         end_date: str,
-        initial_capital: float = 100_000.0,
+        initial_capital: float = 22_000.0,
         strategies_dir: Optional[Path] = None,
         commission: float = 0.0,
         slippage_bps: float = 0.0,

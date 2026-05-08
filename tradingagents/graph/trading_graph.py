@@ -134,6 +134,7 @@ class TradingAgentsGraph:
             self.portfolio_manager_memory,
             self.conditional_logic,
             trading_mode=self.trading_mode,
+            portfolio_state_policy_config=self.config.get("portfolio_state_policy"),
         )
 
         self.propagator = Propagator()

@@ -135,6 +135,21 @@ class TestDeepSeekReasonerStructuredOutput:
         with pytest.raises(NotImplementedError):
             client.with_structured_output(_Sample)
 
+    def test_with_structured_output_raises_for_thinking_mode(self):
+        client = DeepSeekChatOpenAI(
+            model="deepseek-v4-flash",
+            api_key="placeholder",
+            base_url="https://api.deepseek.com",
+            extra_body={"thinking": {"type": "enabled"}},
+        )
+        from pydantic import BaseModel
+
+        class _Sample(BaseModel):
+            answer: str
+
+        with pytest.raises(NotImplementedError):
+            client.with_structured_output(_Sample)
+
     def test_with_structured_output_works_for_v4(self):
         """V4 models (non-reasoner) accept tool_choice; structured output works."""
         client = DeepSeekChatOpenAI(

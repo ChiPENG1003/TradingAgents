@@ -28,9 +28,13 @@ def get_indicator(
     from dateutil.relativedelta import relativedelta
 
     supported_indicators = {
+        "close_5_ema": ("5 EMA", "close"),
         "close_50_sma": ("50 SMA", "close"),
         "close_200_sma": ("200 SMA", "close"),
         "close_10_ema": ("10 EMA", "close"),
+        "close_20_ema": ("20 EMA", "close"),
+        "close_5_sma": ("5 SMA", "close"),
+        "close_10_sma": ("10 SMA", "close"),
         "macd": ("MACD", "close"),
         "macds": ("MACD Signal", "close"),
         "macdh": ("MACD Histogram", "close"),
@@ -43,12 +47,17 @@ def get_indicator(
         "vwma": ("VWMA", "close"),
         "volume": ("VOL", None),
         "volume_50_sma": ("MAVOL_50", None),
+        "volume_20_sma": ("MAVOL_20", None),
     }
 
     indicator_descriptions = {
+        "close_5_ema": "5 EMA: A very fast moving average for 1-5 day trading. Usage: Detect immediate momentum shifts and quick reclaim/loss of short-term trend. Tips: Noisy by itself; compare with 10/20 EMA.",
         "close_50_sma": "50 SMA: A medium-term trend indicator. Usage: Identify trend direction and serve as dynamic support/resistance. Tips: It lags price; combine with faster indicators for timely signals.",
         "close_200_sma": "200 SMA: A long-term trend benchmark. Usage: Confirm overall market trend and identify golden/death cross setups. Tips: It reacts slowly; best for strategic trend confirmation rather than frequent trading entries.",
         "close_10_ema": "10 EMA: A responsive short-term average. Usage: Capture quick shifts in momentum and potential entry points. Tips: Prone to noise in choppy markets; use alongside longer averages for filtering false signals.",
+        "close_20_ema": "20 EMA: A short swing-trend average. Usage: Separate healthy pullbacks from short-term trend damage. Tips: Confirm with the 5/10 EMA stack.",
+        "close_5_sma": "5 SMA: A fast average of recent closes. Usage: Smooth the last trading week and identify very short-term support/resistance.",
+        "close_10_sma": "10 SMA: A two-week average of recent closes. Usage: Track short-term mean reversion and quick trend changes.",
         "macd": "MACD: Computes momentum via differences of EMAs. Usage: Look for crossovers and divergence as signals of trend changes. Tips: Confirm with other indicators in low-volatility or sideways markets.",
         "macds": "MACD Signal: An EMA smoothing of the MACD line. Usage: Use crossovers with the MACD line to trigger trades. Tips: Should be part of a broader strategy to avoid false positives.",
         "macdh": "MACD Histogram: Shows the gap between the MACD line and its signal. Usage: Visualize momentum strength and spot divergence early. Tips: Can be volatile; complement with additional filters in fast-moving markets.",
@@ -60,7 +69,8 @@ def get_indicator(
         "vwma": "VWMA: A moving average weighted by volume. Usage: Confirm trends by integrating price action with volume data. Tips: Watch for skewed results from volume spikes; use in combination with other volume analyses.",
         "kdj": "KDJ: A momentum oscillator derived from stochastic values (K, D, and J) to identify overbought/oversold conditions and potential turning points. Tips: In strong trends, KDJ may stay extreme and produce false reversals; confirm with trend and volume indicators.",
         "volume": "VOL: Raw daily traded volume. Usage: Gauge participation behind a price move; large up-days on expanding volume confirm trend. Tips: Compare to a moving-average baseline (volume_50_sma) — single readings are noisy without context.",
-        "volume_50_sma": "MAVOL (50): 50-day SMA of volume. Usage: Baseline for 'normal' participation; today's volume / MAVOL >1.5x with a price hold above key support is the classical 放量站稳 signal. Tips: Pair with price-structure indicators so volume context confirms — not replaces — the price signal."
+        "volume_50_sma": "MAVOL (50): 50-day SMA of volume. Usage: Baseline for 'normal' participation; today's volume / MAVOL >1.5x with a price hold above key support is the classical 放量站稳 signal. Tips: Pair with price-structure indicators so volume context confirms — not replaces — the price signal.",
+        "volume_20_sma": "MAVOL (20): 20-day SMA of volume. Usage: Faster participation baseline for short-term trades."
     }
 
     if indicator not in supported_indicators:
@@ -96,11 +106,21 @@ def get_indicator(
                 "series_type": series_type,
                 "datatype": "csv"
             })
-        elif indicator == "close_10_ema":
+        elif indicator in ("close_5_ema", "close_10_ema", "close_20_ema"):
+            period = indicator.split("_")[1]
             data = _make_api_request("EMA", {
                 "symbol": symbol,
                 "interval": interval,
-                "time_period": "10",
+                "time_period": period,
+                "series_type": series_type,
+                "datatype": "csv"
+            })
+        elif indicator in ("close_5_sma", "close_10_sma"):
+            period = indicator.split("_")[1]
+            data = _make_api_request("SMA", {
+                "symbol": symbol,
+                "interval": interval,
+                "time_period": period,
                 "series_type": series_type,
                 "datatype": "csv"
             })
@@ -152,7 +172,7 @@ def get_indicator(
             # Alpha Vantage doesn't have direct VWMA, so we'll return an informative message
             # In a real implementation, this would need to be calculated from OHLCV data
             return f"## VWMA (Volume Weighted Moving Average) for {symbol}:\n\nVWMA calculation requires OHLCV data and is not directly available from Alpha Vantage API.\nThis indicator would need to be calculated from the raw stock data using volume-weighted price averaging.\n\n{indicator_descriptions.get('vwma', 'No description available.')}"
-        elif indicator in ("volume", "volume_50_sma"):
+        elif indicator in ("volume", "volume_20_sma", "volume_50_sma"):
             # Alpha Vantage daily endpoint already returns Volume in the OHLCV response;
             # a separate volume / volume MA endpoint does not exist. Direct callers should
             # derive these from get_stock_data, or use the stockstats-backed vendor.
@@ -182,7 +202,9 @@ def get_indicator(
         col_name_map = {
             "macd": "MACD", "macds": "MACD_Signal", "macdh": "MACD_Hist",
             "boll": "Real Middle Band", "boll_ub": "Real Upper Band", "boll_lb": "Real Lower Band",
-            "rsi": "RSI", "atr": "ATR", "close_10_ema": "EMA",
+            "rsi": "RSI", "atr": "ATR",
+            "close_5_ema": "EMA", "close_10_ema": "EMA", "close_20_ema": "EMA",
+            "close_5_sma": "SMA", "close_10_sma": "SMA",
             "close_50_sma": "SMA", "close_200_sma": "SMA"
         }
 

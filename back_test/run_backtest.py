@@ -1,8 +1,7 @@
 """CLI entry point: replay strategies and emit performance metrics.
 
 Example:
-    python -m back_test.run_backtest --ticker NVDA \
-        --start 2024-01-01 --end 2024-12-31 \
+    python -m back_test.run_backtest --ticker NVDA --start 2024-01-01 --end 2024-12-31 \
         [--initial-capital 100000]
 
 Outputs:
@@ -17,9 +16,9 @@ from pathlib import Path
 import sys
 
 import pandas as pd
-
 from .engine import BacktestEngine, PROJECT_ROOT
 from .metrics import summarize
+
 
 
 RESULTS_DIR = PROJECT_ROOT / "back_test" / "trade_route"

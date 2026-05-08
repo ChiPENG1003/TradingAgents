@@ -25,6 +25,7 @@ class GraphSetup:
         portfolio_manager_memory,
         conditional_logic: ConditionalLogic,
         trading_mode: str = "live",
+        portfolio_state_policy_config: dict | None = None,
     ):
         """Initialize with required components.
 
@@ -43,6 +44,7 @@ class GraphSetup:
         self.portfolio_manager_memory = portfolio_manager_memory
         self.conditional_logic = conditional_logic
         self.trading_mode = trading_mode
+        self.portfolio_state_policy_config = portfolio_state_policy_config
 
     def setup_graph(
         self, selected_analysts=["market", "social", "news", "fundamentals"]
@@ -109,8 +111,10 @@ class GraphSetup:
         neutral_analyst = create_neutral_debator(self.quick_thinking_llm)
         conservative_analyst = create_conservative_debator(self.quick_thinking_llm)
         if self.trading_mode == "backtest":
-            portfolio_manager_node = create_portfolio_state_manager(
-                self.deep_thinking_llm, self.portfolio_manager_memory
+            portfolio_manager_node = create_market_aware_portfolio_state_manager(
+                self.deep_thinking_llm,
+                self.portfolio_manager_memory,
+                policy_config=self.portfolio_state_policy_config,
             )
         else:
             portfolio_manager_node = create_portfolio_manager(

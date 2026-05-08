@@ -37,6 +37,16 @@ def _input_to_messages(input_: Any) -> list:
 class DeepSeekChatOpenAI(NormalizedChatOpenAI):
     """DeepSeek-compatible ChatOpenAI with reasoning-content round-trip support."""
 
+    def _structured_output_supported(self) -> bool:
+        if self.model_name == "deepseek-reasoner":
+            return False
+
+        thinking = (self.extra_body or {}).get("thinking")
+        if isinstance(thinking, dict) and thinking.get("type") == "enabled":
+            return False
+
+        return True
+
     def _get_request_payload(self, input_, *, stop=None, **kwargs):
         payload = super()._get_request_payload(input_, stop=stop, **kwargs)
         outgoing = payload.get("messages", [])
@@ -66,9 +76,10 @@ class DeepSeekChatOpenAI(NormalizedChatOpenAI):
         return chat_result
 
     def with_structured_output(self, schema, *, method=None, **kwargs):
-        if self.model_name == "deepseek-reasoner":
+        if not self._structured_output_supported():
             raise NotImplementedError(
-                "deepseek-reasoner does not support tool_choice; structured output is unavailable."
+                "DeepSeek reasoning/thinking mode does not support tool_choice; "
+                "structured output is unavailable."
             )
         return super().with_structured_output(schema, method=method, **kwargs)
 

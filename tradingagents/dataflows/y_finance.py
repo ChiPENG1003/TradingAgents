@@ -79,6 +79,11 @@ def get_stock_stats_indicators_window(
 
     best_ind_params = {
         # Moving Averages
+        "close_5_ema": (
+            "5 EMA: A very fast moving average for 1-5 day trading. "
+            "Usage: Detect immediate momentum shifts, failed bounces, and quick reclaim/loss of short-term trend. "
+            "Tips: Noisy by itself; compare with close_10_ema and close_20_ema."
+        ),
         "close_50_sma": (
             "50 SMA: A medium-term trend indicator. "
             "Usage: Identify trend direction and serve as dynamic support/resistance. "
@@ -93,6 +98,19 @@ def get_stock_stats_indicators_window(
             "10 EMA: A responsive short-term average. "
             "Usage: Capture quick shifts in momentum and potential entry points. "
             "Tips: Prone to noise in choppy markets; use alongside longer averages for filtering false signals."
+        ),
+        "close_20_ema": (
+            "20 EMA: A short swing-trend average. "
+            "Usage: Separate healthy pullbacks from short-term trend damage. "
+            "Tips: For fast trading, require price and the 5/10 EMA stack to confirm."
+        ),
+        "close_5_sma": (
+            "5 SMA: A fast average of recent closes. "
+            "Usage: Smooth the last trading week and identify very short-term support/resistance."
+        ),
+        "close_10_sma": (
+            "10 SMA: A two-week average of recent closes. "
+            "Usage: Track short-term mean reversion and quick trend changes."
         ),
         # MACD Related
         "macd": (
@@ -157,6 +175,10 @@ def get_stock_stats_indicators_window(
             "MAVOL (50): 50-day simple moving average of volume, the standard baseline for 'normal' participation. "
             "Usage: Treat today's volume / MAVOL ratio as a volume z-score — >1.5x with a price hold above key support is the classical 放量站稳 signal; <0.7x on a breakout suggests weak conviction. "
             "Tips: Pair with price-structure indicators (boll_ub, close_50_sma) so volume context confirms — not replaces — the price signal."
+        ),
+        "volume_20_sma": (
+            "MAVOL (20): 20-day simple moving average of volume, a faster participation baseline for short-term trades. "
+            "Usage: Compare today's volume to the last month of trading activity; this reacts faster than volume_50_sma."
         ),
     }
 
