@@ -12,6 +12,65 @@ from .config import get_config
 logger = logging.getLogger(__name__)
 
 
+# A vendor's latest OHLCV row this many calendar days before the requested date
+# is treated as stale. Generous enough to span long holiday weekends, tight
+# enough to catch the year-old frames yfinance occasionally returns (upstream #1021).
+MAX_OHLCV_STALE_DAYS = 10
+
+
+class StaleMarketDataError(Exception):
+    """Raised when a vendor returns present-but-stale OHLCV (a frame whose latest
+    row is far older than the requested date). Distinct from a no-data/empty
+    result so the vendor router can fall back to the next vendor instead of
+    silently feeding year-old prices and indicators into a report."""
+
+
+def _coerce_ohlcv_dates(data: pd.DataFrame) -> pd.Series:
+    """Return parsed dates from an OHLCV frame, whether Date is a column or the index."""
+    if "Date" in data.columns:
+        return pd.to_datetime(data["Date"], errors="coerce").dropna()
+    if isinstance(data.index, pd.DatetimeIndex):
+        return pd.Series(pd.to_datetime(data.index, errors="coerce")).dropna()
+    df = data.reset_index()
+    for col in ("Date", "Datetime", "date", "index"):
+        if col in df.columns:
+            parsed = pd.to_datetime(df[col], errors="coerce").dropna()
+            if not parsed.empty:
+                return parsed
+    return pd.Series(dtype="datetime64[ns]")
+
+
+def assert_ohlcv_not_stale(
+    data: pd.DataFrame,
+    reference_date: str,
+    symbol: str,
+    *,
+    max_stale_days: int = MAX_OHLCV_STALE_DAYS,
+) -> None:
+    """Reject OHLCV whose latest row is far older than reference_date.
+
+    Raises StaleMarketDataError so the router treats it like "no usable data from
+    this vendor" and tries the next one. Empty frames are left to the caller's
+    existing no-data handling; this guards only the dangerous case of
+    present-but-stale rows (upstream #1021)."""
+    if data is None or data.empty:
+        return
+    requested = pd.to_datetime(reference_date, errors="coerce")
+    if pd.isna(requested):
+        return
+    requested = requested.normalize()
+    dates = _coerce_ohlcv_dates(data)
+    if dates.empty:
+        return
+    latest = dates.max().normalize()
+    stale_days = (requested - latest).days
+    if stale_days > max_stale_days:
+        raise StaleMarketDataError(
+            f"{symbol}: latest OHLCV row is {latest.date()}, {stale_days} days "
+            f"before the requested {requested.date()} (stale) — refusing to use it"
+        )
+
+
 def _is_empty_result(result) -> bool:
     """True for results yfinance returns when it is throttled rather than erroring."""
     if result is None:
@@ -134,6 +193,10 @@ def load_ohlcv(symbol: str, curr_date: str) -> pd.DataFrame:
 
     # Filter to curr_date to prevent look-ahead bias in backtesting
     data = data[data["Date"] <= curr_date_dt]
+
+    # Reject a stale frame (latest row far older than curr_date) rather than
+    # feeding year-old prices into indicators (upstream #1021).
+    assert_ohlcv_not_stale(data, curr_date, symbol)
 
     return data
 

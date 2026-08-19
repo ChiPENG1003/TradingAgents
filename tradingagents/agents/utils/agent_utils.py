@@ -22,6 +22,12 @@ from tradingagents.agents.utils.news_data_tools import (
 from tradingagents.agents.utils.options_data_tools import (
     get_options_chain,
 )
+from tradingagents.agents.utils.market_data_validation_tools import (
+    get_verified_market_snapshot,
+)
+from tradingagents.agents.utils.macro_data_tools import (
+    get_macro_indicators,
+)
 
 
 DEBATE_EVIDENCE_GUARDRAIL = (

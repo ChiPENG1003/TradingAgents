@@ -25,6 +25,8 @@ from .alpha_vantage import (
     get_global_news as get_alpha_vantage_global_news,
 )
 from .alpha_vantage_common import AlphaVantageRateLimitError
+from .stockstats_utils import StaleMarketDataError
+from .fred import get_macro_data as get_fred_macro_data
 
 # Configuration and routing logic
 from .config import get_config
@@ -65,11 +67,18 @@ TOOLS_CATEGORIES = {
         "tools": [
             "get_options_chain",
         ]
+    },
+    "macro_data": {
+        "description": "Macroeconomic indicators (rates, inflation, labor, growth)",
+        "tools": [
+            "get_macro_indicators",
+        ]
     }
 }
 
 VENDOR_LIST = [
     "yfinance",
+    "fred",
     "alpha_vantage",
 ]
 
@@ -118,6 +127,10 @@ VENDOR_METHODS = {
     # options_data
     "get_options_chain": {
         "yfinance": get_yfinance_options_chain,
+    },
+    # macro_data
+    "get_macro_indicators": {
+        "fred": get_fred_macro_data,
     },
 }
 
@@ -179,6 +192,8 @@ def route_to_vendor(method: str, *args, **kwargs):
             return impl_func(*args, **kwargs)
         except AlphaVantageRateLimitError:
             continue  # Only rate limits trigger fallback
+        except StaleMarketDataError:
+            continue  # Vendor returned present-but-stale OHLCV; try the next one
         except ValueError as e:
             if vendor == "alpha_vantage" and "ALPHA_VANTAGE_API_KEY" in str(e):
                 continue

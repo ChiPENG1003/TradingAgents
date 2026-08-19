@@ -3,6 +3,7 @@ from tradingagents.agents.utils.agent_utils import (
     build_instrument_context,
     get_global_news,
     get_language_instruction,
+    get_macro_indicators,
     get_news,
     get_options_chain,
 )
@@ -18,10 +19,13 @@ def create_news_analyst(llm):
             get_news,
             get_global_news,
             get_options_chain,
+            get_macro_indicators,
         ]
 
         system_message = (
             "You are a news analyst. Use get_news for company-specific searches and get_global_news for macroeconomic coverage. "
+            "Call get_macro_indicators(indicator, curr_date, look_back_days) to ground macro commentary in actual FRED data "
+            "(e.g. 'cpi', 'core_pce', 'unemployment', 'fed_funds_rate', '10y_treasury', 'yield_curve') rather than asserting macro levels from memory. "
             "Also call get_options_chain once and cross-check its unusual-activity rows and day-over-day OI deltas against the news you collected: "
             "large positioning shifts that precede or coincide with a specific headline are stronger signals than either source alone — "
             "flag such confirmations (and contradictions) explicitly in the report. "

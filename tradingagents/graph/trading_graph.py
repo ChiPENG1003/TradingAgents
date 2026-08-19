@@ -32,7 +32,10 @@ from tradingagents.agents.utils.agent_utils import (
     get_income_statement,
     get_news,
     get_insider_transactions,
-    get_global_news
+    get_global_news,
+    get_options_chain,
+    get_verified_market_snapshot,
+    get_macro_indicators,
 )
 
 from .checkpointer import checkpoint_step, clear_checkpoint, get_checkpointer, thread_id
@@ -173,6 +176,13 @@ class TradingAgentsGraph:
             if effort:
                 kwargs["effort"] = effort
 
+        # Sampling temperature is cross-provider: forward it whenever set.
+        # float() so a value from TRADINGAGENTS_TEMPERATURE ("0.2") works the
+        # same as a programmatic float. Reasoning models largely ignore it.
+        temperature = self.config.get("temperature")
+        if temperature is not None and temperature != "":
+            kwargs["temperature"] = float(temperature)
+
         return kwargs
 
     def _create_tool_nodes(self) -> Dict[str, ToolNode]:
@@ -184,6 +194,10 @@ class TradingAgentsGraph:
                     get_stock_data,
                     # Technical indicators
                     get_indicators,
+                    # Options chain (bound by the market analyst)
+                    get_options_chain,
+                    # Deterministic verification snapshot to ground exact numeric claims
+                    get_verified_market_snapshot,
                 ]
             ),
             "social": ToolNode(
@@ -198,6 +212,10 @@ class TradingAgentsGraph:
                     get_news,
                     get_global_news,
                     get_insider_transactions,
+                    # Options chain (bound by the news analyst)
+                    get_options_chain,
+                    # Macro indicators from FRED (bound by the news analyst)
+                    get_macro_indicators,
                 ]
             ),
             "fundamentals": ToolNode(

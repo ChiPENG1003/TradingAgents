@@ -6,7 +6,7 @@ import numpy as np
 import yfinance as yf
 import os
 import logging
-from .stockstats_utils import StockstatsUtils, _clean_dataframe, yf_retry, load_ohlcv, filter_financials_by_date
+from .stockstats_utils import StockstatsUtils, _clean_dataframe, yf_retry, load_ohlcv, filter_financials_by_date, assert_ohlcv_not_stale
 from .config import get_config
 
 logger = logging.getLogger(__name__)
@@ -52,6 +52,12 @@ def get_YFin_data_online(
         return (
             f"No data found for symbol '{symbol}' between {start_date} and {end_date}"
         )
+
+    # Reject a stale frame: yfinance intermittently returns a year-old partial
+    # frame that still has rows and a Close, which would otherwise feed a wrong
+    # price into the report. Raise so the vendor router tries the next vendor
+    # (upstream #1021). end_date is the requested reference point.
+    assert_ohlcv_not_stale(data, end_date, symbol)
 
     # Remove timezone info from index for cleaner output
     if data.index.tz is not None:

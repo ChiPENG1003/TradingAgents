@@ -19,6 +19,11 @@ DEFAULT_CONFIG = {
     "google_thinking_level": None,      # "high", "minimal", etc.
     "openai_reasoning_effort": None,    # "medium", "high", "low"
     "anthropic_effort": None,           # "high", "medium", "low"
+    # Sampling temperature, forwarded to every provider when set. None leaves
+    # each provider at its own default. Lower values reduce run-to-run variation
+    # on models that honor it; reasoning models largely ignore it and no setting
+    # makes LLM output bit-identical across runs. Override via TRADINGAGENTS_TEMPERATURE.
+    "temperature": os.getenv("TRADINGAGENTS_TEMPERATURE") or None,
     # Output language for analyst reports and final decision
     # Internal agent debate stays in English for reasoning quality
     "output_language": "English",
@@ -43,6 +48,7 @@ DEFAULT_CONFIG = {
         "fundamental_data": "yfinance",      # Options: alpha_vantage, yfinance
         "news_data": "yfinance",             # Options: alpha_vantage, yfinance
         "options_data": "yfinance",          # Options: yfinance (no historical chain)
+        "macro_data": "fred",                # Options: fred (needs FRED_API_KEY)
     },
     # Tool-level configuration (takes precedence over category-level)
     "tool_vendors": {

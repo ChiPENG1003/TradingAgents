@@ -5,6 +5,7 @@ from tradingagents.agents.utils.agent_utils import (
     get_language_instruction,
     get_options_chain,
     get_stock_data,
+    get_verified_market_snapshot,
 )
 from tradingagents.dataflows.config import get_config
 
@@ -19,6 +20,7 @@ def create_market_analyst(llm):
             get_stock_data,
             get_indicators,
             get_options_chain,
+            get_verified_market_snapshot,
         ]
 
         system_message = (
@@ -40,6 +42,9 @@ def create_market_analyst(llm):
             "(3) Volume confirmation — today's volume vs volume_20_sma, whether the recent move is backed by participation, and any divergence between price and volume; "
             "(4) Options-implied levels & volatility — note max pain and the nearest high-OI call/put strikes as candidate magnets or resistance/support, "
             "report ATM IV (rich vs cheap relative to recent realized volatility if knowable) and IV skew (a strongly positive put-call skew implies the market is paying up for downside hedges). "
+            "Before writing the final report, call get_verified_market_snapshot for this ticker and the current date, and treat it as the source of truth for any exact OHLCV, price-level, or indicator-value claim. "
+            "If another tool's output conflicts with the verified snapshot, flag the discrepancy rather than inventing a reconciled number. "
+            "Do not claim historical validation, support/resistance bounces, or exact percentage moves unless they are directly supported by tool output with concrete dates and prices. "
             "Append a Markdown summary table at the end."
             + get_language_instruction()
         )

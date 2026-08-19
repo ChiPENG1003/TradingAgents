@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tradingagents"
-version = "0.2.3"
+version = "0.3.1+fork"
 description = "TradingAgents: Multi-Agents LLM Financial Trading Framework"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -34,8 +34,10 @@ dependencies = [
     "matplotlib>=3.8.0",
     "pydantic>=2.0.0",
     "pyarrow>=15.0.0",
-    "optuna>=4.0.0",
 ]
+
+[project.optional-dependencies]
+optimize = ["optuna>=4.0.0"]
 
 [project.scripts]
 tradingagents = "cli.main:app"
