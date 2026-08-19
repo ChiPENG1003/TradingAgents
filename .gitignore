@@ -226,3 +226,6 @@ __marimo__/
 
 # Cache
 **/data_cache/
+
+# Local backtest feature artifacts
+back_test/features/
