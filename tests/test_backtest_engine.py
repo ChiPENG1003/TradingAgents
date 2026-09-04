@@ -9,13 +9,20 @@ from back_test.engine import BacktestEngine
 
 
 class StaticPriceBacktestEngine(BacktestEngine):
-    def __init__(self, *args, prices: pd.DataFrame, index_prices=None, **kwargs):
+    def __init__(self, *args, prices: pd.DataFrame, index_prices=None,
+                 volume_history=None, **kwargs):
         super().__init__(*args, **kwargs)
         self._prices = prices
         self._index_prices = index_prices or {}
+        self._volume_history = volume_history
 
     def load_prices(self) -> pd.DataFrame:
         return self._prices.copy()
+
+    def load_volume_history(self) -> pd.DataFrame:
+        if self._volume_history is None:
+            raise AssertionError("test did not supply a volume history")
+        return self._volume_history.copy()
 
     def load_index_context_prices(self, _effective_start_date, _effective_end_date):
         return {ticker: df.copy() for ticker, df in self._index_prices.items()}
@@ -698,6 +705,235 @@ class BacktestEngineTest(unittest.TestCase):
         self.assertEqual(result.trades[0]["exit_price"], 12.0)
         self.assertEqual(result.equity_curve["Position"].tolist(), [10.0, 0.0])
 
+    # ------------------------------------------------ take-profit rate limits
+
+    @staticmethod
+    def _take_profit_fixture(strategy_dir, ticker):
+        """Fill an entry on 01-02, then trim it on 01-03.
+
+        take_profit orders are only built when a position already exists, so
+        the trim has to come from a second strategy that activates after the
+        entry has filled.
+        """
+        write_strategy(
+            strategy_dir, ticker, "2025-01-01",
+            valid_until="2025-01-02",
+            entry={"price": 10.0, "size_pct": 100.0},
+            take_profit={"price": None, "size_pct": 0.0},
+            stop_loss={"price": 1.0},
+        )
+        write_strategy(
+            strategy_dir, ticker, "2025-01-02",
+            valid_until="2025-01-06",
+            action="HOLD",
+            entry={"price": None, "size_pct": 0.0},
+            take_profit={"price": 12.0, "size_pct": 100.0},
+            stop_loss={"price": 1.0},
+        )
+        return pd.DataFrame([
+            {"Date": pd.Timestamp("2025-01-01"), "Open": 10.0, "High": 10.0, "Low": 10.0, "Close": 10.0},
+            {"Date": pd.Timestamp("2025-01-02"), "Open": 10.0, "High": 10.0, "Low": 9.0, "Close": 10.0},
+            {"Date": pd.Timestamp("2025-01-03"), "Open": 12.0, "High": 13.0, "Low": 12.0, "Close": 13.0},
+        ])
+
+    def _run_take_profit(self, **engine_kwargs):
+        with tempfile.TemporaryDirectory() as tmp:
+            strategy_dir = Path(tmp)
+            prices = self._take_profit_fixture(strategy_dir, "TEST")
+            return StaticPriceBacktestEngine(
+                "TEST", "2025-01-01", "2025-01-03",
+                initial_capital=100.0, strategies_dir=strategy_dir, prices=prices,
+                entry_signal_ttl_trading_days=5, **engine_kwargs,
+            ).run()
+
+    def test_take_profit_sells_the_whole_position_by_default(self):
+        result = self._run_take_profit()
+        sells = [e for e in result.executions if e["order_type"] == "take_profit"]
+        self.assertEqual(len(sells), 1)
+        self.assertAlmostEqual(sells[0]["shares"], 10.0)
+
+    def test_take_profit_count_limit_blocks_the_trim(self):
+        result = self._run_take_profit(max_take_profits_per_trade=0)
+        self.assertEqual([e for e in result.executions if e["order_type"] == "take_profit"], [])
+        self.assertGreater(result.report["tp_rejected_max_count"], 0)
+
+    def test_take_profit_spacing_defers_a_trim_that_is_too_soon(self):
+        # The position opened on 01-02, so a 5-day spacing rule cannot be
+        # satisfied by 01-03 — but the order is deferred, not cancelled.
+        result = self._run_take_profit(
+            max_take_profits_per_trade=1, min_days_between_take_profits=5)
+        self.assertEqual(result.report["tp_rejected_min_spacing"], 0)
+
+    def test_residual_floor_keeps_a_core_holding(self):
+        """A 100% take-profit may only sell down to the residual floor."""
+        result = self._run_take_profit(take_profit_min_residual_pct=0.60)
+        sells = [e for e in result.executions if e["order_type"] == "take_profit"]
+        self.assertEqual(len(sells), 1)
+        # Peak was 10 shares, so 6 must survive and only 4 can be sold.
+        self.assertAlmostEqual(sells[0]["shares"], 4.0)
+        self.assertGreater(result.report["tp_capped_residual"], 0)
+
+    def test_residual_floor_leaves_a_small_trim_untouched(self):
+        result = self._run_take_profit(take_profit_min_residual_pct=0.0)
+        sells = [e for e in result.executions if e["order_type"] == "take_profit"]
+        self.assertAlmostEqual(sells[0]["shares"], 10.0)
+        self.assertEqual(result.report["tp_capped_residual"], 0)
+
+    # ------------------------------------------ prior-bar volume confirmation
+
+    @staticmethod
+    def _volume_gate_fixture():
+        """Flat bars that touch a 10.0 limit every day, with one volume spike.
+
+        Volume history starts before the replay window so the 2-bar trailing
+        average is already warm on the first replayed bar. Prior-bar ratios
+        land at 1.0 on 01-02 and 01-03, then 500/mean(100, 500) = 1.667 on
+        01-04 — so a 1.5 threshold defers twice and then lets the buy through.
+        """
+        prices = pd.DataFrame(
+            [
+                {"Date": pd.Timestamp("2025-01-01"), "Open": 10.0, "High": 10.0, "Low": 10.0, "Close": 10.0},
+                {"Date": pd.Timestamp("2025-01-02"), "Open": 10.0, "High": 10.0, "Low": 9.0, "Close": 10.0},
+                {"Date": pd.Timestamp("2025-01-03"), "Open": 10.0, "High": 10.0, "Low": 9.0, "Close": 10.0},
+                {"Date": pd.Timestamp("2025-01-04"), "Open": 10.0, "High": 10.0, "Low": 9.0, "Close": 10.0},
+            ]
+        )
+        volumes = [100.0, 100.0, 100.0, 500.0, 100.0]
+        history = pd.DataFrame(
+            [
+                {"Date": pd.Timestamp("2024-12-31"), "Open": 10.0, "High": 10.0, "Low": 10.0, "Close": 10.0},
+                *prices.to_dict("records"),
+            ]
+        )
+        history["Volume"] = volumes
+        return prices, history
+
+    def test_low_prior_bar_volume_defers_entry_until_volume_confirms(self):
+        prices, history = self._volume_gate_fixture()
+        with tempfile.TemporaryDirectory() as tmp:
+            strategy_dir = Path(tmp)
+            ticker = "TEST"
+            write_strategy(
+                strategy_dir,
+                ticker,
+                "2025-01-01",
+                valid_until="2025-01-06",
+                entry={"price": 10.0, "size_pct": 100.0},
+                take_profit={"price": None, "size_pct": 0.0},
+                stop_loss={"price": 1.0},
+            )
+            result = StaticPriceBacktestEngine(
+                ticker,
+                "2025-01-01",
+                "2025-01-04",
+                initial_capital=100.0,
+                strategies_dir=strategy_dir,
+                prices=prices,
+                volume_history=history,
+                entry_signal_ttl_trading_days=5,
+                entry_min_volume_ratio=1.5,
+                volume_average_window=2,
+            ).run()
+
+        # Deferred on 01-02 and 01-03, filled on 01-04 once the spike landed
+        # in the prior bar. A cancelling gate would have produced no fill.
+        self.assertEqual(result.report["entry_deferred_low_volume"], 2)
+        buys = [e for e in result.executions if e["side"] == "BUY"]
+        self.assertEqual(len(buys), 1)
+        self.assertEqual(buys[0]["fill_date"], "2025-01-04")
+
+    def test_volume_gate_reads_prior_bar_not_current_bar(self):
+        prices, history = self._volume_gate_fixture()
+        engine = StaticPriceBacktestEngine(
+            "TEST",
+            "2025-01-01",
+            "2025-01-04",
+            prices=prices,
+            volume_history=history,
+            entry_min_volume_ratio=1.5,
+            volume_average_window=2,
+        )
+        ratios = engine._load_prior_volume_ratios(prices)
+
+        # 01-04 passes on the 01-03 spike even though its own bar is quiet:
+        # 100 / mean(500, 100) = 0.33 would have blocked it.
+        self.assertAlmostEqual(ratios["2025-01-03"], 1.0)
+        self.assertAlmostEqual(ratios["2025-01-04"], 500.0 / 300.0)
+        self.assertNotIn("2025-01-01", ratios)
+
+    def test_volume_gate_off_by_default_leaves_fill_date_unchanged(self):
+        prices, history = self._volume_gate_fixture()
+        with tempfile.TemporaryDirectory() as tmp:
+            strategy_dir = Path(tmp)
+            ticker = "TEST"
+            write_strategy(
+                strategy_dir,
+                ticker,
+                "2025-01-01",
+                valid_until="2025-01-06",
+                entry={"price": 10.0, "size_pct": 100.0},
+                take_profit={"price": None, "size_pct": 0.0},
+                stop_loss={"price": 1.0},
+            )
+            result = StaticPriceBacktestEngine(
+                ticker,
+                "2025-01-01",
+                "2025-01-04",
+                initial_capital=100.0,
+                strategies_dir=strategy_dir,
+                prices=prices,
+                volume_history=history,
+                entry_signal_ttl_trading_days=5,
+            ).run()
+
+        self.assertEqual(result.report["entry_deferred_low_volume"], 0)
+        self.assertEqual(result.executions[0]["fill_date"], "2025-01-02")
+
+    def test_add_volume_gate_is_independent_of_entry_gate(self):
+        prices, history = self._volume_gate_fixture()
+        with tempfile.TemporaryDirectory() as tmp:
+            strategy_dir = Path(tmp)
+            ticker = "TEST"
+            write_strategy(
+                strategy_dir,
+                ticker,
+                "2025-01-01",
+                valid_until="2025-01-02",
+                entry={"price": 10.0, "size_pct": 50.0},
+                take_profit={"price": None, "size_pct": 0.0},
+                stop_loss={"price": 1.0},
+            )
+            write_strategy(
+                strategy_dir,
+                ticker,
+                "2025-01-02",
+                valid_until="2025-01-06",
+                action="HOLD",
+                entry={"price": None, "size_pct": 0.0},
+                add_position={"price": 10.0, "size_pct": 50.0},
+                take_profit={"price": None, "size_pct": 0.0},
+                stop_loss={"price": 1.0},
+            )
+            result = StaticPriceBacktestEngine(
+                ticker,
+                "2025-01-01",
+                "2025-01-04",
+                initial_capital=100.0,
+                strategies_dir=strategy_dir,
+                prices=prices,
+                volume_history=history,
+                add_signal_ttl_trading_days=5,
+                add_min_volume_ratio=1.5,
+                volume_average_window=2,
+            ).run()
+
+        # Entry is ungated and fills on 01-02; only the add waits for volume.
+        self.assertEqual(result.report["entry_deferred_low_volume"], 0)
+        self.assertEqual(result.report["add_deferred_low_volume"], 1)
+        buys = [(e["fill_date"], e["order_type"]) for e in result.executions
+                if e["side"] == "BUY"]
+        self.assertEqual(buys, [("2025-01-02", "entry"), ("2025-01-04", "add")])
+
     def test_add_position_increases_existing_position(self):
         with tempfile.TemporaryDirectory() as tmp:
             strategy_dir = Path(tmp)
@@ -1347,6 +1583,55 @@ class BacktestEngineTest(unittest.TestCase):
         # Stop did not fire — only the end_of_backtest mark remains.
         reasons = [t["reason"] for t in result.trades]
         self.assertNotIn("stop_loss", reasons)
+
+
+    # ------------------------------- frozen orders generated against a flat book
+
+    def _flat_book_fixture(self, strategy_dir, ticker, holdings_quantity):
+        """Enter on 01-02, then a HOLD strategy activates while the position is open."""
+        snapshot = {"execution_context": {"holdings_info": {"quantity": holdings_quantity}}}
+        write_strategy(
+            strategy_dir, ticker, "2025-01-01",
+            valid_until="2025-01-02",
+            entry={"price": 10.0, "size_pct": 100.0},
+            take_profit={"price": None, "size_pct": 0.0},
+            stop_loss={"price": 1.0},
+            feature_snapshot=snapshot,
+        )
+        write_strategy(
+            strategy_dir, ticker, "2025-01-02",
+            valid_until="2025-01-06",
+            action="HOLD",
+            entry={"price": None, "size_pct": 0.0},
+            take_profit={"price": None, "size_pct": 0.0},
+            stop_loss={"price": 1.0},
+            feature_snapshot=snapshot,
+        )
+        return pd.DataFrame([
+            {"Date": pd.Timestamp("2025-01-01"), "Open": 10.0, "High": 10.0, "Low": 10.0, "Close": 10.0},
+            {"Date": pd.Timestamp("2025-01-02"), "Open": 10.0, "High": 10.0, "Low": 9.0, "Close": 10.0},
+            {"Date": pd.Timestamp("2025-01-03"), "Open": 10.0, "High": 10.0, "Low": 10.0, "Close": 10.0},
+        ])
+
+    def _run_flat_book(self, holdings_quantity):
+        with tempfile.TemporaryDirectory() as tmp:
+            strategy_dir = Path(tmp)
+            prices = self._flat_book_fixture(strategy_dir, "TEST", holdings_quantity)
+            return StaticPriceBacktestEngine(
+                "TEST", "2025-01-01", "2025-01-03",
+                initial_capital=100.0, strategies_dir=strategy_dir, prices=prices,
+                entry_signal_ttl_trading_days=5,
+            ).run()
+
+    def test_frozen_orders_generated_flat_are_flagged_when_a_position_is_open(self):
+        """Silent otherwise: the orders are simply the wrong shape for the date."""
+        result = self._run_flat_book(holdings_quantity=0.0)
+        self.assertGreater(result.report["frozen_orders_assumed_flat"], 0)
+
+    def test_orders_generated_with_real_holdings_are_not_flagged(self):
+        result = self._run_flat_book(holdings_quantity=5.0)
+        self.assertEqual(result.report["frozen_orders_assumed_flat"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

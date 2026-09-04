@@ -23,9 +23,10 @@ from tradingagents.agents.utils.agent_states import (
 from tradingagents.dataflows.config import set_config
 
 # Import the new abstract tool methods from agent_utils
+from tradingagents.agents.utils.token_usage import TokenUsageTracker
 from tradingagents.agents.utils.agent_utils import (
     get_stock_data,
-    get_indicators,
+    get_indicators_table,
     get_fundamentals,
     get_balance_sheet,
     get_cashflow,
@@ -76,7 +77,10 @@ class TradingAgentsGraph:
         """
         self.debug = debug
         self.config = config or DEFAULT_CONFIG
-        self.callbacks = callbacks or []
+        # Always meter tokens. Every prompt-size claim before this existed was
+        # a model of the prompt, not a measurement of what the provider billed.
+        self.token_usage = TokenUsageTracker()
+        self.callbacks = [*(callbacks or []), self.token_usage]
         self.trading_mode = trading_mode
 
         # Update the interface's config
@@ -91,9 +95,9 @@ class TradingAgentsGraph:
         # Initialize LLMs with provider-specific thinking configuration
         llm_kwargs = self._get_provider_kwargs()
 
-        # Add callbacks to kwargs if provided (passed to LLM constructor)
-        if self.callbacks:
-            llm_kwargs["callbacks"] = self.callbacks
+        # Callbacks are attached at construction so every invocation of these
+        # LLMs is metered, including the tool-loop iterations inside analysts.
+        llm_kwargs["callbacks"] = self.callbacks
 
         deep_client = create_llm_client(
             provider=self.config["llm_provider"],
@@ -192,8 +196,8 @@ class TradingAgentsGraph:
                 [
                     # Core stock data tools
                     get_stock_data,
-                    # Technical indicators
-                    get_indicators,
+                    # Technical indicators (batched: one table for all series)
+                    get_indicators_table,
                     # Options chain (bound by the market analyst)
                     get_options_chain,
                     # Deterministic verification snapshot to ground exact numeric claims
@@ -242,6 +246,8 @@ class TradingAgentsGraph:
 
         self.ticker = company_name
         self.trading_mode = trading_mode
+        # Meter each run independently; a sweep aggregates the per-run JSONs.
+        self.token_usage.reset()
 
         if self.config.get("checkpoint_enabled"):
             self._checkpointer_ctx = get_checkpointer(
@@ -298,6 +304,7 @@ class TradingAgentsGraph:
 
             # Log state
             self._log_state(trade_date, final_state)
+            self._log_token_usage(company_name, trade_date)
 
             # In backtest mode, also persist the structured strategy JSON.
             if trading_mode == "backtest":
@@ -316,6 +323,32 @@ class TradingAgentsGraph:
                 self._checkpointer_ctx.__exit__(None, None, None)
                 self._checkpointer_ctx = None
                 self.graph = self.workflow.compile()
+
+    def _log_token_usage(self, ticker: str, trade_date: str) -> Optional[Path]:
+        """Print the per-node token table and persist it next to the run logs.
+
+        Written per run rather than accumulated so a sweep over many dates can
+        be aggregated afterwards without the tracker growing unboundedly.
+        """
+        if not self.token_usage.by_node:
+            return None
+        print(
+            f"[token_usage] {ticker} {trade_date}\n{self.token_usage.render()}",
+            flush=True,
+        )
+        safe_ticker = safe_ticker_component(ticker)
+        path = (
+            Path(__file__).resolve().parents[2]
+            / "back_test" / "logs" / "token_usage"
+            / f"{safe_ticker}_{trade_date}.json"
+        )
+        report = self.token_usage.report()
+        report["ticker"] = ticker
+        report["trade_date"] = str(trade_date)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n",
+                        encoding="utf-8")
+        return path
 
     def _save_backtest_strategy(self, ticker: str, trade_date: str, final_state: Dict[str, Any]) -> Path:
         """Extract and persist the structured strategy JSON to back_test/strategy/{ticker}/."""

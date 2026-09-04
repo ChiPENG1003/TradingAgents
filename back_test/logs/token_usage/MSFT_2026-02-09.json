@@ -1,0 +1,73 @@
+{
+  "by_node": {
+    "Market Analyst": {
+      "models": [
+        "deepseek-v4-flash"
+      ],
+      "cost_usd": 0.005718,
+      "calls": 3,
+      "input_tokens": 17873,
+      "output_tokens": 6506,
+      "total_tokens": 24379,
+      "cache_read_tokens": 11776,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.6589
+    },
+    "Portfolio Manager": {
+      "models": [
+        "deepseek-v4-pro"
+      ],
+      "cost_usd": 0.017021,
+      "calls": 1,
+      "input_tokens": 3161,
+      "output_tokens": 7543,
+      "total_tokens": 10704,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Research Manager": {
+      "models": [
+        "deepseek-v4-pro"
+      ],
+      "cost_usd": 0.017691,
+      "calls": 1,
+      "input_tokens": 770,
+      "output_tokens": 8678,
+      "total_tokens": 9448,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Bull Researcher": {
+      "models": [
+        "deepseek-v4-flash"
+      ],
+      "cost_usd": 0.002139,
+      "calls": 1,
+      "input_tokens": 1994,
+      "output_tokens": 2576,
+      "total_tokens": 4570,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    }
+  },
+  "totals": {
+    "models": [
+      "deepseek-v4-flash",
+      "deepseek-v4-pro"
+    ],
+    "cost_usd": 0.042569,
+    "calls": 6,
+    "input_tokens": 23798,
+    "output_tokens": 25303,
+    "total_tokens": 49101,
+    "cache_read_tokens": 11776,
+    "cache_creation_tokens": 0,
+    "cache_hit_rate": 0.4948
+  },
+  "responses_without_usage": 0,
+  "ticker": "MSFT",
+  "trade_date": "2026-02-09"
+}

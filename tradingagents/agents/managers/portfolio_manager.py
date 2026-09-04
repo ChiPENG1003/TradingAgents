@@ -1,3 +1,6 @@
+import json
+import logging
+import re
 from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, model_validator
@@ -8,6 +11,15 @@ from tradingagents.agents.utils.agent_utils import (
     get_language_instruction,
 )
 from tradingagents.agents.utils.conflict_detector import format_conflict_report_for_prompt
+from tradingagents.agents.schemas import (
+    LiveDecisionRow,
+    LivePortfolioDecision,
+    render_live_portfolio_decision,
+)
+from tradingagents.agents.utils.structured import bind_structured
+
+
+logger = logging.getLogger(__name__)
 
 
 BROAD_INDEX_TICKERS = {
@@ -185,6 +197,23 @@ def _enforce_strategy_rules(strategy: dict, anchors: Optional[dict], constraints
 
 
 def create_portfolio_manager(llm, memory):
+    structured_llm = bind_structured(llm, LivePortfolioDecision, "Live Portfolio Manager")
+
+    def invoke_live_decision(prompt: str) -> LivePortfolioDecision:
+        if structured_llm is not None:
+            try:
+                return LivePortfolioDecision.model_validate(structured_llm.invoke(prompt))
+            except Exception as exc:
+                logger.warning("Live Portfolio Manager structured output failed: %s", exc)
+        response = llm.invoke(prompt)
+        content = str(getattr(response, "content", ""))
+        fenced = re.search(r"```(?:json)?\s*(.*?)```", content, re.DOTALL | re.IGNORECASE)
+        candidate = fenced.group(1) if fenced else content
+        try:
+            return LivePortfolioDecision.model_validate(json.loads(candidate))
+        except Exception as exc:
+            raise ValueError("Live Portfolio Manager did not return valid structured JSON") from exc
+
     def portfolio_manager_node(state) -> dict:
         # Lazy import: portfolio_state_manager imports schemas from this module,
         # so a top-level import here would be circular.
@@ -224,19 +253,26 @@ def create_portfolio_manager(llm, memory):
             else [k for k in required_anchors if anchors.get(k) is None]
         )
         if missing_required:
-            forced = (
-                "**Decision**: HOLD\n\n"
-                "**Rationale**: FORCED HOLD — required market anchors "
-                f"{missing_required} were unavailable for {ticker} on {trade_date}. "
-                "System policy: no directional short-term recommendation when core "
-                "technical anchors are missing; re-run once the data feed is restored.\n\n"
-                "**Decision Audit**:\n"
-                "- Data-supported: none (anchor computation failed)\n"
-                "- Inferred: none\n"
-                f"- Missing data: {', '.join(missing_required)}\n"
-                "- Invalidation triggers: n/a\n"
-                "- Watch-list: restore OHLCV / indicator data feed, then re-run analysis."
+            mark = float((holdings_info or {}).get("mark_price") or 1.0)
+            forced_model = LivePortfolioDecision(
+                ticker=ticker,
+                as_of_date=trade_date,
+                decision="HOLD",
+                current_price=mark,
+                plan_rows=[LiveDecisionRow(
+                    item="数据保护",
+                    operation="HOLD",
+                    trigger_description="核心市场数据恢复前不执行新交易",
+                )],
+                holding_period="until data is restored",
+                rationale=(
+                    "FORCED HOLD — required market anchors were unavailable; "
+                    "directional levels must not be fabricated."
+                ),
+                missing_data=list(missing_required),
+                watch_list=["restore OHLCV / indicator data feed, then re-run analysis"],
             )
+            forced = render_live_portfolio_decision(forced_model, holdings_info)
             return {
                 "risk_debate_state": {
                     **risk_debate_state,
@@ -244,6 +280,7 @@ def create_portfolio_manager(llm, memory):
                     "latest_speaker": "Judge",
                 },
                 "final_trade_decision": forced,
+                "live_portfolio_decision": forced_model.model_dump(),
                 "structured_strategy": None,
             }
 
@@ -304,20 +341,31 @@ Use the precomputed market anchors verbatim — do not re-derive prices, ATR, su
 
 Be decisive and ground every parameter in specific evidence from the debate.{get_language_instruction()}
 
-**Required Output:**
-1. **Decision**: BUY / HOLD / SELL
-2. **Trade Parameters**: Initial entry, add-position level, take-profit level, reduce-stop level, stop-loss level, expected holding period (days to weeks)
-3. **Position Sizing**: Suggested allocation as % of portfolio and rationale
-4. **Rationale**: Key reasoning grounded in the analysts' debate
-5. **Decision Audit** (be honest — if you cannot cite specific evidence for a claim, list it under Inferred, not Data-supported):
-   - **Data-supported**: conclusions backed by a specific anchor or report citation; include the number or date
-   - **Inferred**: conclusions reached by reasoning over signals rather than direct evidence
-   - **Missing data**: required inputs that were unavailable or returned a NOTICE (e.g. options chain, volume_ratio)
-   - **Invalidation triggers**: specific observable events that would flip this recommendation
-   - **Watch-list**: the top 3 things to monitor before the next review"""
+Return the configured LivePortfolioDecision schema only. plan_rows must be ordered as an executable ladder: existing/core position, entries/adds, defensive reduction, hard stop, profit-taking stages, then trend tail when applicable. Use numeric shares and prices; do not calculate reference_amount or NAV percentage because Python will calculate those. Represent a full exit with operation=CLEAR. Put conditional variants in conditional_notes. Decision audit fields must distinguish data-supported facts from inference."""
 
-        response = llm.invoke(prompt)
-        decision_text = response.content
+        try:
+            decision_model = invoke_live_decision(prompt)
+        except ValueError as exc:
+            logger.error("Live Portfolio Manager output rejected: %s", exc)
+            decision_model = LivePortfolioDecision(
+                ticker=ticker,
+                as_of_date=trade_date,
+                decision="HOLD",
+                current_price=float(anchors["current_price"]),
+                plan_rows=[LiveDecisionRow(
+                    item="输出保护",
+                    operation="HOLD",
+                    trigger_description="结构化决策生成失败，本轮不执行新交易",
+                )],
+                holding_period="until next review",
+                rationale="FORCED HOLD — structured live decision validation failed.",
+                missing_data=["valid LivePortfolioDecision output"],
+                watch_list=["review provider structured-output logs and rerun"],
+            )
+        decision_model.ticker = ticker
+        decision_model.as_of_date = trade_date
+        decision_model.current_price = float(anchors["current_price"])
+        decision_text = render_live_portfolio_decision(decision_model, holdings_info)
 
         new_risk_debate_state = {
             "judge_decision": decision_text,
@@ -335,6 +383,7 @@ Be decisive and ground every parameter in specific evidence from the debate.{get
         return {
             "risk_debate_state": new_risk_debate_state,
             "final_trade_decision": decision_text,
+            "live_portfolio_decision": decision_model.model_dump(),
             "structured_strategy": None,
         }
 

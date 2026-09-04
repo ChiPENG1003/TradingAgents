@@ -1,0 +1,99 @@
+{
+  "by_node": {
+    "Market Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.00347,
+      "calls": 4,
+      "input_tokens": 14986,
+      "output_tokens": 1781,
+      "total_tokens": 16767,
+      "cache_read_tokens": 9248,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.6171
+    },
+    "Portfolio Manager": {
+      "models": [
+        "gpt-5.6-terra"
+      ],
+      "cost_usd": 0.021898,
+      "calls": 1,
+      "input_tokens": 6927,
+      "output_tokens": 883,
+      "total_tokens": 7810,
+      "cache_read_tokens": 1418,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.2047
+    },
+    "Bull Researcher": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.001315,
+      "calls": 1,
+      "input_tokens": 3924,
+      "output_tokens": 442,
+      "total_tokens": 4366,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Fundamentals Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.003042,
+      "calls": 2,
+      "input_tokens": 1756,
+      "output_tokens": 2242,
+      "total_tokens": 3998,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Social Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.001434,
+      "calls": 2,
+      "input_tokens": 1764,
+      "output_tokens": 901,
+      "total_tokens": 2665,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Research Manager": {
+      "models": [
+        "gpt-5.6-terra"
+      ],
+      "cost_usd": 0.00714,
+      "calls": 1,
+      "input_tokens": 828,
+      "output_tokens": 457,
+      "total_tokens": 1285,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    }
+  },
+  "totals": {
+    "models": [
+      "gpt-5.6-luna",
+      "gpt-5.6-terra"
+    ],
+    "cost_usd": 0.038298,
+    "calls": 11,
+    "input_tokens": 30185,
+    "output_tokens": 6706,
+    "total_tokens": 36891,
+    "cache_read_tokens": 10666,
+    "cache_creation_tokens": 0,
+    "cache_hit_rate": 0.3534
+  },
+  "responses_without_usage": 0,
+  "ticker": "COST",
+  "trade_date": "2024-05-13"
+}

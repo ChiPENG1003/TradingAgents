@@ -1,0 +1,99 @@
+{
+  "by_node": {
+    "Market Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.003623,
+      "calls": 4,
+      "input_tokens": 13411,
+      "output_tokens": 2014,
+      "total_tokens": 15425,
+      "cache_read_tokens": 8198,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.6113
+    },
+    "Portfolio Manager": {
+      "models": [
+        "gpt-5.6-terra"
+      ],
+      "cost_usd": 0.023832,
+      "calls": 1,
+      "input_tokens": 6964,
+      "output_tokens": 1038,
+      "total_tokens": 8002,
+      "cache_read_tokens": 1418,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.2036
+    },
+    "Bull Researcher": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.001334,
+      "calls": 1,
+      "input_tokens": 3470,
+      "output_tokens": 533,
+      "total_tokens": 4003,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Fundamentals Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.002609,
+      "calls": 2,
+      "input_tokens": 1757,
+      "output_tokens": 1881,
+      "total_tokens": 3638,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Social Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.001386,
+      "calls": 2,
+      "input_tokens": 1766,
+      "output_tokens": 861,
+      "total_tokens": 2627,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Research Manager": {
+      "models": [
+        "gpt-5.6-terra"
+      ],
+      "cost_usd": 0.008314,
+      "calls": 1,
+      "input_tokens": 947,
+      "output_tokens": 535,
+      "total_tokens": 1482,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    }
+  },
+  "totals": {
+    "models": [
+      "gpt-5.6-luna",
+      "gpt-5.6-terra"
+    ],
+    "cost_usd": 0.041098,
+    "calls": 11,
+    "input_tokens": 28315,
+    "output_tokens": 6862,
+    "total_tokens": 35177,
+    "cache_read_tokens": 9616,
+    "cache_creation_tokens": 0,
+    "cache_hit_rate": 0.3396
+  },
+  "responses_without_usage": 0,
+  "ticker": "UNH",
+  "trade_date": "2024-08-05"
+}

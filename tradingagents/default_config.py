@@ -11,8 +11,11 @@ DEFAULT_CONFIG = {
     ),
     # LLM settings
     "llm_provider": "openai",
-    "deep_think_llm": "gpt-5.4",
-    "quick_think_llm": "gpt-5.4-mini",
+    # Current-generation GPT-5.6. Terra is both cheaper and newer than the
+    # gpt-5.4 it replaces ($2/$12 vs $2.50/$15); Luna is 3.75x cheaper than
+    # gpt-5.4-mini on both input and output. Verified 2026-09.
+    "deep_think_llm": "gpt-5.6-terra",
+    "quick_think_llm": "gpt-5.6-luna",
     "backend_url": None,
     "checkpoint_enabled": False,
     # Provider-specific thinking configuration

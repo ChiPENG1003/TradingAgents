@@ -1,0 +1,112 @@
+{
+  "by_node": {
+    "Market Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.001283,
+      "calls": 4,
+      "input_tokens": 11824,
+      "output_tokens": 246,
+      "total_tokens": 12070,
+      "cache_read_tokens": 7652,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.6472
+    },
+    "Fundamentals Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.004591,
+      "calls": 2,
+      "input_tokens": 5652,
+      "output_tokens": 2884,
+      "total_tokens": 8536,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Portfolio Manager": {
+      "models": [
+        "gpt-5.6-terra"
+      ],
+      "cost_usd": 0.022694,
+      "calls": 1,
+      "input_tokens": 6719,
+      "output_tokens": 984,
+      "total_tokens": 7703,
+      "cache_read_tokens": 1418,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.211
+    },
+    "Bull Researcher": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.001415,
+      "calls": 1,
+      "input_tokens": 3875,
+      "output_tokens": 533,
+      "total_tokens": 4408,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Force Finalize Market": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.001713,
+      "calls": 1,
+      "input_tokens": 2525,
+      "output_tokens": 1007,
+      "total_tokens": 3532,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Social Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.001366,
+      "calls": 2,
+      "input_tokens": 1764,
+      "output_tokens": 844,
+      "total_tokens": 2608,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Research Manager": {
+      "models": [
+        "gpt-5.6-terra"
+      ],
+      "cost_usd": 0.00675,
+      "calls": 1,
+      "input_tokens": 903,
+      "output_tokens": 412,
+      "total_tokens": 1315,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    }
+  },
+  "totals": {
+    "models": [
+      "gpt-5.6-luna",
+      "gpt-5.6-terra"
+    ],
+    "cost_usd": 0.039811,
+    "calls": 12,
+    "input_tokens": 33262,
+    "output_tokens": 6910,
+    "total_tokens": 40172,
+    "cache_read_tokens": 9070,
+    "cache_creation_tokens": 0,
+    "cache_hit_rate": 0.2727
+  },
+  "responses_without_usage": 0,
+  "ticker": "COST",
+  "trade_date": "2024-09-23"
+}

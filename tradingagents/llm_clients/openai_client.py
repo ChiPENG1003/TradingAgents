@@ -140,8 +140,15 @@ class OpenAIClient(BaseLLMClient):
             if key in self.kwargs:
                 llm_kwargs[key] = self.kwargs[key]
 
-        # reasoning_effort with function tools requires the Responses API for native OpenAI
-        if self.provider == "openai" and "reasoning_effort" in llm_kwargs:
+        # Native OpenAI always goes through the Responses API. Chat Completions
+        # rejects function tools whenever reasoning_effort is in play, and the
+        # GPT-5.6 family carries a non-none default effort, so tool calls there
+        # fail on /v1/chat/completions even when the caller sets nothing:
+        #   "Function tools with reasoning_effort are not supported for
+        #    gpt-5.6-luna in /v1/chat/completions."
+        # Third-party OpenAI-compatible endpoints (xAI, DeepSeek, OpenRouter,
+        # Ollama) do not implement /v1/responses, so they stay on completions.
+        if self.provider == "openai":
             llm_kwargs["use_responses_api"] = True
 
         # DeepSeek thinking mode: when thinking=True, enable the reasoning channel.

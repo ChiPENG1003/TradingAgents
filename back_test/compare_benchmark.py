@@ -42,7 +42,7 @@ DATA_DIR = PROJECT_ROOT / "back_test" / "trade_route"
 RESULTS_DIR = PROJECT_ROOT / "back_test" / "results"
 PLOTS_DIR = RESULTS_DIR / "plots"
 METRICS_DIR = RESULTS_DIR / "metrics"
-BENCHMARKS = ["^GSPC", "^IXIC"]
+DEFAULT_BENCHMARKS = ["^GSPC", "^IXIC"]
 
 
 def _replace_nonfinite_numbers(value):
@@ -133,31 +133,57 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--ticker", required=True, help="Ticker symbol, e.g. AAPL or SPY.")
     parser.add_argument("--start", required=True, help="Start date in YYYY-MM-DD format.")
     parser.add_argument("--end", required=True, help="End date in YYYY-MM-DD format.")
+    parser.add_argument(
+        "--benchmarks",
+        default=",".join(DEFAULT_BENCHMARKS),
+        help="Comma-separated buy-and-hold benchmarks to plot against "
+             f"(default {','.join(DEFAULT_BENCHMARKS)}).",
+    )
+    parser.add_argument(
+        "--strategies",
+        default="",
+        help="Comma-separated strategy labels or JSON paths. Blank prompts "
+             "interactively; pass 'all' to take every discovered label.",
+    )
     return parser.parse_args()
 
 
-def _prompt_for_inputs(args: argparse.Namespace | None = None) -> tuple[str, str, str, list[str]]:
+def _prompt_for_inputs(
+    args: argparse.Namespace | None = None,
+) -> tuple[str, str, str, list[str], list[str]]:
     args = args or _parse_args()
     ticker = args.ticker.strip().upper()
     start = args.start.strip()
     end = args.end.strip()
+    benchmarks = [b.strip() for b in (args.benchmarks or "").split(",") if b.strip()]
 
     discovered = _discover_strategy_specs(ticker, start, end)
     if discovered:
         print("Available strategy labels:", ", ".join(discovered))
 
-    raw_specs = input(
-        "Strategy labels or JSON paths, comma-separated "
-        "(blank = all available labels): "
-    ).strip()
+    raw_specs = (args.strategies or "").strip()
+    if not raw_specs:
+        raw_specs = input(
+            "Strategy labels or JSON paths, comma-separated "
+            "(blank = all available labels): "
+        ).strip()
+    if raw_specs.lower() == "all":
+        raw_specs = ""
     specs = [item.strip() for item in raw_specs.split(",") if item.strip()]
     if not specs:
         specs = discovered
 
-    return ticker, start, end, specs
+    return ticker, start, end, specs, benchmarks or list(DEFAULT_BENCHMARKS)
 
 
-def main(ticker: str, start: str, end: str, strategy_specs: list[str]) -> None:
+def main(
+    ticker: str,
+    start: str,
+    end: str,
+    strategy_specs: list[str],
+    benchmarks: list[str] | None = None,
+) -> None:
+    benchmarks = list(benchmarks or DEFAULT_BENCHMARKS)
     if not strategy_specs:
         print(
             f"ERROR: No strategy files selected and none found in {DATA_DIR} "
@@ -199,9 +225,9 @@ def main(ticker: str, start: str, end: str, strategy_specs: list[str]) -> None:
 
     benchmark_series = [
         _load_benchmark_close(benchmark, start, end)
-        for benchmark in BENCHMARKS
+        for benchmark in benchmarks
     ]
-    all_benchmarks = [buy_hold_label] + BENCHMARKS
+    all_benchmarks = [buy_hold_label] + benchmarks
 
     aligned = pd.concat(
         strategy_series + [ticker_buy_hold] + benchmark_series,
@@ -318,8 +344,8 @@ def main(ticker: str, start: str, end: str, strategy_specs: list[str]) -> None:
             )
 
         ax.set_title(
-            f"strategies for {ticker} vs buy & hold, ^IXIC, and ^GSPC "
-            f"({start} → {end})"
+            f"strategies for {ticker} vs buy & hold and "
+            f"{', '.join(benchmarks)} ({start} → {end})"
         )
         ax.set_xlabel("Date")
         ax.set_ylabel("Normalized value (start = 100)")
@@ -371,5 +397,5 @@ def main(ticker: str, start: str, end: str, strategy_specs: list[str]) -> None:
 
 
 if __name__ == "__main__":
-    ticker, start, end, strategy_specs = _prompt_for_inputs(_parse_args())
-    main(ticker, start, end, strategy_specs)
+    ticker, start, end, strategy_specs, benchmarks = _prompt_for_inputs(_parse_args())
+    main(ticker, start, end, strategy_specs, benchmarks)

@@ -76,6 +76,9 @@ class AgentState(MessagesState):
         RiskDebateState, "Current state of the debate on evaluating risk"
     ]
     final_trade_decision: Annotated[str, "Final decision made by the Risk Analysts"]
+    live_portfolio_decision: Annotated[
+        Dict[str, Any], "Structured live execution ladder rendered as the final decision table"
+    ]
     market_state: Annotated[Dict[str, Any], "Structured latent market state for backtest persistence"]
     structure_analysis: Annotated[Dict[str, Any], "Deterministic OHLCV structure analysis for backtest persistence"]
     feature_snapshot: Annotated[Dict[str, Any], "Machine-readable historical feature snapshot for offline policy search"]

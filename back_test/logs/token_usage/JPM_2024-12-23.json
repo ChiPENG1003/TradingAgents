@@ -1,0 +1,99 @@
+{
+  "by_node": {
+    "Market Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.003496,
+      "calls": 4,
+      "input_tokens": 14018,
+      "output_tokens": 1871,
+      "total_tokens": 15889,
+      "cache_read_tokens": 8624,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.6152
+    },
+    "Portfolio Manager": {
+      "models": [
+        "gpt-5.6-terra"
+      ],
+      "cost_usd": 0.02103,
+      "calls": 1,
+      "input_tokens": 6757,
+      "output_tokens": 839,
+      "total_tokens": 7596,
+      "cache_read_tokens": 1418,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.2099
+    },
+    "Bull Researcher": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.001066,
+      "calls": 1,
+      "input_tokens": 2670,
+      "output_tokens": 443,
+      "total_tokens": 3113,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Social Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.001438,
+      "calls": 2,
+      "input_tokens": 1764,
+      "output_tokens": 904,
+      "total_tokens": 2668,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Fundamentals Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.001248,
+      "calls": 2,
+      "input_tokens": 1760,
+      "output_tokens": 747,
+      "total_tokens": 2507,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Research Manager": {
+      "models": [
+        "gpt-5.6-terra"
+      ],
+      "cost_usd": 0.006122,
+      "calls": 1,
+      "input_tokens": 787,
+      "output_tokens": 379,
+      "total_tokens": 1166,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    }
+  },
+  "totals": {
+    "models": [
+      "gpt-5.6-luna",
+      "gpt-5.6-terra"
+    ],
+    "cost_usd": 0.0344,
+    "calls": 11,
+    "input_tokens": 27756,
+    "output_tokens": 5183,
+    "total_tokens": 32939,
+    "cache_read_tokens": 10042,
+    "cache_creation_tokens": 0,
+    "cache_hit_rate": 0.3618
+  },
+  "responses_without_usage": 0,
+  "ticker": "JPM",
+  "trade_date": "2024-12-23"
+}

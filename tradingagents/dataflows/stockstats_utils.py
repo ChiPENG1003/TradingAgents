@@ -25,18 +25,33 @@ class StaleMarketDataError(Exception):
     silently feeding year-old prices and indicators into a report."""
 
 
+def _drop_timezone(dates: pd.Series) -> pd.Series:
+    """Return tz-naive dates.
+
+    yfinance hands back tz-aware timestamps on its online path and tz-naive
+    ones from the cached CSV. Callers compare these against dates parsed from
+    plain "YYYY-MM-DD" strings, which are always tz-naive, and pandas refuses
+    to subtract across the two.
+    """
+    if getattr(dates.dtype, "tz", None) is not None:
+        return dates.dt.tz_localize(None)
+    return dates
+
+
 def _coerce_ohlcv_dates(data: pd.DataFrame) -> pd.Series:
     """Return parsed dates from an OHLCV frame, whether Date is a column or the index."""
     if "Date" in data.columns:
-        return pd.to_datetime(data["Date"], errors="coerce").dropna()
+        return _drop_timezone(pd.to_datetime(data["Date"], errors="coerce").dropna())
     if isinstance(data.index, pd.DatetimeIndex):
-        return pd.Series(pd.to_datetime(data.index, errors="coerce")).dropna()
+        return _drop_timezone(
+            pd.Series(pd.to_datetime(data.index, errors="coerce")).dropna()
+        )
     df = data.reset_index()
     for col in ("Date", "Datetime", "date", "index"):
         if col in df.columns:
             parsed = pd.to_datetime(df[col], errors="coerce").dropna()
             if not parsed.empty:
-                return parsed
+                return _drop_timezone(parsed)
     return pd.Series(dtype="datetime64[ns]")
 
 

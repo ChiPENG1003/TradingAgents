@@ -110,6 +110,40 @@ def main() -> None:
         "--add-key-level-tolerance-pct", type=float, default=0.005,
         help="Tolerance below key level for add close-hold confirmation (default 0.005).",
     )
+    parser.add_argument(
+        "--no-regenerate-orders", dest="regenerate_orders", action="store_false",
+        help="Replay the orders exactly as baked into each strategy file. Those "
+             "orders were derived from whatever holdings the generator supplied; "
+             "when it supplied none, they assume a flat book on every date and "
+             "are wrong wherever a position exists. Off by default for that reason.",
+    )
+    parser.set_defaults(regenerate_orders=True)
+    parser.add_argument(
+        "--max-take-profits-per-trade", type=int, default=999,
+        help="Maximum number of take-profit trims per open trade (default 999 = off).",
+    )
+    parser.add_argument(
+        "--min-days-between-take-profits", type=int, default=0,
+        help="Minimum trading-day distance between take-profit fills (default 0 = off).",
+    )
+    parser.add_argument(
+        "--take-profit-min-residual-pct", type=float, default=0.0,
+        help="Fraction of the position's peak size that take-profit may never sell "
+             "below, e.g. 0.6 keeps a 60%% core (default 0 = off).",
+    )
+    parser.add_argument(
+        "--entry-min-volume-ratio", type=float, default=0.0,
+        help="Require the prior bar's volume to be at least this multiple of its "
+             "trailing average before an entry can fill (default 0 = off).",
+    )
+    parser.add_argument(
+        "--add-min-volume-ratio", type=float, default=0.0,
+        help="Same prior-bar volume confirmation applied to add orders (default 0 = off).",
+    )
+    parser.add_argument(
+        "--volume-average-window", type=int, default=20,
+        help="Bars in the trailing volume average used by the volume gates (default 20).",
+    )
     args = parser.parse_args()
 
     engine = BacktestEngine(
@@ -134,6 +168,13 @@ def main() -> None:
         block_shrinking_volume_adds=not args.allow_shrinking_volume_adds,
         shrinking_volume_close_hold_days=args.shrinking_volume_close_hold_days,
         add_key_level_tolerance_pct=args.add_key_level_tolerance_pct,
+        regenerate_orders=args.regenerate_orders,
+        max_take_profits_per_trade=args.max_take_profits_per_trade,
+        min_days_between_take_profits=args.min_days_between_take_profits,
+        take_profit_min_residual_pct=args.take_profit_min_residual_pct,
+        entry_min_volume_ratio=args.entry_min_volume_ratio,
+        add_min_volume_ratio=args.add_min_volume_ratio,
+        volume_average_window=args.volume_average_window,
     )
     try:
         result = engine.run()
@@ -173,6 +214,13 @@ def main() -> None:
         "block_shrinking_volume_adds": not args.allow_shrinking_volume_adds,
         "shrinking_volume_close_hold_days": args.shrinking_volume_close_hold_days,
         "add_key_level_tolerance_pct": args.add_key_level_tolerance_pct,
+        "regenerate_orders": args.regenerate_orders,
+        "max_take_profits_per_trade": args.max_take_profits_per_trade,
+        "min_days_between_take_profits": args.min_days_between_take_profits,
+        "take_profit_min_residual_pct": args.take_profit_min_residual_pct,
+        "entry_min_volume_ratio": args.entry_min_volume_ratio,
+        "add_min_volume_ratio": args.add_min_volume_ratio,
+        "volume_average_window": args.volume_average_window,
         "output_label": label,
         "output_path": str(out_path),
     }
@@ -252,6 +300,15 @@ def main() -> None:
         print(f"  Expired order rate:   {result.report['expired_order_rate']:.1%}")
         print(f"  TTL expirations:      {result.report.get('signal_ttl_expired', 0)}")
         print(f"  Gap buy rejected:     {result.report.get('gap_buy_rejected', 0)}")
+        print(f"  Strategies regenerated: {result.report.get('strategies_regenerated', 0)}"
+              f" (skipped {result.report.get('strategies_regen_skipped', 0)})")
+        stale = result.report.get("frozen_orders_assumed_flat", 0)
+        if stale:
+            print(
+                f"  WARNING: {stale} strategy activations replayed frozen orders that "
+                f"were generated against a flat book while a position was open. "
+                f"Drop --no-regenerate-orders to re-derive them from the live position."
+            )
         print(f"  Shrinking adds rej.:  {result.report.get('add_rejected_shrinking_volume', 0)}")
         print(f"  Risk-size caps:       {result.report.get('entry_capped_risk_size', 0)} entry / {result.report.get('add_capped_risk_size', 0)} add")
         print(f"  Risk stop adjusted:   {result.report.get('risk_stop_adjusted', 0)}")

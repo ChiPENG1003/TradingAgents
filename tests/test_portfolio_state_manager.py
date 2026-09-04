@@ -275,6 +275,9 @@ def test_weak_uptrend_soft_volume_caps_pullback_add():
         holdings_info={"quantity": 100, "avg_buy_price": 450.0},
         constraints={"bearish_volume_divergence": False},
         volume_regime="soft",
+        # This test isolates the soft-volume size cap. Confirmation behavior is
+        # covered separately and requires recent_lows/closes anchors.
+        policy_config=PortfolioStatePolicyConfig(add_requires_confirmation=False),
     )
 
     assert state.regime == "weak_uptrend"
@@ -518,3 +521,171 @@ def test_soft_volume_reduces_core_bull_phase_floor():
     assert state.market_phase == "healthy_bull_trend"
     assert strategy.action == "BUY"
     assert strategy.entry.size_pct < 50.0
+
+
+# ---------------------------------------------- risk centring + stop anchoring
+
+def _bullish_state() -> MarketState:
+    """A clearly bullish read whose raw_signal is still negative pre-fix."""
+    return MarketState.model_validate_json(_market_state_json()).model_copy(
+        update={"trend_direction_score": 0.7, "momentum_score_value": 0.6,
+                "risk_pressure_score": 0.6, "event_impact_score": 0.0}
+    )
+
+
+def _policy(**overrides):
+    return PortfolioStatePolicyConfig(**overrides) if overrides else PortfolioStatePolicyConfig()
+
+
+def _sized(state, **cfg):
+    strategy = policy_from_market_state(
+        state, _anchors(), holdings_info={},
+        constraints={"bearish_volume_divergence": False}, volume_regime="normal",
+        policy_config=_policy(anchor_stop_to_entry=False, entry_risk_budget_pct=0.0, **cfg),
+    )
+    return strategy.action, strategy.entry.size_pct
+
+
+def test_uncentred_risk_score_suppresses_a_bullish_signal():
+    """risk_neutral_point=0.0 reproduces the pre-fix behaviour.
+
+    risk_pressure_score lives on [0, 1], so an uncentred term only ever
+    subtracts: .25(.7) + .125(.6) - .48(.6) = -0.038, clamped to 0 by
+    max(0, raw_signal). A clearly bullish read produces no position at all.
+    """
+    # "transition" maps to the unclear regime, which has a cap but no floor —
+    # so target_weight reflects the signal rather than a floor.
+    state = _bullish_state().model_copy(
+        update={"trend_regime": "transition", "trend_strength": 0.4})
+
+    assert _sized(state, risk_neutral_point=0.0) == ("HOLD", 0.0)
+
+    action, size = _sized(state)
+    assert action == "BUY" and size > 0
+
+
+def test_regime_floor_hides_the_risk_centring_fix():
+    """Where a floor applies, both settings land on the floor.
+
+    This is the reason the uncentred term went unnoticed: every position the
+    policy ever took came from a regime/phase floor, so the directional
+    weights looked like they were working.
+    """
+    state = _bullish_state().model_copy(update={"trend_strength": 0.4})  # weak_uptrend
+
+    assert _sized(state, risk_neutral_point=0.0) == _sized(state)
+
+
+def test_stop_keeps_its_atr_floor_below_a_limit_entry():
+    """The ATR floor is measured from the fill price, not from current.
+
+    A limit entry sits below current, so anchoring the stop at current shrinks
+    the real entry-to-stop distance below stop_loss_atr_multiple.
+    """
+    anchors = _anchors()
+    atr = anchors["atr14"]
+    state = _bullish_state().model_copy(update={"structure_quality": "breakdown_attempt"})
+    kwargs = dict(holdings_info={}, constraints={"bearish_volume_divergence": False},
+                  volume_regime="normal")
+
+    anchored = policy_from_market_state(
+        state, anchors, policy_config=_policy(entry_risk_budget_pct=0.0), **kwargs)
+    if anchored.entry.price is None:
+        return  # market entry: current IS the fill reference, nothing to prove
+
+    distance = (anchored.entry.price - anchored.stop_loss.price) / atr
+    assert distance >= _policy().stop_loss_atr_multiple - 0.01
+
+    legacy = policy_from_market_state(
+        state, anchors,
+        policy_config=_policy(anchor_stop_to_entry=False, entry_risk_budget_pct=0.0),
+        **kwargs)
+    legacy_distance = (legacy.entry.price - legacy.stop_loss.price) / atr
+    assert legacy_distance < distance
+
+
+def test_risk_budget_shrinks_an_order_whose_stop_is_close():
+    """A tight stop must buy a smaller position, not the same one unprotected."""
+    state = _bullish_state()
+    kwargs = dict(holdings_info={}, constraints={"bearish_volume_divergence": False},
+                  volume_regime="normal")
+
+    uncapped = policy_from_market_state(
+        state, _anchors(), policy_config=_policy(entry_risk_budget_pct=0.0), **kwargs)
+    capped = policy_from_market_state(
+        state, _anchors(), policy_config=_policy(entry_risk_budget_pct=0.001), **kwargs)
+
+    assert uncapped.entry.size_pct > 0
+    assert capped.entry.size_pct < uncapped.entry.size_pct
+    assert "risk-budget sizing" in capped.rationale_summary
+    assert "risk-budget sizing" not in uncapped.rationale_summary
+
+
+def test_risk_budget_leaves_a_wide_stop_order_untouched():
+    state = _bullish_state()
+    kwargs = dict(holdings_info={}, constraints={"bearish_volume_divergence": False},
+                  volume_regime="normal")
+    off = policy_from_market_state(
+        state, _anchors(), policy_config=_policy(entry_risk_budget_pct=0.0), **kwargs)
+    generous = policy_from_market_state(
+        state, _anchors(), policy_config=_policy(entry_risk_budget_pct=0.50), **kwargs)
+
+    assert generous.entry.size_pct == off.entry.size_pct
+    assert "risk-budget sizing" not in generous.rationale_summary
+
+
+# ------------------------------------------ starter paths use the shared rules
+
+def _exhaustion_starter_inputs():
+    """A state that routes through the fixed-size exhaustion starter branch."""
+    state = MarketState.model_validate_json(_market_state_json()).model_copy(
+        update={"ticker": "AAPL", "trend_regime": "descending", "trend_strength": 0.5,
+                "exhaustion_state": "late_trend_fatigue", "structure_quality": "coherent",
+                "risk_pressure_score": 0.5, "event_regime": "none"}
+    )
+    index = state.model_copy(
+        update={"trend_regime": "ascending", "trend_direction_score": 0.3,
+                "risk_pressure_score": 0.3}
+    )
+    return state, index
+
+
+def _starter(**cfg):
+    state, index = _exhaustion_starter_inputs()
+    return policy_from_market_state(
+        state, _anchors(), holdings_info={},
+        constraints={"bearish_volume_divergence": False}, volume_regime="normal",
+        policy_config=_policy(**cfg), market_context_state=index,
+        market_context_ticker="^GSPC",
+    )
+
+
+def test_starter_branch_is_actually_reached_by_the_fixture():
+    assert "exhaustion starter" in _starter().rationale_summary
+
+
+def test_starter_take_profit_follows_the_phase_not_the_default():
+    """late_bear_exhaustion scales out at 30%, not default_take_profit_size_pct.
+
+    The starter branches used to hard-code the default size, so the phase's
+    "don't take profit too often" intent never applied to them.
+    """
+    strategy = _starter(default_take_profit_size_pct=90.0)
+    assert strategy.take_profit.size_pct == 30.0
+
+
+def test_starter_respects_the_risk_budget():
+    """The starter used to return before any sizing rule could see it."""
+    unbudgeted = _starter(entry_risk_budget_pct=0.0)
+    budgeted = _starter(entry_risk_budget_pct=0.0005)
+
+    assert unbudgeted.entry.size_pct > 0
+    assert budgeted.entry.size_pct < unbudgeted.entry.size_pct
+    assert "risk-budget sizing" in budgeted.rationale_summary
+
+
+def test_starter_stop_keeps_the_atr_floor():
+    strategy = _starter(entry_risk_budget_pct=0.0)
+    anchors = _anchors()
+    distance = (anchors["current_price"] - strategy.stop_loss.price) / anchors["atr14"]
+    assert distance >= _policy().stop_loss_atr_multiple - 0.01

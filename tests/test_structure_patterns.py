@@ -93,3 +93,57 @@ def test_structure_prompt_format_is_embedded_in_market_anchor_text():
     assert "Python-only hard anchor" in prompt_block
     assert "Hammer" in prompt_block
     assert standalone_block in prompt_block
+
+
+# ------------------------------------------------ batched indicator table
+
+def test_indicator_table_pivots_series_and_drops_non_trading_days(monkeypatch):
+    """One aligned table instead of one payload per indicator."""
+    from tradingagents.agents.utils import technical_indicators_tools as tools
+
+    payloads = {
+        "rsi": (
+            "2025-01-03: 55.123456789\n"
+            "2025-01-04: N/A: Not a trading day (weekend or holiday)\n"
+            "2025-01-02: 54.987654321\n"
+            "\nRSI: momentum oscillator."
+        ),
+        "atr": (
+            "2025-01-03: 3.14159265358979\n"
+            "2025-01-04: N/A: Not a trading day (weekend or holiday)\n"
+            "2025-01-02: 3.2\n"
+            "\nATR: volatility measure."
+        ),
+    }
+    monkeypatch.setattr(
+        tools, "route_to_vendor",
+        lambda _op, _sym, indicator, *_a, **_k: payloads[indicator],
+    )
+
+    out = tools.get_indicators_table.func(
+        symbol="TEST", indicators="rsi, atr", curr_date="2025-01-03", look_back_days=5
+    )
+
+    assert "date | rsi | atr" in out
+    # Newest first, weekend row dropped entirely, values rounded to 4 sig figs.
+    assert "2025-01-03 | 55.12 | 3.142" in out
+    assert "2025-01-02 | 54.99 | 3.2" in out
+    assert "2025-01-04" not in out
+    # Each description appears once, not once per row.
+    assert out.count("momentum oscillator") == 1
+
+
+def test_indicator_table_reports_unavailable_indicators(monkeypatch):
+    from tradingagents.agents.utils import technical_indicators_tools as tools
+
+    def fake(_op, _sym, indicator, *_a, **_k):
+        if indicator == "bogus":
+            raise ValueError("Indicator bogus is not supported")
+        return "2025-01-03: 1.0\n\nRSI: desc."
+
+    monkeypatch.setattr(tools, "route_to_vendor", fake)
+    out = tools.get_indicators_table.func(
+        symbol="TEST", indicators="rsi,bogus", curr_date="2025-01-03"
+    )
+    assert "date | rsi" in out
+    assert "bogus" in out and "Unavailable:" in out

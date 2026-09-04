@@ -9,6 +9,7 @@ Live mode continues to use create_portfolio_manager from portfolio_manager.py.
 """
 
 import json
+import hashlib
 import logging
 import re
 import warnings
@@ -16,13 +17,14 @@ from pathlib import Path
 from typing import Any, Literal, Optional
 
 import pandas as pd
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
 from back_test.policy_config import (
     PortfolioStatePolicyConfig,
     coerce_portfolio_state_policy_config,
     _DEFAULT_VOLUME_MULTIPLIER,
 )
+from tradingagents.agents.utils.prompt_cache import build_cached_prompt
 from tradingagents.agents.utils.agent_utils import (
     build_instrument_context,
     get_language_instruction,
@@ -49,7 +51,39 @@ __all__ = [
     "create_portfolio_state_manager",
     "create_market_aware_portfolio_state_manager",
     "policy_from_market_state",
+    "regenerate_strategy",
+    "freeze_feature_snapshot",
+    "policy_from_frozen_snapshot",
 ]
+
+
+FROZEN_FEATURE_SCHEMA_VERSION = "frozen_feature_v2"
+
+FROZEN_ANCHOR_FIELDS = (
+    "current_price", "atr5", "atr14",
+    "ema5", "ema10", "ema20", "sma20", "sma50", "sma200",
+    "nearest_support", "nearest_resistance",
+    "recent_high_10d", "recent_high_20d",
+    "recent_closes_5d", "recent_lows_5d",
+    "volume_ratio", "volume_ratio_3d",
+)
+
+FROZEN_MARKET_STATE_FIELDS = (
+    "trend_regime", "volatility_regime", "momentum_regime",
+    "liquidity_regime", "event_regime", "structure_quality",
+    "exhaustion_state", "breadth_state", "trend_direction_score",
+    "trend_strength", "momentum_score_value", "risk_pressure_score",
+    "event_impact_score", "confidence", "timeframe_hierarchy",
+    "feature_scores",
+)
+
+
+def _canonical_hash(value: dict[str, Any]) -> str:
+    payload = json.dumps(
+        value, sort_keys=True, separators=(",", ":"), ensure_ascii=True,
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
 
 
 def _apply_order_size_multiplier(strategy: dict, multiplier: float) -> dict:
@@ -645,7 +679,7 @@ def _llm_disallows_structured_output(llm) -> bool:
 def _compute_short_term_market_anchors(
     ticker: str,
     trade_date: str,
-    lookback_days: int = 80,
+    lookback_days: int = 260,
 ) -> Optional[dict]:
     """Return short-horizon numeric anchors for 1-5 trading day decisions."""
     try:
@@ -712,6 +746,11 @@ def _compute_short_term_market_anchors(
         if volume is not None and len(volume.dropna()) >= 20
         else None
     )
+    volume_50_sma = (
+        float(volume.tail(50).mean())
+        if volume is not None and len(volume.dropna()) >= 50
+        else None
+    )
     volume_ratio = (
         latest_volume / volume_20_sma
         if latest_volume is not None and volume_20_sma not in (None, 0)
@@ -738,7 +777,7 @@ def _compute_short_term_market_anchors(
         "sma10": round(_sma(10), 4) if _sma(10) is not None else None,
         "sma20": round(_sma(20), 4) if _sma(20) is not None else None,
         "sma50": round(_sma(50), 4) if _sma(50) is not None else None,
-        "sma200": None,
+        "sma200": round(_sma(200), 4) if _sma(200) is not None else None,
         "recent_high_5d": round(float(high.tail(5).max()), 4),
         "recent_low_5d": round(float(low.tail(5).min()), 4),
         "recent_high_10d": round(float(high.tail(10).max()), 4),
@@ -751,7 +790,7 @@ def _compute_short_term_market_anchors(
         "nearest_support": round(support, 4) if support is not None else None,
         "latest_volume": round(latest_volume, 4) if latest_volume is not None else None,
         "volume_20_sma": round(volume_20_sma, 4) if volume_20_sma is not None else None,
-        "volume_50_sma": round(volume_20_sma, 4) if volume_20_sma is not None else None,
+        "volume_50_sma": round(volume_50_sma, 4) if volume_50_sma is not None else None,
         "volume_ratio": round(volume_ratio, 3) if volume_ratio is not None else None,
         "volume_ratio_3d": volume_ratio_3d,
         "structure_analysis": structure_analysis,
@@ -827,70 +866,11 @@ def _build_feature_snapshot(
     short = structure.get("short_term_structure") or {}
     long_term = structure.get("long_term_structure") or {}
     detected = structure.get("detected_patterns") or []
-    feature_columns = {
-        "llm": [
-            "trend_regime",
-            "volatility_regime",
-            "momentum_regime",
-            "liquidity_regime",
-            "event_regime",
-            "structure_quality",
-            "exhaustion_state",
-            "breadth_state",
-            "trend_direction_score",
-            "trend_strength",
-            "momentum_score_value",
-            "risk_pressure_score",
-            "event_impact_score",
-            "confidence",
-            "feature_scores.*",
-            "confidence_components.*",
-            "timeframe_hierarchy.*",
-            "invalidation.*",
-        ],
-        "ohlcv": [
-            "current_price",
-            "atr5",
-            "atr14",
-            "atr14_pct",
-            "ema5",
-            "ema10",
-            "ema20",
-            "sma5",
-            "sma10",
-            "sma20",
-            "sma50",
-            "recent_high_5d",
-            "recent_low_5d",
-            "recent_high_10d",
-            "recent_low_10d",
-            "recent_high_20d",
-            "recent_low_20d",
-            "nearest_resistance",
-            "nearest_support",
-            "volume_ratio",
-            "volume_ratio_3d",
-        ],
-        "structure": [
-            "short_term_structure.*",
-            "long_term_structure.*",
-            "detected_patterns[].name",
-            "detected_patterns[].direction",
-            "detected_patterns[].confidence",
-        ],
-        "execution_context": [
-            "holdings_info.*",
-            "trading_history_summary.*",
-            "prior_pending_orders[]",
-            "constraints.*",
-        ],
-    }
-    return {
+    legacy_snapshot = {
         "schema_version": "feature_snapshot_v1",
         "ticker": ticker,
         "trade_date": trade_date,
         "as_of_close_date": anchors.get("as_of_close_date"),
-        "feature_columns": feature_columns,
         "llm_market_state": market_state.model_dump(),
         "market_context": {
             "ticker": market_context_ticker,
@@ -908,18 +888,140 @@ def _build_feature_snapshot(
             "detected_patterns": _safe_jsonable(detected),
             "conflicts": _safe_jsonable(structure.get("conflicts") or []),
         },
-        "derived_regimes": {
-            "volume_regime": volume_regime,
-            "recent_phases": recent_phases,
-        },
-        "execution_context": {
-            "constraints": _safe_jsonable(constraints),
-            "holdings_info": _safe_jsonable(holdings_info),
-            "trading_history_summary": _safe_jsonable(trading_history_summary),
-            "prior_pending_orders": _safe_jsonable(prior_pending_orders),
-        },
-        "policy_output": _safe_jsonable(strategy_dict),
     }
+    return freeze_feature_snapshot(legacy_snapshot)
+
+
+def _quant_market_state(state: dict[str, Any]) -> dict[str, Any]:
+    """Strip prose from a MarketState while preserving every policy input."""
+    quant = {
+        "ticker": state["ticker"],
+        "as_of_date": state["as_of_date"],
+    }
+    quant.update({key: _safe_jsonable(state[key]) for key in FROZEN_MARKET_STATE_FIELDS})
+    quant["event_certainty"] = float(state["confidence_components"]["event_certainty"])
+    return quant
+
+
+def _thaw_market_state(state: dict[str, Any]) -> MarketState:
+    """Rehydrate a quant-only state for the existing deterministic policy."""
+    payload = dict(state)
+    payload["schema_version"] = "state_v2"
+    event_certainty = float(payload.pop("event_certainty", 0.5))
+    payload["confidence_components"] = {
+        "anchor_agreement": payload["confidence"],
+        "timeframe_consistency": payload["confidence"],
+        "volatility_stability": payload["confidence"],
+        "contradiction_absence": payload["confidence"],
+        "event_certainty": event_certainty,
+    }
+    payload["horizon_days"] = 5
+    payload["invalidation"] = {
+        "invalidation_type": "unclear",
+        "reference_timeframe": "trading",
+        "invalidation_detail": "frozen_quant_state",
+    }
+    payload["evidence"] = {
+        "hard_anchors": [],
+        "event_modifiers": [],
+        "narrative_residual": [],
+        "contradictory_signals": [],
+    }
+    payload["state_summary"] = "frozen_quant_state"
+    payload["key_risks"] = []
+    return MarketState.model_validate(payload)
+
+
+def _quant_structure_features(structure: dict[str, Any]) -> dict[str, Any]:
+    short = structure.get("short_term_structure") or {}
+    long_term = structure.get("long_term_structure") or {}
+    patterns = structure.get("detected_patterns") or []
+    return {
+        "short_term_structure": {
+            key: short.get(key)
+            for key in (
+                "trend", "structure_quality", "pattern", "breakout_status",
+                "support", "resistance", "volume_confirmation", "confidence",
+            )
+        },
+        "long_term_structure": {
+            key: long_term.get(key)
+            for key in ("trend", "market_phase", "key_level", "risk_state", "confidence")
+        },
+        "detected_patterns": [
+            {
+                key: pattern.get(key)
+                for key in ("name", "direction", "confidence")
+            }
+            for pattern in patterns
+            if isinstance(pattern, dict)
+        ],
+    }
+
+
+def freeze_feature_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
+    """Convert a legacy feature snapshot into an immutable quant-only V2 record."""
+    if snapshot.get("schema_version") == FROZEN_FEATURE_SCHEMA_VERSION:
+        frozen = dict(snapshot)
+        expected = frozen.pop("snapshot_hash", None)
+        actual = _canonical_hash(frozen)
+        if expected is not None and expected != actual:
+            raise ValueError("frozen feature snapshot hash mismatch")
+        frozen["snapshot_hash"] = actual
+        return frozen
+
+    stock_state = snapshot.get("llm_market_state")
+    anchors = snapshot.get("ohlcv_anchors")
+    if not isinstance(stock_state, dict) or not isinstance(anchors, dict):
+        raise ValueError("legacy snapshot must contain llm_market_state and ohlcv_anchors")
+
+    context = snapshot.get("market_context") or {}
+    context_state = context.get("state")
+    ticker = str(snapshot.get("ticker") or stock_state.get("ticker"))
+    as_of = str(snapshot.get("as_of_close_date") or snapshot.get("trade_date"))
+    structure = snapshot.get("structure_features") or {}
+    frozen_anchors = {
+        key: _safe_jsonable(anchors.get(key)) for key in FROZEN_ANCHOR_FIELDS
+    }
+
+    frozen = {
+        "schema_version": FROZEN_FEATURE_SCHEMA_VERSION,
+        "dataset_version": "quant_v2",
+        "sample_id": f"{ticker}:{as_of}",
+        "ticker": ticker,
+        "trade_date": str(snapshot.get("trade_date") or as_of),
+        "as_of_close_date": as_of,
+        "feature_columns": {
+            "market_state": list(FROZEN_MARKET_STATE_FIELDS) + ["event_certainty"],
+            "ohlcv_anchors": list(FROZEN_ANCHOR_FIELDS),
+            "structure_features": [
+                "short_term_structure.*", "long_term_structure.*",
+                "detected_patterns[].name", "detected_patterns[].direction",
+                "detected_patterns[].confidence",
+            ],
+            "market_context": ["ticker", "volume_regime", "state.*"],
+            "quality": ["stock_state_source", "market_context_state_source"],
+        },
+        "market_state": _quant_market_state(stock_state),
+        "ohlcv_anchors": frozen_anchors,
+        "structure_features": _quant_structure_features(structure),
+        "market_context": {
+            "ticker": context.get("ticker"),
+            "volume_regime": context.get("volume_regime", "unavailable"),
+            "state": _quant_market_state(context_state) if isinstance(context_state, dict) else None,
+        },
+        "quality": {
+            "stock_state_source": "fallback"
+            if "unavailable" in str(stock_state.get("state_summary", "")).lower()
+            else "llm",
+            "market_context_state_source": "fallback"
+            if isinstance(context_state, dict)
+            and "unavailable" in str(context_state.get("state_summary", "")).lower()
+            else ("llm" if isinstance(context_state, dict) else "missing"),
+        },
+    }
+    frozen["snapshot_hash"] = _canonical_hash(frozen)
+    return frozen
 
 
 def _is_short_term_uptrend(anchors: dict) -> bool:
@@ -1194,13 +1296,17 @@ def _fallback_market_state(
 
 def _invoke_market_state(
     llm,
-    state_prompt: str,
+    state_prompt: Any,
     ticker: str,
     as_of_date: str,
     anchors: dict,
     volume_regime: str,
 ) -> MarketState:
-    """Invoke MarketState generation with structured output, JSON fallback, then anchors fallback."""
+    """Invoke MarketState generation with structured output, JSON fallback, then anchors fallback.
+
+    ``state_prompt`` is whatever build_cached_prompt produced for this provider:
+    a plain string, or a message list carrying a cache breakpoint.
+    """
     structured_llm = None
     if _llm_disallows_structured_output(llm):
         logger.warning(
@@ -1656,6 +1762,58 @@ def policy_from_market_state(
             parts.append("notes=" + " | ".join(all_notes))
         return " | ".join(parts)
 
+    # Sizing/stop/take-profit helpers. Defined here, above the early-returning
+    # starter branches, so every path that emits an order goes through the same
+    # stop anchoring, risk budget and phase-aware take-profit sizing. The
+    # starters used to compute their own stop from `current` and hard-code the
+    # default take-profit size, which meant the two rules this function relies
+    # on most were skipped by 3 of the 4 entries AAPL 2025 actually took.
+    def _entry_reference_price(price: Optional[float]) -> float:
+        return float(price) if price is not None else current
+
+    def _stop_for_reference(
+        reference_price: float, atr_multiple: Optional[float] = None
+    ) -> float:
+        anchor = reference_price if config.anchor_stop_to_entry else current
+        multiple = (
+            config.stop_loss_atr_multiple if atr_multiple is None else atr_multiple
+        )
+        atr_floor = anchor - multiple * atr
+        base = support if support is not None else atr_floor
+        return round(min(base, atr_floor), 2)
+
+    def _risk_capped_size(size_pct: float, reference_price: float, stop: float,
+                          kind: str) -> float:
+        """Shrink an order whose stop is too close to honour the risk budget."""
+        budget = config.entry_risk_budget_pct
+        if size_pct <= 0 or budget <= 0 or reference_price <= 0 or stop >= reference_price:
+            return size_pct
+        stop_distance = (reference_price - stop) / reference_price
+        max_size = (budget / stop_distance) * 100.0
+        if max_size >= size_pct:
+            return size_pct
+        notes.append(
+            f"risk-budget sizing: {kind} {size_pct:.1f}% -> {max_size:.1f}% "
+            f"(stop {stop_distance:.2%} away, budget {budget:.2%})."
+        )
+        return round(max_size, 1)
+
+    def _phase_take_profit_size() -> float:
+        """Take-profit fraction for the active phase.
+
+        Trend phases deliberately scale out slowly (15-20%) so a winner is not
+        whittled away before the move completes. The starter branches used to
+        ignore this and always sell default_take_profit_size_pct.
+        """
+        if obvious_bull_override:
+            return config.obvious_bull_take_profit_size_pct
+        phase_size = phase_mod.get("tp_size")
+        if phase_size is not None:
+            return phase_size
+        if effective_regime == "strong_uptrend":
+            return config.strong_uptrend_take_profit_size_pct
+        return config.default_take_profit_size_pct
+
     # B. Hard regime overrides take priority over the linear formula.
     if effective_regime == "downtrend" and has_position:
         return PortfolioStrategy(
@@ -1699,13 +1857,17 @@ def policy_from_market_state(
         and state.risk_pressure_score <= 0.75
     )
     if allow_exhaustion_starter:
-        starter_size = 8.0 if state.risk_pressure_score <= 0.55 else 5.0
-        stop_base = (
-            support
-            if support is not None
-            else current - config.stop_loss_atr_multiple * atr
+        starter_size = (
+            config.exhaustion_starter_low_risk_pct
+            if state.risk_pressure_score <= 0.55
+            else config.exhaustion_starter_high_risk_pct
         )
-        stop_price = round(min(stop_base, current - config.stop_loss_atr_multiple * atr), 2)
+        # Market entry, so `current` is the fill reference for both the stop
+        # anchor and the risk budget.
+        stop_price = _stop_for_reference(current)
+        starter_size = _risk_capped_size(
+            starter_size, current, stop_price, "exhaustion starter"
+        )
         take_profit_price = round(
             resistance
             if resistance is not None
@@ -1720,7 +1882,7 @@ def policy_from_market_state(
             add_position=PriceSizeBlock(),
             take_profit=PriceSizeBlock(
                 price=take_profit_price,
-                size_pct=config.default_take_profit_size_pct,
+                size_pct=_phase_take_profit_size(),
             ),
             reduce_stop=PriceSizeBlock(),
             stop_loss=StopLossBlock(price=stop_price),
@@ -1841,13 +2003,22 @@ def policy_from_market_state(
         and not market_context_blocks_add
     )
     if transition_repair_starter:
-        starter_size = 3.0 if volume_regime == "soft" else 4.0
+        starter_size = (
+            config.transition_repair_soft_volume_starter_pct
+            if volume_regime == "soft"
+            else config.transition_repair_starter_pct
+        )
         if market_context_state is not None and market_context_multiplier < 1.0:
-            starter_size = min(starter_size, 3.0)
+            starter_size = min(
+                starter_size, config.transition_repair_soft_volume_starter_pct
+            )
 
-        stop_floor = current - 1.2 * atr
-        support_stop = support if support is not None and support < current else stop_floor
-        stop_price = round(max(support_stop, stop_floor), 2)
+        stop_price = _stop_for_reference(
+            current, config.transition_repair_stop_atr_multiple
+        )
+        starter_size = _risk_capped_size(
+            starter_size, current, stop_price, "transition repair starter"
+        )
         take_profit_price = round(
             resistance
             if resistance is not None and resistance > current
@@ -1862,7 +2033,7 @@ def policy_from_market_state(
             add_position=PriceSizeBlock(),
             take_profit=PriceSizeBlock(
                 price=take_profit_price,
-                size_pct=config.default_take_profit_size_pct,
+                size_pct=_phase_take_profit_size(),
             ),
             reduce_stop=PriceSizeBlock(),
             stop_loss=StopLossBlock(price=stop_price),
@@ -1882,11 +2053,36 @@ def policy_from_market_state(
     # qualitative judgment as a tilt, not a driver — regime/phase floors and
     # caps (set by SMA-anchored Python) carry the structural sizing decision.
     # risk_score weight is preserved so genuinely high-risk states still cut.
+    breakout_quality_tilt = 0.0
+    if (
+        state.structure_quality == "breakout_attempt"
+        or effective_phase in {"early_bull_reversal", "accelerating_bull"}
+        or (
+            state.structure_quality == "coherent"
+            and state.momentum_regime == "positive"
+            and state.trend_direction_score > 0
+        )
+    ):
+        breakout_quality_tilt = state.feature_scores.breakout_quality - 0.5
+    pullback_quality_tilt = 0.0
+    if effective_phase == "bull_pullback" or state.momentum_regime == "mean_reverting":
+        pullback_quality_tilt = state.feature_scores.pullback_quality - 0.5
+
     raw_signal = (
         config.trend_score_weight * state.trend_score
         + config.momentum_score_weight * state.momentum_score
         + config.event_score_weight * state.event_score
-        - config.risk_score_weight * state.risk_score
+        + config.trend_continuation_weight
+        * (state.feature_scores.trend_continuation - 0.5)
+        + config.volume_support_weight
+        * (state.feature_scores.volume_support - 0.5)
+        + config.reward_risk_quality_weight
+        * (state.feature_scores.reward_risk_quality - 0.5)
+        - config.risk_score_weight * (state.risk_score - config.risk_neutral_point)
+        - config.reversal_risk_weight
+        * (state.feature_scores.reversal_risk - 0.5)
+        - config.event_risk_weight
+        * (state.feature_scores.event_risk - 0.5)
     )
     target_weight = max(0.0, raw_signal) * state.confidence
 
@@ -1917,6 +2113,22 @@ def policy_from_market_state(
             )
     if phase_cap is not None:
         target_weight = min(target_weight, phase_cap)
+
+    # Setup-quality parameters act after regime/phase floors so they remain
+    # identifiable during optimization instead of being swallowed by a floor.
+    setup_quality_multiplier = max(
+        0.50,
+        min(
+            1.50,
+            1.0
+            + config.breakout_quality_weight * breakout_quality_tilt
+            + config.pullback_quality_weight * pullback_quality_tilt,
+        ),
+    )
+    target_weight *= setup_quality_multiplier
+    if phase_cap is not None:
+        target_weight = min(target_weight, phase_cap)
+    target_weight = min(target_weight, config.max_target_weight)
 
     # D'. Volume regime multiplier (deterministic, anchored).
     multiplier = config.volume_multipliers.get(
@@ -1997,6 +2209,15 @@ def policy_from_market_state(
         )
 
     # F. Build BUY orders. Phase decides entry mode and take-profit aggressiveness.
+    #
+    # The stop is resolved before sizing, because position size is derived from
+    # the entry-to-stop distance. Previously sizing read target_weight alone
+    # while the stop was measured from `current`; since a limit entry fills
+    # BELOW current, the realised entry-to-stop distance collapsed to 0.5-1.0
+    # ATR on exactly the largest orders (measured on AAPL 2025: a 24% position
+    # got a 0.49 ATR stop, a 4% position got 1.97 ATR). Anchoring the stop to
+    # the entry price restores the ATR floor this block always claimed to
+    # enforce, and the risk-budget cap makes the size/stop coupling explicit.
     trend_market_entry = (
         phase_mod.get("trend_market_entry") or effective_regime == "strong_uptrend"
     )
@@ -2087,10 +2308,16 @@ def policy_from_market_state(
             if not confirmed:
                 add_size = 0.0
 
-    # Stop loss: 2.5 ATR floor in trend regimes so normal volatility doesn't
-    # whipsaw out. Use whichever (support or 2.5*ATR-below) is FURTHER, not closer.
-    stop_base = support if support is not None else current - config.stop_loss_atr_multiple * atr
-    stop_price = round(min(stop_base, current - config.stop_loss_atr_multiple * atr), 2)
+    # Stop loss: ATR floor so normal volatility doesn't whipsaw out. Use
+    # whichever (support or ATR-below) is FURTHER, not closer. The anchor is
+    # the price this order actually fills at, so the floor survives a limit
+    # entry that sits below current.
+    sizing_reference = _entry_reference_price(entry_price)
+    stop_price = _stop_for_reference(sizing_reference)
+    entry_size = _risk_capped_size(entry_size, sizing_reference, stop_price, "entry")
+    # Adds fill at market, so they are measured against current, not the
+    # original entry limit.
+    add_size = _risk_capped_size(add_size, current, _stop_for_reference(current), "add")
 
     # Take-profit: for short-term trend phases, let winners clear the recent
     # 10-day high instead of taking profit too close to current price.
@@ -2120,15 +2347,7 @@ def policy_from_market_state(
             2,
         )
 
-    phase_tp_size = phase_mod.get("tp_size")
-    if obvious_bull_override:
-        take_profit_size = config.obvious_bull_take_profit_size_pct
-    elif phase_tp_size is not None:
-        take_profit_size = phase_tp_size
-    elif effective_regime == "strong_uptrend":
-        take_profit_size = config.strong_uptrend_take_profit_size_pct
-    else:
-        take_profit_size = config.default_take_profit_size_pct
+    take_profit_size = _phase_take_profit_size()
 
     # If phase blocks new positions but we have one, the resulting BUY-with-no-orders
     # is converted to HOLD by _enforce_strategy_rules downstream. We still emit
@@ -2254,6 +2473,124 @@ def _compute_market_context_state(
     return context_state, context_anchors, context_volume_regime
 
 
+def policy_from_frozen_snapshot(
+    snapshot: dict[str, Any],
+    *,
+    holdings_info: dict,
+    recent_phases: Optional[list[str]] = None,
+    policy_config: Optional[dict[str, Any] | PortfolioStatePolicyConfig] = None,
+    trading_history_summary: Optional[dict] = None,
+) -> dict:
+    """Build orders using only frozen inputs; performs no I/O or LLM calls."""
+    frozen = freeze_feature_snapshot(snapshot)
+    config = coerce_portfolio_state_policy_config(policy_config)
+    state = _thaw_market_state(frozen["market_state"])
+    anchors = dict(frozen["ohlcv_anchors"])
+    anchors["structure_analysis"] = dict(frozen.get("structure_features") or {})
+    required = ("current_price", "atr14", "ema10", "ema20")
+    missing = [key for key in required if anchors.get(key) is None]
+    if missing:
+        raise ValueError(f"frozen snapshot missing required anchors: {missing}")
+
+    context_payload = (frozen.get("market_context") or {}).get("state")
+    market_context_state = (
+        _thaw_market_state(context_payload) if isinstance(context_payload, dict) else None
+    )
+    volume_regime = _classify_volume_regime(anchors.get("volume_ratio"))
+    constraints = _derive_short_term_rule_constraints(
+        anchors, holdings_info, state.ticker
+    )
+    strategy = policy_from_market_state(
+        state,
+        anchors,
+        holdings_info,
+        constraints,
+        volume_regime,
+        recent_phases=recent_phases or [],
+        policy_config=config,
+        market_context_state=market_context_state,
+        market_context_ticker=(frozen.get("market_context") or {}).get("ticker"),
+        trading_history_summary=trading_history_summary or {},
+    ).model_dump()
+    strategy = _enforce_strategy_rules(strategy, anchors, constraints, holdings_info)
+    return _apply_order_size_multiplier(strategy, config.order_size_multiplier)
+
+
+def regenerate_strategy(
+    *,
+    ticker: str,
+    as_of_date: str,
+    market_state_dict: dict,
+    holdings_info: dict,
+    recent_phases: Optional[list[str]] = None,
+    policy_config: Optional[dict[str, Any] | PortfolioStatePolicyConfig] = None,
+    trading_history_summary: Optional[dict] = None,
+    frozen_snapshot: Optional[dict[str, Any]] = None,
+) -> Optional[dict]:
+    """Rebuild a strategy dict from a saved MarketState, with no LLM call.
+
+    This mirrors ``portfolio_state_manager_node`` exactly, minus the single LLM
+    step: the saved ``market_state`` block stands in for the LLM output, and
+    every other input (anchors, rule constraints, volume regime, market
+    context) is recomputed deterministically from cached OHLCV. It exists so
+    that offline parameter search can vary ``policy_config`` weights/thresholds
+    and observe their effect on the resulting orders — the replay engine only
+    consumes a strategy's baked orders, so without regeneration the scoring
+    weights would never enter the backtest objective.
+
+    ``holdings_info`` is intentionally caller-supplied (the backtest's live,
+    path-dependent position) rather than the value frozen at generation time.
+
+    Returns None when anchors are unavailable or the saved state cannot be
+    parsed, signalling the caller to keep the original baked strategy.
+    """
+    if frozen_snapshot is not None:
+        try:
+            return policy_from_frozen_snapshot(
+                frozen_snapshot,
+                holdings_info=holdings_info,
+                recent_phases=recent_phases,
+                policy_config=policy_config,
+                trading_history_summary=trading_history_summary,
+            )
+        except (ValidationError, ValueError, TypeError, KeyError):
+            return None
+
+    config = coerce_portfolio_state_policy_config(policy_config)
+    anchors = _compute_short_term_market_anchors(ticker, as_of_date)
+    if anchors is None:
+        return None
+    try:
+        market_state = MarketState.model_validate(market_state_dict)
+    except (ValidationError, ValueError, TypeError):
+        return None
+
+    constraints = _derive_short_term_rule_constraints(anchors, holdings_info, ticker)
+    volume_regime = _classify_volume_regime(anchors.get("volume_ratio"))
+
+    market_context_state = None
+    if config.market_context_enabled and config.market_context_ticker:
+        market_context_state, _, _ = _compute_market_context_state(
+            config.market_context_ticker, as_of_date
+        )
+
+    strategy_dict = policy_from_market_state(
+        market_state, anchors, holdings_info, constraints, volume_regime,
+        recent_phases=recent_phases or [],
+        policy_config=config,
+        market_context_state=market_context_state,
+        market_context_ticker=config.market_context_ticker,
+        trading_history_summary=trading_history_summary or {},
+    ).model_dump()
+    strategy_dict = _enforce_strategy_rules(
+        strategy_dict, anchors, constraints, holdings_info
+    )
+    strategy_dict = _apply_order_size_multiplier(
+        strategy_dict, config.order_size_multiplier
+    )
+    return strategy_dict
+
+
 def create_portfolio_state_manager(
     llm,
     memory,
@@ -2270,10 +2607,8 @@ def create_portfolio_state_manager(
 
     def portfolio_state_manager_node(state) -> dict:
         instrument_context = build_instrument_context(state["company_of_interest"])
-        history = state["risk_debate_state"]["history"]
         risk_debate_state = state["risk_debate_state"]
         research_plan = state["investment_plan"]
-        trader_plan = state["trader_investment_plan"]
         holdings_info = state.get("holdings_info") or {}
         trading_history_summary = state.get("trading_history_summary") or {}
         prior_pending_orders = state.get("prior_pending_orders") or []
@@ -2342,9 +2677,10 @@ def create_portfolio_state_manager(
         trading_history_section = _format_trading_history_section(trading_history_summary)
         prior_pending_section = _format_prior_pending_orders_section(prior_pending_orders)
 
-        state_prompt = f"""You are the MarketState classifier for a multi-agent quantitative trading architecture. In backtest mode your job is NOT to create executable orders. You only classify the latent market environment.
-
-        {instrument_context}
+        # Split so the provider can cache the half that never changes. The
+        # static half must stay free of per-run values — one interpolated
+        # ticker in here and the prefix stops matching across runs.
+        state_prompt_static = """You are the MarketState classifier for a multi-agent quantitative trading architecture. In backtest mode your job is NOT to create executable orders. You only classify the latent market environment.
 
         You are NOT allowed to output:
         - entry / add / take-profit / reduce-stop / stop-loss prices
@@ -2367,10 +2703,9 @@ def create_portfolio_state_manager(
         analyst rhetoric, debate tone, headlines, and confidence language are low-weight residuals. They must never dominate anchor-derived structure.
 
         **Anti-narrative contamination directive:**
-        The inputs below contain three advocacy channels that you must NOT take at face value:
+        The inputs below contain two advocacy channels that you must NOT take at face value:
         (a) Bull / Bear researcher arguments embedded in the Research Manager's plan.
-        (b) Aggressive / Conservative / Neutral analysts in the Risk Analysts Debate.
-        (c) Subjective adjectives in news, sentiment, or fundamentals reports.
+        (b) Subjective adjectives in news, sentiment, or fundamentals reports.
         These channels are RHETORIC, not evidence. They are designed to take a side. Do NOT let the volume, intensity, or polarity of bullish or bearish framing decide your scores.
 
         Equal advocacy on both sides means contradictory narrative residuals, not a reason to choose the louder side.
@@ -2440,6 +2775,9 @@ def create_portfolio_state_manager(
         volatility is unstable, or concrete event risk dominates.
         Never increase confidence because language sounds certain.
 
+"""
+
+        state_prompt_variable = f"""        {instrument_context}
         Use ticker exactly: {ticker}.
         Use as_of_date exactly: {as_of_date}.
 
@@ -2447,17 +2785,14 @@ def create_portfolio_state_manager(
 
         **Context:**
         - Research Manager's plan: {research_plan}
-        - Trader's proposal: {trader_plan}
-        {lessons_section}{holdings_section}{trading_history_section}{prior_pending_section}**Risk Analysts Debate:**
-        {history}
-        {anchors_block}
+        {lessons_section}{holdings_section}{trading_history_section}{prior_pending_section}{anchors_block}
 
         Do not output trading orders, prices, sizes, markdown, or fenced code blocks.
         Do not output text outside the schema/JSON object.{get_language_instruction()}"""
 
         market_state = _invoke_market_state(
             llm,
-            state_prompt,
+            build_cached_prompt(llm, state_prompt_static, state_prompt_variable),
             ticker,
             as_of_date,
             anchors,

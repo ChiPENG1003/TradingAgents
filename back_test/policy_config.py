@@ -79,6 +79,19 @@ class PortfolioStatePolicyConfig:
     event_score_weight: float = _opt(0.075, 0.0, 1.0)
     # 风险压力对目标仓位的扣减权重。
     risk_score_weight: float = _opt(0.48, 0.0, 1.0)
+    # risk_pressure_score 的中性点。该分数取值 [0,1] 而非 [-1,1]，若不减去中性点，
+    # 风险项就只会扣分、永不加分，raw_signal 被系统性压成负数（实测中位数 -0.227，
+    # 仅 15% 的观测为正），方向类权重随即被 max(0, raw_signal) 抹平。同一表达式里的
+    # feature_scores 项本就写成 (x - 0.5)，这里补齐同样的中心化。设为 0.0 可还原旧行为。
+    risk_neutral_point: float = _opt(0.5, 0.0, 1.0)
+    # LLM 冻结质量特征以 0.5 为中性点，避免绝对评分产生恒定偏置。
+    trend_continuation_weight: float = _opt(0.0, 0.0, 1.0)
+    reversal_risk_weight: float = _opt(0.0, 0.0, 1.0)
+    breakout_quality_weight: float = _opt(0.0, 0.0, 1.0)
+    pullback_quality_weight: float = _opt(0.0, 0.0, 1.0)
+    volume_support_weight: float = _opt(0.0, 0.0, 1.0)
+    event_risk_weight: float = _opt(0.0, 0.0, 1.0)
+    reward_risk_quality_weight: float = _opt(0.0, 0.0, 1.0)
 
     # 强上升趋势中的最低目标仓位。
     strong_uptrend_floor: float = _opt(0.60, 0.0, 1.0)
@@ -198,8 +211,26 @@ class PortfolioStatePolicyConfig:
     bearish_divergence_stop_atr: float = _opt(1.5, 0.1, 10.0)
     # bearish 背离且无支撑位时的备用 ATR 倍数。
     bearish_divergence_fallback_stop_atr: float = _opt(2.0, 0.1, 10.0)
+    # breakdown/oversold 状态下的固定探仓比例：风险压力低时用前者，否则用后者。
+    # 这两个值原本是函数内的字面量 8.0 / 5.0，而 AAPL 2025 全年 4 次开仓里有 3 次
+    # 走的正是这条 return-early 路径，导致 range_cap / max_target_weight 等仓位参数
+    # 从未被触及。提成参数后它们才进入可搜索空间。
+    exhaustion_starter_low_risk_pct: float = _opt(8.0, 0.0, 100.0)
+    exhaustion_starter_high_risk_pct: float = _opt(5.0, 0.0, 100.0)
+    # transition 修复路径的固定探仓比例（原字面量 4.0 / 3.0，soft 成交量用后者）。
+    transition_repair_starter_pct: float = _opt(4.0, 0.0, 100.0)
+    transition_repair_soft_volume_starter_pct: float = _opt(3.0, 0.0, 100.0)
+    # transition 修复路径止损的 ATR 倍数（原字面量 1.2）。
+    transition_repair_stop_atr_multiple: float = _opt(1.2, 0.1, 10.0)
     # 标准止损位置使用的 ATR 倍数。
     stop_loss_atr_multiple: float = _opt(1.3, 0.1, 10.0)
+    # 单笔新开仓允许消耗的权益风险预算（入场价到止损价的距离 × 仓位）。仓位上限由
+    # 预算除以止损距离得出，止损越近仓位越小。设为 0.0 关闭该上限。
+    entry_risk_budget_pct: float = _opt(0.02, 0.0, 0.20)
+    # 止损的 ATR 距离以“实际入场价”而非 current 为基准计算。限价单的入场价低于
+    # current，按 current 计算会让入场到止损的真实距离缩水到 0.5-1.0 ATR，与
+    # stop_loss_atr_multiple 的设计意图不符。设为 False 可还原旧行为。
+    anchor_stop_to_entry: bool = True
     # 趋势止盈位置使用的 ATR 倍数。
     trend_take_profit_atr_multiple: float = _opt(2.2, 0.1, 10.0)
     # 用近期高点上浮来拉远趋势止盈的位置。
@@ -370,7 +401,7 @@ def add_portfolio_state_policy_args(parser) -> None:
     group.add_argument("--ps-add-max", type=float, default=None,
         dest="ps_add_max_pct", help="覆盖单次加仓上限百分比，同时作用于普通、回调和弱趋势软量能加仓。")
     group.add_argument("--ps-max-trade-risk", type=float, default=None,
-        dest="ps_max_trade_risk_pct", help="整笔交易最大账户风险，例如 0.020 表示 2%。")
+        dest="ps_max_trade_risk_pct", help="整笔交易最大账户风险，例如 0.020 表示 2%%。")
     group.add_argument("--ps-add-ttl", type=int, default=None,
         dest="ps_add_signal_ttl_trading_days", help="加仓信号有效交易日数，默认 1。")
     group.add_argument("--ps-entry-ttl", type=int, default=None,

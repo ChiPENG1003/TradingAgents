@@ -1,41 +1,3 @@
-"""Backtest engine.
-
-Reads `back_test/strategy/{ticker}/{ticker}_*.json` weekly strategy files and replays them on
-historical daily OHLCV using limit-order semantics.
-
-Order semantics:
-- Entry / add-position at price X: when daily Low <= X, fill at Open if
-  Open <= X (gap-through), otherwise X.
-- Take-profit at price Y (sell-on-rise): when daily High >= Y, fill at Open if
-  Open >= Y, otherwise Y. size_pct=100 turns this into a full take-profit close.
-- Reduce-stop at price R (partial sell-on-drop): when daily Low <= R, fill at
-  Open if Open <= R, otherwise R. Sells `size_pct%` of the current shares.
-- Stop-loss at price Z (full sell-on-drop): when daily Low <= Z, fill at Open
-  if Open <= Z, otherwise Z. Always closes 100%.
-
-Per-bar evaluation order: stop_loss -> reduce_stop -> take_profit -> entry/add.
-
-Strategy lifecycle:
-- Each weekly strategy is "active" from the next trading day after its
-  `as_of_date` until its `valid_until`, the next strategy's active date, or
-  backtest end, whichever comes first.
-- When a new strategy activates, any UNFILLED entry / add / take_profit /
-  reduce_stop orders from the prior strategy are cancelled. Already-filled
-  positions may receive new add / take_profit / reduce_stop / stop_loss
-  instructions from the active strategy.
-- BUY/HOLD actions can issue entry or add-position orders when the respective
-  price and size_pct fields are provided.
-- SELL action with no current position is a no-op; with a position it issues
-  immediate market-close on the next trading day's open.
-
-Schema migration: legacy v1 (`take_profit`) and v2 (`reduce_position`) files
-are migrated to v3 at load time. Both are mapped onto the v3 `take_profit`
-field, since their fill semantics (sell-on-rise) match.
-
-Reuses `tradingagents.dataflows.stockstats_utils.load_ohlcv` for both ticker
-and ^IXIC benchmark data fetches.
-"""
-
 from __future__ import annotations
 
 import json
@@ -65,6 +27,9 @@ class Position:
     stop_loss_as_of: Optional[str] = None
     add_count: int = 0
     last_add_date: Optional[str] = None
+    take_profit_count: int = 0
+    last_take_profit_date: Optional[str] = None
+    peak_shares: float = 0.0
     exit_date: Optional[str] = None
     exit_price: Optional[float] = None
     pnl: Optional[float] = None  # realized $
@@ -85,6 +50,7 @@ class PendingOrder:
     gap_chase_threshold_pct: Optional[float] = None
     volume_confirmation: Optional[str] = None
     key_level: Optional[float] = None
+    min_volume_ratio: Optional[float] = None
 
 
 @dataclass
@@ -123,6 +89,9 @@ class BacktestEngine:
         max_position_after_add_pct: float = 1.0,
         max_adds_per_trade: int = 999,
         min_days_between_adds: int = 0,
+        max_take_profits_per_trade: int = 999,
+        min_days_between_take_profits: int = 0,
+        take_profit_min_residual_pct: float = 0.0,
         max_entry_gap_above_plan_pct: float = 0.0,
         max_add_gap_above_plan_pct: float = 0.0,
         allow_market_entry_gap_chase: bool = False,
@@ -138,6 +107,11 @@ class BacktestEngine:
         block_shrinking_volume_adds: bool = False,
         shrinking_volume_close_hold_days: int = 2,
         add_key_level_tolerance_pct: float = 0.005,
+        entry_min_volume_ratio: float = 0.0,
+        add_min_volume_ratio: float = 0.0,
+        volume_average_window: int = 20,
+        regenerate_orders: bool = False,
+        policy_config: Optional[object] = None,
     ):
         self.ticker = ticker
         self.start_date = pd.to_datetime(start_date)
@@ -152,6 +126,15 @@ class BacktestEngine:
         self.max_position_after_add_pct = float(max_position_after_add_pct)
         self.max_adds_per_trade = int(max_adds_per_trade)
         self.min_days_between_adds = int(min_days_between_adds)
+        # Adds were rate-limited from the start; take-profits were not, so a
+        # winner could be scaled out of on every weekly review. AAPL 2025 sold
+        # its single profitable position in 10 slices, shrinking it from 19.75
+        # shares to 4.62 while the move was still running. These mirror the add
+        # limits, plus a residual floor that implements the "核心持仓" intent
+        # the phase modifiers already document.
+        self.max_take_profits_per_trade = int(max_take_profits_per_trade)
+        self.min_days_between_take_profits = int(min_days_between_take_profits)
+        self.take_profit_min_residual_pct = float(take_profit_min_residual_pct)
         self.max_entry_gap_above_plan_pct = float(max_entry_gap_above_plan_pct)
         self.max_add_gap_above_plan_pct = float(max_add_gap_above_plan_pct)
         self.allow_market_entry_gap_chase = bool(allow_market_entry_gap_chase)
@@ -169,6 +152,34 @@ class BacktestEngine:
         self.block_shrinking_volume_adds = bool(block_shrinking_volume_adds)
         self.shrinking_volume_close_hold_days = int(shrinking_volume_close_hold_days)
         self.add_key_level_tolerance_pct = float(add_key_level_tolerance_pct)
+        # Prior-bar volume confirmation. A buy only fills once the last
+        # completed bar traded at least this multiple of its trailing average
+        # volume; 0 disables the gate. The ratio is read off D-1 so it is
+        # fully known before D opens — gating on D's own volume would leak
+        # a close-of-day number into an intraday fill decision.
+        self.min_volume_ratio = {
+            "entry": float(entry_min_volume_ratio),
+            "add": float(add_min_volume_ratio),
+        }
+        self.volume_average_window = max(1, int(volume_average_window))
+        self._prior_volume_ratio: dict[str, float] = {}
+        # When True, each strategy's baked orders are re-derived at activation
+        # from its saved MarketState via policy_from_market_state, using the
+        # live simulated position. This lets offline search vary policy_config
+        # scoring weights/thresholds and see them affect the backtest; without
+        # it the replay only ever consumes frozen orders. See
+        # portfolio_state_manager.regenerate_strategy.
+        self.regenerate_orders = bool(regenerate_orders)
+        self.policy_config = policy_config
+        self._regen_lookback = 2
+        self._strategies_regenerated = 0
+        self._strategies_regen_skipped = 0
+        self._frozen_snapshots_loaded = 0
+        self._frozen_snapshot_rejections = 0
+        if self.regenerate_orders and policy_config is not None:
+            self._regen_lookback = int(
+                getattr(policy_config, "recent_phase_lookback", 2)
+            )
         self._trading_days: Optional[pd.Series] = None
         self.extraction_failures = 0
         self.schema_migrations = 0
@@ -186,13 +197,108 @@ class BacktestEngine:
         self.gap_buy_rejected = 0
         self.add_rejected_max_adds = 0
         self.add_rejected_min_spacing = 0
+        self.tp_rejected_max_count = 0
+        self.tp_rejected_min_spacing = 0
+        self.tp_capped_residual = 0
         self.add_capped_single_size = 0
         self.add_capped_position_size = 0
         self.entry_capped_risk_size = 0
         self.add_capped_risk_size = 0
         self.buy_rejected_risk_budget = 0
         self.add_rejected_shrinking_volume = 0
+        self.entry_deferred_low_volume = 0
+        self.add_deferred_low_volume = 0
+        self.frozen_orders_assumed_flat = 0
+        self.volume_gate_data_missing = 0
         self.risk_stop_adjusted = 0
+
+    def _flag_stale_frozen_orders(
+        self,
+        strategy: Optional[dict],
+        position: Optional[Position],
+    ) -> None:
+        """Count orders baked against a flat book that activate while holding.
+
+        `policy_from_market_state` branches on has_position: with no holdings it
+        emits entry sizing and never the add / take-profit / reduce-stop shapes
+        an open position calls for. Strategies generated without feeding the
+        simulated position forward are therefore wrong for exactly the dates a
+        position exists — and silently so, which is why this is counted rather
+        than inferred later. `regenerate_orders=True` re-derives them from the
+        live position and makes the count harmless.
+        """
+        if self.regenerate_orders or strategy is None or position is None:
+            return
+        if position.shares <= 0:
+            return
+        snapshot = strategy.get("feature_snapshot") or {}
+        holdings = (snapshot.get("execution_context") or {}).get("holdings_info") or {}
+        if float(holdings.get("quantity") or 0.0) <= 0.0:
+            self.frozen_orders_assumed_flat += 1
+
+    # ------------------------------------------------------ order regeneration
+    _REGEN_ORDER_KEYS = (
+        "action", "entry", "add_position", "take_profit", "reduce_stop", "stop_loss",
+    )
+
+    def _regenerate_active_orders(
+        self,
+        strat: dict,
+        strategies: List[dict],
+        position: Optional[Position],
+    ) -> None:
+        """Re-derive a strategy's orders from its saved MarketState in place.
+
+        Uses the live simulated position for holdings and the prior strategies'
+        market phases for hysteresis, so policy_config scoring weights/thresholds
+        actually drive the replayed orders. On any failure (no saved state,
+        unavailable anchors) the original baked orders are left untouched.
+        """
+        # Lazy import avoids a module-level cycle (portfolio_state_manager pulls
+        # in back_test.policy_config, which is adjacent to this engine).
+        from tradingagents.agents.managers.portfolio_state_manager import (
+            regenerate_strategy,
+            MarketState,
+        )
+
+        frozen_snapshot = strat.get("feature_snapshot")
+        market_state = strat.get("market_state")
+        if not frozen_snapshot:
+            # Parameter learning must not silently recompute revised OHLCV.
+            self._frozen_snapshot_rejections += 1
+            self._strategies_regen_skipped += 1
+            return
+
+        idx = strat.get("_index", 0)
+        recent_phases: List[str] = []
+        for prior in strategies[max(0, idx - self._regen_lookback):idx]:
+            prior_state = prior.get("market_state")
+            if not prior_state:
+                continue
+            try:
+                recent_phases.append(MarketState.model_validate(prior_state).market_phase)
+            except Exception:
+                continue
+
+        quantity = float(position.shares) if position is not None else 0.0
+        regen = regenerate_strategy(
+            ticker=self.ticker,
+            as_of_date=strat["as_of_date"],
+            market_state_dict=market_state,
+            holdings_info={"quantity": quantity},
+            recent_phases=recent_phases,
+            policy_config=self.policy_config,
+            frozen_snapshot=frozen_snapshot,
+        )
+        if regen is None:
+            self._frozen_snapshot_rejections += 1
+            self._strategies_regen_skipped += 1
+            return
+        for key in self._REGEN_ORDER_KEYS:
+            if key in regen:
+                strat[key] = regen[key]
+        self._strategies_regenerated += 1
+        self._frozen_snapshots_loaded += 1
 
     # ----------------------------------------------------------- load helpers
     def load_strategies(self) -> List[dict]:
@@ -243,6 +349,44 @@ class BacktestEngine:
         end = pd.to_datetime(effective_end)
         df = df[(df["Date"] >= start) & (df["Date"] <= end)]
         return df.sort_values("Date").reset_index(drop=True)
+
+    def load_volume_history(self) -> pd.DataFrame:
+        """Untrimmed daily OHLCV used to warm the trailing volume average.
+
+        Separate from load_prices so the average is already warm on the first
+        replayed bar instead of spending the first `volume_average_window`
+        days blind.
+        """
+        return load_ohlcv(self.ticker, self.end_date.strftime("%Y-%m-%d"))
+
+    def _load_prior_volume_ratios(self, prices: pd.DataFrame) -> dict[str, float]:
+        """Map each trading day to the PRIOR bar's volume / trailing average.
+
+        Computed on the untrimmed history, then shifted one bar forward: the
+        value stored under date D is derived entirely from bars at or before
+        D-1, so consulting it on D leaks nothing about D itself.
+        """
+        if not any(v > 0 for v in self.min_volume_ratio.values()):
+            return {}
+        try:
+            df = self.load_volume_history()
+        except Exception:
+            df = prices
+        if df is None or df.empty or "Volume" not in df.columns:
+            df = prices
+        if df.empty or "Volume" not in df.columns:
+            return {}
+        df = df.sort_values("Date").reset_index(drop=True)
+        volume = pd.to_numeric(df["Volume"], errors="coerce")
+        window = self.volume_average_window
+        average = volume.rolling(window, min_periods=window).mean()
+        ratio = (volume / average).where(average > 0)
+        prior = ratio.shift(1)
+        return {
+            date.strftime("%Y-%m-%d"): float(value)
+            for date, value in zip(df["Date"], prior)
+            if pd.notna(value)
+        }
 
     def load_index_context_prices(
         self,
@@ -316,6 +460,7 @@ class BacktestEngine:
             row["Date"].strftime("%Y-%m-%d"): float(row["Close"])
             for _, row in prices.iterrows()
         }
+        self._prior_volume_ratio = self._load_prior_volume_ratios(prices)
         for strat in strategies:
             strat["_active_from"] = self._next_trading_day(trading_days, strat["as_of_date"])
 
@@ -331,6 +476,8 @@ class BacktestEngine:
                 )
             strat["_active_until"] = min(active_until_candidates)
         strategies = [s for s in strategies if s["_active_from"] <= s["_active_until"]]
+        for idx, strat in enumerate(strategies):
+            strat["_index"] = idx
 
         equity_rows = []
         active_strategy: Optional[dict] = None
@@ -346,6 +493,11 @@ class BacktestEngine:
             new_active = self._strategy_for_date(strategies, date)
             if new_active is not active_strategy:
                 active_strategy = new_active
+                self._flag_stale_frozen_orders(active_strategy, position)
+                if active_strategy is not None and self.regenerate_orders:
+                    self._regenerate_active_orders(
+                        active_strategy, strategies, position
+                    )
                 if active_strategy is None:
                     expired_orders += len(pending_orders)
                     pending_orders = []
@@ -453,11 +605,22 @@ class BacktestEngine:
                 for order in pending_orders:
                     fill = self._sell_order_fill_price(day_open, day_high, order)
                     if order.order_type == "take_profit" and fill is not None:
+                        if self._take_profit_is_rate_limited(position, date):
+                            still_pending.append(order)
+                            continue
+                        size_pct = self._cap_take_profit_to_residual(
+                            position, order.size_pct
+                        )
+                        if size_pct <= 0:
+                            still_pending.append(order)
+                            continue
                         fill_price, fill_basis = fill
+                        position.take_profit_count += 1
+                        position.last_take_profit_date = str(date.date())
                         cash, trades, position = self._reduce_position_limit(
                             position,
                             fill_price,
-                            order.size_pct,
+                            size_pct,
                             str(date.date()),
                             cash,
                             trades,
@@ -486,6 +649,13 @@ class BacktestEngine:
                         continue
                     if self._should_reject_gap_buy(day_open, order):
                         self.gap_buy_rejected += 1
+                        continue
+                    if self._should_defer_low_volume_buy(order, date):
+                        if order.order_type == "entry":
+                            self.entry_deferred_low_volume += 1
+                        else:
+                            self.add_deferred_low_volume += 1
+                        still_pending.append(order)
                         continue
                     fill = self._buy_order_fill_price(day_open, day_low, order)
                     if order.order_type in {"entry", "add"} and fill is not None:
@@ -531,6 +701,9 @@ class BacktestEngine:
                 "stop_loss_as_of": position.stop_loss_as_of,
                 "add_count": position.add_count,
                 "last_add_date": position.last_add_date,
+                "take_profit_count": position.take_profit_count,
+                "last_take_profit_date": position.last_take_profit_date,
+                "peak_shares": position.peak_shares,
             }
 
         final_pending_orders = [
@@ -579,6 +752,10 @@ class BacktestEngine:
             "expired_order_rate": (expired_orders / orders_created) if orders_created else 0.0,
             "schema_migrations": self.schema_migrations,
             "schema_rejections": self.schema_rejections,
+            "strategies_regenerated": self._strategies_regenerated,
+            "strategies_regen_skipped": self._strategies_regen_skipped,
+            "frozen_snapshots_loaded": self._frozen_snapshots_loaded,
+            "frozen_snapshot_rejections": self._frozen_snapshot_rejections,
             "invalid_sell_orders": self.invalid_sell_orders,
             "reduce_stop_capped": self.reduce_stop_capped,
             "entry_promoted_to_add": self.entry_promoted_to_add,
@@ -592,12 +769,19 @@ class BacktestEngine:
             "gap_buy_rejected": self.gap_buy_rejected,
             "add_rejected_max_adds": self.add_rejected_max_adds,
             "add_rejected_min_spacing": self.add_rejected_min_spacing,
+            "tp_rejected_max_count": self.tp_rejected_max_count,
+            "tp_rejected_min_spacing": self.tp_rejected_min_spacing,
+            "tp_capped_residual": self.tp_capped_residual,
             "add_capped_single_size": self.add_capped_single_size,
             "add_capped_position_size": self.add_capped_position_size,
             "entry_capped_risk_size": self.entry_capped_risk_size,
             "add_capped_risk_size": self.add_capped_risk_size,
             "buy_rejected_risk_budget": self.buy_rejected_risk_budget,
             "add_rejected_shrinking_volume": self.add_rejected_shrinking_volume,
+            "entry_deferred_low_volume": self.entry_deferred_low_volume,
+            "add_deferred_low_volume": self.add_deferred_low_volume,
+            "frozen_orders_assumed_flat": self.frozen_orders_assumed_flat,
+            "volume_gate_data_missing": self.volume_gate_data_missing,
             "risk_stop_adjusted": self.risk_stop_adjusted,
             "commission": self.commission,
             "slippage_bps": self.slippage_bps,
@@ -607,6 +791,9 @@ class BacktestEngine:
             "max_position_after_add_pct": self.max_position_after_add_pct,
             "max_adds_per_trade": self.max_adds_per_trade,
             "min_days_between_adds": self.min_days_between_adds,
+            "max_take_profits_per_trade": self.max_take_profits_per_trade,
+            "min_days_between_take_profits": self.min_days_between_take_profits,
+            "take_profit_min_residual_pct": self.take_profit_min_residual_pct,
             "max_entry_gap_above_plan_pct": self.max_entry_gap_above_plan_pct,
             "max_add_gap_above_plan_pct": self.max_add_gap_above_plan_pct,
             "entry_signal_ttl_trading_days": self.signal_ttl_trading_days["entry"],
@@ -614,6 +801,9 @@ class BacktestEngine:
             "block_shrinking_volume_adds": self.block_shrinking_volume_adds,
             "shrinking_volume_close_hold_days": self.shrinking_volume_close_hold_days,
             "add_key_level_tolerance_pct": self.add_key_level_tolerance_pct,
+            "entry_min_volume_ratio": self.min_volume_ratio["entry"],
+            "add_min_volume_ratio": self.min_volume_ratio["add"],
+            "volume_average_window": self.volume_average_window,
             "bias_audit": audit,
         }
         return BacktestResult(
@@ -768,6 +958,7 @@ class BacktestEngine:
             gap_chase_threshold_pct=self._gap_threshold_for_order(order_type, strategy),
             volume_confirmation=self._volume_confirmation_for_order(strategy),
             key_level=self._key_level_for_order(strategy),
+            min_volume_ratio=self.min_volume_ratio.get(order_type),
         )
 
     @staticmethod
@@ -882,6 +1073,28 @@ class BacktestEngine:
         if threshold is None or threshold <= 0:
             return False
         return day_open > plan_price * (1.0 + threshold)
+
+    def _should_defer_low_volume_buy(
+        self,
+        order: PendingOrder,
+        date: pd.Timestamp,
+    ) -> bool:
+        """True when the prior bar's volume failed to confirm this buy.
+
+        Unlike the gap check this does not cancel the order: it stays pending
+        and is retried on later bars until its TTL expires, so the gate reads
+        as "wait for volume" rather than "give up". A missing ratio (history
+        shorter than the averaging window) passes rather than blocks, so a
+        data gap cannot silently suppress every trade.
+        """
+        threshold = order.min_volume_ratio
+        if not threshold or threshold <= 0:
+            return False
+        ratio = self._prior_volume_ratio.get(date.strftime("%Y-%m-%d"))
+        if ratio is None:
+            self.volume_gate_data_missing += 1
+            return False
+        return ratio < threshold
 
     def _should_reject_shrinking_volume_add(
         self,
@@ -1163,6 +1376,7 @@ class BacktestEngine:
                 stop_loss=effective_stop,
                 stop_loss_as_of=order.strategy_as_of if effective_stop is not None else None,
                 entry_commission=self.commission,
+                peak_shares=shares,
             )
             self._apply_risk_capped_stop(position, equity, order.strategy_as_of)
             self._record_execution(
@@ -1180,6 +1394,9 @@ class BacktestEngine:
             position.stop_loss_as_of = order.strategy_as_of
         position.add_count += 1
         position.last_add_date = entry_date
+        # The residual floor is measured against the largest the position ever
+        # reached, so an add raises the core rather than resetting it.
+        position.peak_shares = max(position.peak_shares, position.shares)
         self._apply_risk_capped_stop(position, equity, order.strategy_as_of)
         self._record_execution(
             executions, "BUY", order.order_type, order.strategy_as_of, entry_date,
@@ -1245,6 +1462,51 @@ class BacktestEngine:
             position.stop_loss = risk_capped_stop
             position.stop_loss_as_of = signal_date
             self.risk_stop_adjusted += 1
+
+    def _take_profit_is_rate_limited(
+        self,
+        position: Position,
+        date: pd.Timestamp,
+    ) -> bool:
+        """True when this bar is too soon, or too many, to trim again.
+
+        Deferring rather than cancelling keeps the order alive for a later
+        bar, so a rate limit delays the scale-out instead of abandoning it.
+        """
+        if position.take_profit_count >= self.max_take_profits_per_trade:
+            self.tp_rejected_max_count += 1
+            return True
+        if (
+            self.min_days_between_take_profits > 0
+            and position.last_take_profit_date is not None
+            and self._trading_day_distance(
+                position.last_take_profit_date, str(date.date())
+            )
+            < self.min_days_between_take_profits
+        ):
+            self.tp_rejected_min_spacing += 1
+            return True
+        return False
+
+    def _cap_take_profit_to_residual(
+        self,
+        position: Position,
+        size_pct: float,
+    ) -> float:
+        """Trim the order so a core holding survives the scale-out."""
+        floor_pct = self.take_profit_min_residual_pct
+        if floor_pct <= 0 or position.peak_shares <= 0:
+            return size_pct
+        floor_shares = position.peak_shares * floor_pct
+        sellable = position.shares - floor_shares
+        if sellable <= 0:
+            self.tp_capped_residual += 1
+            return 0.0
+        requested = position.shares * (size_pct / 100.0)
+        if requested <= sellable:
+            return size_pct
+        self.tp_capped_residual += 1
+        return max(0.0, sellable / position.shares * 100.0)
 
     def _reduce_position_limit(
         self, position, fill_price, size_pct, exit_date, cash, trades, executions,

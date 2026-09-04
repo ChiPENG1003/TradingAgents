@@ -1,7 +1,7 @@
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from tradingagents.agents.utils.agent_utils import (
     build_instrument_context,
-    get_indicators,
+    get_indicators_table,
     get_language_instruction,
     get_options_chain,
     get_stock_data,
@@ -18,13 +18,14 @@ def create_market_analyst(llm):
 
         tools = [
             get_stock_data,
-            get_indicators,
+            get_indicators_table,
             get_options_chain,
             get_verified_market_snapshot,
         ]
 
         system_message = (
-            "You are a market analyst focused on short-term swing trades over the next 1-5 trading days. Call get_stock_data first, then call get_indicators. "
+            "You are a market analyst focused on short-term swing trades over the next 1-5 trading days. Call get_stock_data first, then call get_indicators_table ONCE "
+            "with every indicator you need in a single comma-separated list — it returns them as one aligned table, so repeated calls only resend the same data. "
             "Select up to 9 indicators from this exact list of parameter names: "
             "close_5_ema, close_10_ema, close_20_ema, close_5_sma, close_10_sma, close_50_sma, macd, macds, macdh, rsi, boll, boll_ub, boll_lb, atr, vwma, mfi, volume, volume_20_sma, volume_50_sma. "
             "Prioritize short-term indicators as your primary signals: close_5_ema, close_10_ema, close_20_ema, macd, macdh, rsi, atr, volume, volume_20_sma. "

@@ -1,0 +1,99 @@
+{
+  "by_node": {
+    "Market Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.003942,
+      "calls": 4,
+      "input_tokens": 14361,
+      "output_tokens": 1981,
+      "total_tokens": 16342,
+      "cache_read_tokens": 7266,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.506
+    },
+    "Portfolio Manager": {
+      "models": [
+        "gpt-5.6-terra"
+      ],
+      "cost_usd": 0.022636,
+      "calls": 1,
+      "input_tokens": 6978,
+      "output_tokens": 936,
+      "total_tokens": 7914,
+      "cache_read_tokens": 1418,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.2032
+    },
+    "Bull Researcher": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.000999,
+      "calls": 1,
+      "input_tokens": 2710,
+      "output_tokens": 381,
+      "total_tokens": 3091,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Social Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.001494,
+      "calls": 2,
+      "input_tokens": 1766,
+      "output_tokens": 951,
+      "total_tokens": 2717,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Fundamentals Analyst": {
+      "models": [
+        "gpt-5.6-luna"
+      ],
+      "cost_usd": 0.001241,
+      "calls": 2,
+      "input_tokens": 1759,
+      "output_tokens": 741,
+      "total_tokens": 2500,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    },
+    "Research Manager": {
+      "models": [
+        "gpt-5.6-terra"
+      ],
+      "cost_usd": 0.006586,
+      "calls": 1,
+      "input_tokens": 785,
+      "output_tokens": 418,
+      "total_tokens": 1203,
+      "cache_read_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_hit_rate": 0.0
+    }
+  },
+  "totals": {
+    "models": [
+      "gpt-5.6-luna",
+      "gpt-5.6-terra"
+    ],
+    "cost_usd": 0.036898,
+    "calls": 11,
+    "input_tokens": 28359,
+    "output_tokens": 5408,
+    "total_tokens": 33767,
+    "cache_read_tokens": 8684,
+    "cache_creation_tokens": 0,
+    "cache_hit_rate": 0.3062
+  },
+  "responses_without_usage": 0,
+  "ticker": "XOM",
+  "trade_date": "2024-04-08"
+}

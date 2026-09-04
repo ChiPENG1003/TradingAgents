@@ -6,7 +6,8 @@ from tradingagents.agents.utils.core_stock_tools import (
     get_stock_data
 )
 from tradingagents.agents.utils.technical_indicators_tools import (
-    get_indicators
+    get_indicators,
+    get_indicators_table,
 )
 from tradingagents.agents.utils.fundamental_data_tools import (
     get_fundamentals,

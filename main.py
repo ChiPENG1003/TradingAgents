@@ -31,8 +31,8 @@ def build_parser() -> argparse.ArgumentParser:
         help="Use live manager or backtest PortfolioState manager.",
     )
     parser.add_argument("--provider", default=DEFAULT_CONFIG["llm_provider"])
-    parser.add_argument("--quick-model", default="gpt-5.4-mini")
-    parser.add_argument("--deep-model", default="gpt-5.4-mini")
+    parser.add_argument("--quick-model", default=DEFAULT_CONFIG["quick_think_llm"])
+    parser.add_argument("--deep-model", default=DEFAULT_CONFIG["deep_think_llm"])
     parser.add_argument("--backend-url", default=DEFAULT_CONFIG["backend_url"])
     parser.add_argument("--debate-rounds", type=int, default=1)
     parser.add_argument(

@@ -62,6 +62,11 @@ class Propagator:
             "fundamentals_report": "",
             "sentiment_report": "",
             "news_report": "",
+            # Defaults so backtest mode can skip the Trader / risk-debate nodes
+            # without the MarketState classifier KeyError-ing on these reads.
+            # Research Manager overwrites investment_plan when it runs.
+            "investment_plan": "",
+            "trader_investment_plan": "",
         }
 
     def get_graph_args(self, callbacks: Optional[List] = None) -> Dict[str, Any]:

@@ -19,7 +19,7 @@ so that:
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -225,4 +225,115 @@ def render_pm_decision(decision: PortfolioDecision) -> str:
         parts.extend(["", f"**Price Target**: {decision.price_target}"])
     if decision.time_horizon:
         parts.extend(["", f"**Time Horizon**: {decision.time_horizon}"])
+    return "\n".join(parts)
+
+
+# ---------------------------------------------------------------------------
+# Live Portfolio Manager execution plan
+# ---------------------------------------------------------------------------
+
+
+class LiveDecisionRow(BaseModel):
+    item: str = Field(description="Short row label, e.g. core, add 1, hard stop, take profit 1.")
+    operation: Literal["HOLD", "BUY", "SELL", "CLEAR"]
+    trigger_description: str
+    price_low: Optional[float] = None
+    price_high: Optional[float] = None
+    confirmation_rule: Optional[str] = None
+    shares: Optional[int] = Field(default=None, ge=0)
+    target_shares_after: Optional[int] = Field(default=None, ge=0)
+    reference_price: Optional[float] = Field(default=None, gt=0)
+
+
+class LivePortfolioDecision(BaseModel):
+    ticker: str
+    as_of_date: str
+    decision: Literal["BUY", "HOLD", "SELL"]
+    current_price: float = Field(gt=0)
+    plan_rows: list[LiveDecisionRow] = Field(min_length=1)
+    conditional_notes: list[str] = Field(default_factory=list)
+    holding_period: str
+    rationale: str
+    data_supported: list[str] = Field(default_factory=list)
+    inferred: list[str] = Field(default_factory=list)
+    missing_data: list[str] = Field(default_factory=list)
+    invalidation_triggers: list[str] = Field(default_factory=list)
+    watch_list: list[str] = Field(default_factory=list)
+
+
+def render_live_portfolio_decision(
+    decision: LivePortfolioDecision,
+    holdings_info: Optional[dict] = None,
+) -> str:
+    """Render a stable table first; all amounts/NAV values are computed in Python."""
+    holdings = holdings_info or {}
+    equity = holdings.get("equity")
+    equity = float(equity) if equity not in (None, 0) else None
+
+    def money(value: Optional[float]) -> str:
+        return "—" if value is None else f"约 {value:,.0f}"
+
+    def pct(value: Optional[float]) -> str:
+        return "—" if value is None else f"{value:.1f}%"
+
+    rows = [
+        "| 项目 | 触发条件/价格 | 股数 | 参考金额 | 占 NAV |",
+        "| --- | ---: | ---: | ---: | ---: |",
+    ]
+    remaining = int(float(holdings.get("quantity") or 0))
+    for row in decision.plan_rows:
+        trigger = row.trigger_description
+        if row.confirmation_rule:
+            trigger = f"{trigger}；{row.confirmation_rule}"
+        shares = row.shares
+        if row.operation == "CLEAR" and remaining > 0:
+            shares = remaining
+            remaining = 0
+        elif row.operation == "SELL" and shares is not None and remaining > 0:
+            shares = min(shares, remaining)
+            remaining -= shares
+        elif row.operation == "BUY" and shares is not None:
+            remaining += shares
+        elif row.operation == "HOLD" and shares is not None:
+            remaining = shares
+        if row.operation == "CLEAR":
+            shares_text = "清仓全部剩余"
+        elif shares is None:
+            shares_text = "—"
+        elif row.operation == "BUY":
+            shares_text = f"加 {shares:,} 股"
+        elif row.operation == "SELL":
+            shares_text = f"减 {shares:,} 股"
+        else:
+            shares_text = f"{shares:,} 股"
+        ref_price = row.reference_price
+        if ref_price is None:
+            if row.price_low is not None and row.price_high is not None:
+                ref_price = (row.price_low + row.price_high) / 2.0
+            elif row.price_low is not None:
+                ref_price = row.price_low
+            elif row.price_high is not None:
+                ref_price = row.price_high
+            else:
+                ref_price = decision.current_price
+        amount = abs(shares * ref_price) if shares is not None else None
+        nav_pct = amount / equity * 100.0 if amount is not None and equity else None
+        rows.append(
+            f"| {row.item} | {trigger} | {shares_text} | {money(amount)} | {pct(nav_pct)} |"
+        )
+
+    parts = rows
+    for note in decision.conditional_notes:
+        parts.extend(["", f"> {note}"])
+    parts.extend([
+        "", f"**Decision**: {decision.decision}",
+        "", f"**Holding Period**: {decision.holding_period}",
+        "", f"**Rationale**: {decision.rationale}",
+        "", "**Decision Audit**:",
+        f"- **Data-supported**: {'; '.join(decision.data_supported) or 'none'}",
+        f"- **Inferred**: {'; '.join(decision.inferred) or 'none'}",
+        f"- **Missing data**: {'; '.join(decision.missing_data) or 'none'}",
+        f"- **Invalidation triggers**: {'; '.join(decision.invalidation_triggers) or 'none'}",
+        f"- **Watch-list**: {'; '.join(decision.watch_list) or 'none'}",
+    ])
     return "\n".join(parts)

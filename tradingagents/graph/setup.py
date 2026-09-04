@@ -8,6 +8,7 @@ from langgraph.prebuilt import ToolNode
 
 from tradingagents.agents import *
 from tradingagents.agents.utils.agent_states import AgentState
+from tradingagents.agents.utils.token_usage import attribute_to
 
 from .conditional_logic import ConditionalLogic
 
@@ -63,7 +64,10 @@ class GraphSetup:
             )
             """
             try:
-                result = node(state)
+                # Bind LLM token usage to this node so the tracker can attribute
+                # it without any agent needing to know the tracker exists.
+                with attribute_to(node_name):
+                    result = node(state)
             except Exception:
                 elapsed = perf_counter() - start
                 """
@@ -214,19 +218,25 @@ class GraphSetup:
             "Research Manager",
             self._timed_agent_node("Research Manager", research_manager_node),
         )
-        workflow.add_node("Trader", self._timed_agent_node("Trader", trader_node))
-        workflow.add_node(
-            "Aggressive Analyst",
-            self._timed_agent_node("Aggressive Analyst", aggressive_analyst),
-        )
-        workflow.add_node(
-            "Neutral Analyst",
-            self._timed_agent_node("Neutral Analyst", neutral_analyst),
-        )
-        workflow.add_node(
-            "Conservative Analyst",
-            self._timed_agent_node("Conservative Analyst", conservative_analyst),
-        )
+        # The Trader and risk-debate nodes refine an executable order. In backtest
+        # mode the order is built by the deterministic policy and these agents'
+        # text adds little to the MarketState classification, so we skip them to
+        # save LLM tokens. They still run in live mode.
+        decision_stage_enabled = self.trading_mode != "backtest"
+        if decision_stage_enabled:
+            workflow.add_node("Trader", self._timed_agent_node("Trader", trader_node))
+            workflow.add_node(
+                "Aggressive Analyst",
+                self._timed_agent_node("Aggressive Analyst", aggressive_analyst),
+            )
+            workflow.add_node(
+                "Neutral Analyst",
+                self._timed_agent_node("Neutral Analyst", neutral_analyst),
+            )
+            workflow.add_node(
+                "Conservative Analyst",
+                self._timed_agent_node("Conservative Analyst", conservative_analyst),
+            )
         workflow.add_node(
             "Portfolio Manager",
             self._timed_agent_node("Portfolio Manager", portfolio_manager_node),
@@ -286,32 +296,37 @@ class GraphSetup:
                 "Research Manager": "Research Manager",
             },
         )
-        workflow.add_edge("Research Manager", "Trader")
-        workflow.add_edge("Trader", "Aggressive Analyst")
-        workflow.add_conditional_edges(
-            "Aggressive Analyst",
-            self.conditional_logic.should_continue_risk_analysis,
-            {
-                "Conservative Analyst": "Conservative Analyst",
-                "Portfolio Manager": "Portfolio Manager",
-            },
-        )
-        workflow.add_conditional_edges(
-            "Conservative Analyst",
-            self.conditional_logic.should_continue_risk_analysis,
-            {
-                "Neutral Analyst": "Neutral Analyst",
-                "Portfolio Manager": "Portfolio Manager",
-            },
-        )
-        workflow.add_conditional_edges(
-            "Neutral Analyst",
-            self.conditional_logic.should_continue_risk_analysis,
-            {
-                "Aggressive Analyst": "Aggressive Analyst",
-                "Portfolio Manager": "Portfolio Manager",
-            },
-        )
+        if decision_stage_enabled:
+            workflow.add_edge("Research Manager", "Trader")
+            workflow.add_edge("Trader", "Aggressive Analyst")
+            workflow.add_conditional_edges(
+                "Aggressive Analyst",
+                self.conditional_logic.should_continue_risk_analysis,
+                {
+                    "Conservative Analyst": "Conservative Analyst",
+                    "Portfolio Manager": "Portfolio Manager",
+                },
+            )
+            workflow.add_conditional_edges(
+                "Conservative Analyst",
+                self.conditional_logic.should_continue_risk_analysis,
+                {
+                    "Neutral Analyst": "Neutral Analyst",
+                    "Portfolio Manager": "Portfolio Manager",
+                },
+            )
+            workflow.add_conditional_edges(
+                "Neutral Analyst",
+                self.conditional_logic.should_continue_risk_analysis,
+                {
+                    "Aggressive Analyst": "Aggressive Analyst",
+                    "Portfolio Manager": "Portfolio Manager",
+                },
+            )
+        else:
+            # Backtest: research thesis flows straight into the MarketState
+            # classifier; no Trader / risk debate in between.
+            workflow.add_edge("Research Manager", "Portfolio Manager")
 
         workflow.add_edge("Portfolio Manager", END)
 
