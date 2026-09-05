@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional
 
 import pandas as pd
 
+from back_test.technical_conditions import PROFILES, conditions_pass, technical_features, validate_execution_conditions
 from back_test.calendar import adjust_backtest_window, normalize_trading_days
 from tradingagents.dataflows.stockstats_utils import load_ohlcv
 
@@ -51,6 +52,9 @@ class PendingOrder:
     volume_confirmation: Optional[str] = None
     key_level: Optional[float] = None
     min_volume_ratio: Optional[float] = None
+    conditions: dict = field(default_factory=dict)
+    exit_plan: dict = field(default_factory=dict)
+    signal_ttl: Optional[int] = None
 
 
 @dataclass
@@ -112,7 +116,15 @@ class BacktestEngine:
         volume_average_window: int = 20,
         regenerate_orders: bool = False,
         policy_config: Optional[object] = None,
+        confirmation_profile: Optional[str] = None,
     ):
+        if confirmation_profile is not None and confirmation_profile not in PROFILES:
+            raise ValueError(f"Unknown confirmation profile: {confirmation_profile}")
+        self.confirmation_profile = confirmation_profile
+        self._prior_technical_features = {}
+        self.buy_deferred_conditions = 0
+        self.buy_condition_data_missing = 0
+        self.same_bar_protective_stops = 0
         self.ticker = ticker
         self.start_date = pd.to_datetime(start_date)
         self.end_date = pd.to_datetime(end_date)
@@ -297,6 +309,8 @@ class BacktestEngine:
         for key in self._REGEN_ORDER_KEYS:
             if key in regen:
                 strat[key] = regen[key]
+        for role, conditions in regen.get("execution_conditions", {}).items():
+            strat.setdefault("execution_conditions", {}).setdefault(role, {}).update(conditions)
         self._strategies_regenerated += 1
         self._frozen_snapshots_loaded += 1
 
@@ -461,6 +475,17 @@ class BacktestEngine:
             for _, row in prices.iterrows()
         }
         self._prior_volume_ratio = self._load_prior_volume_ratios(prices)
+        if self.regenerate_orders or self.confirmation_profile not in (None, "price_only") or any(s.get("execution_conditions") for s in strategies):
+            try:
+                history = self.load_volume_history()
+            except Exception:
+                history = prices
+            features = technical_features(history if history is not None and not history.empty else prices)
+            previous = features.drop(columns="Date").shift(1)
+            self._prior_technical_features = {
+                pd.Timestamp(day).strftime("%Y-%m-%d"): values
+                for day, values in zip(features.Date, previous.to_dict("records"))
+            }
         for strat in strategies:
             strat["_active_from"] = self._next_trading_day(trading_days, strat["as_of_date"])
 
@@ -488,6 +513,7 @@ class BacktestEngine:
             day_high = float(row["High"])
             day_low = float(row["Low"])
             day_close = float(row["Close"])
+            stopped_today = False
 
             # 1) Activate / rotate strategy if today >= next strategy's as_of_date
             new_active = self._strategy_for_date(strategies, date)
@@ -519,12 +545,16 @@ class BacktestEngine:
                             fill_basis="next_open",
                         )
                         position = None
-                    # Note: position.stop_loss is intentionally not refreshed
-                    # from active_strategy.stop_loss here. The pending order
-                    # is the single source of truth for sl — when an
-                    # entry/add order fills, its snapshot sl is propagated
-                    # to the position. A strategy that wants to change sl
-                    # must do so by issuing a new order with that sl.
+                    # A new review can tighten a held position's protective
+                    # stop independently of whether a new add ever fills.
+                    updated_stop = (active_strategy.get("stop_loss") or {}).get("price")
+                    if position is not None and updated_stop is not None:
+                        updated_stop = float(updated_stop)
+                        if position.stop_loss is None or updated_stop > position.stop_loss:
+                            position.stop_loss = updated_stop
+                            position.stop_loss_as_of = active_strategy["as_of_date"]
+                        elif updated_stop < position.stop_loss:
+                            self.stop_downgrades_blocked += 1
                     new_orders = self._build_pending_orders(active_strategy, cash, position)
                     self._assign_order_expiries(new_orders, trading_days)
                     self._assign_order_reference_prices(new_orders, close_by_date)
@@ -545,7 +575,7 @@ class BacktestEngine:
             expired_orders += expired_count
 
             # 2) Check stop-loss on the open position FIRST (more conservative).
-            # A position opened later in this same bar is not checked again until the next bar.
+            # Newly filled buys receive a separate same-bar protective check below.
             if position is not None:
                 if position.stop_loss is not None and day_low <= position.stop_loss:
                     fill_price, fill_basis = self._stop_fill_price(day_open, position.stop_loss)
@@ -561,6 +591,7 @@ class BacktestEngine:
                         fill_basis=fill_basis,
                     )
                     position = None
+                    stopped_today = True
                     expired_count, pending_orders = self._prune_pending_orders(
                         pending_orders,
                         position,
@@ -644,6 +675,15 @@ class BacktestEngine:
             if pending_orders:
                 still_pending = []
                 for order in pending_orders:
+                    if order.order_type in {"entry", "add"} and stopped_today:
+                        continue
+                    if order.order_type in {"entry", "add"}:
+                        passed, reason = conditions_pass(order.conditions, self._prior_technical_features.get(date.strftime("%Y-%m-%d")))
+                        if not passed:
+                            self.buy_deferred_conditions += 1
+                            self.buy_condition_data_missing += int(reason.startswith("missing:"))
+                            still_pending.append(order)
+                            continue
                     if self._should_reject_shrinking_volume_add(order, close_by_date):
                         self.add_rejected_shrinking_volume += 1
                         continue
@@ -660,6 +700,8 @@ class BacktestEngine:
                     fill = self._buy_order_fill_price(day_open, day_low, order)
                     if order.order_type in {"entry", "add"} and fill is not None:
                         fill_price, fill_basis = fill
+                        was_flat = position is None
+                        executions_before = len(executions)
                         cash, position = self._execute_buy_order(
                             order,
                             fill_price,
@@ -669,6 +711,33 @@ class BacktestEngine:
                             executions,
                             fill_basis=fill_basis,
                         )
+                        bought = len(executions) > executions_before
+                        if bought and position is not None and position.stop_loss is not None and day_low <= position.stop_loss:
+                            # With daily bars, assume the adverse path if order
+                            # sequence is ambiguous. Never grant a free entry-day stop holiday.
+                            stop_fill = min(fill_price, position.stop_loss)
+                            cash, trades = self._close_position_limit(
+                                position, stop_fill, str(date.date()), cash, trades, executions,
+                                signal_date=position.stop_loss_as_of, reason="stop_loss",
+                                fill_basis="same_bar_stop_conservative",
+                            )
+                            self.same_bar_protective_stops += 1
+                            position = None
+                            stopped_today = True
+                        elif bought and was_flat and position is not None:
+                            # Activate the entry plan's exit children after its fill;
+                            # profit touches on this bar are ambiguous, so check
+                            # those from the next bar. Hard stop was checked above.
+                            exits = []
+                            for kind in ("take_profit", "reduce_stop"):
+                                child = self._build_order(kind, order.exit_plan, order.exit_plan.get(kind) or {}, position.stop_loss)
+                                if child is not None:
+                                    if kind == "take_profit" and child.limit_price is not None and child.limit_price < position.entry_price:
+                                        continue
+                                    exits.append(child)
+                            self._assign_order_expiries(exits, trading_days)
+                            still_pending.extend(exits)
+                            orders_created += len(exits)
                     else:
                         still_pending.append(order)
                 pending_orders = still_pending
@@ -727,6 +796,7 @@ class BacktestEngine:
                 "gap_chase_threshold_pct": o.gap_chase_threshold_pct,
                 "volume_confirmation": o.volume_confirmation,
                 "key_level": o.key_level,
+                "conditions": o.conditions,
             }
             for o in pending_orders
         ]
@@ -782,6 +852,12 @@ class BacktestEngine:
             "add_deferred_low_volume": self.add_deferred_low_volume,
             "frozen_orders_assumed_flat": self.frozen_orders_assumed_flat,
             "volume_gate_data_missing": self.volume_gate_data_missing,
+            "buy_deferred_conditions": self.buy_deferred_conditions,
+            "buy_condition_data_missing": self.buy_condition_data_missing,
+            "same_bar_protective_stops": self.same_bar_protective_stops,
+            "confirmation_profile_override": self.confirmation_profile,
+            "indicator_timing": "prior_completed_bar",
+            "same_bar_entry_exit_policy": "adverse_stop_first; profit_children_next_bar",
             "risk_stop_adjusted": self.risk_stop_adjusted,
             "commission": self.commission,
             "slippage_bps": self.slippage_bps,
@@ -867,6 +943,11 @@ class BacktestEngine:
             if changed:
                 self.invalid_sell_orders += 1
 
+        # Reject misspelled/invalid conditions; never silently run price-only.
+        strategy["execution_conditions"] = validate_execution_conditions(strategy.get("execution_conditions", {}))
+        ttl = strategy.get("signal_ttl_trading_days", {})
+        if not isinstance(ttl, dict) or any(k not in {"entry", "add", "take_profit", "reduce_stop"} or type(v) is not int or v < 1 for k, v in ttl.items()):
+            raise ValueError("signal_ttl_trading_days must map order types to positive integers")
         return strategy
 
     @staticmethod
@@ -959,6 +1040,9 @@ class BacktestEngine:
             volume_confirmation=self._volume_confirmation_for_order(strategy),
             key_level=self._key_level_for_order(strategy),
             min_volume_ratio=self.min_volume_ratio.get(order_type),
+            conditions=(dict(PROFILES[self.confirmation_profile]) if self.confirmation_profile is not None else dict(strategy.get("execution_conditions", {}).get(order_type, {}))) if order_type in {"entry", "add"} else {},
+            exit_plan={k: strategy.get(k) for k in ("as_of_date", "valid_until", "take_profit", "reduce_stop", "signal_ttl_trading_days") if strategy.get(k) is not None},
+            signal_ttl=(strategy.get("signal_ttl_trading_days") or {}).get(order_type),
         )
 
     @staticmethod
@@ -1013,7 +1097,8 @@ class BacktestEngine:
         trading_days: pd.Series,
     ) -> None:
         for order in orders:
-            ttl = max(1, self.signal_ttl_trading_days.get(order.order_type, 1))
+            configured_ttl = self.signal_ttl_trading_days.get(order.order_type, 999)
+            ttl = max(1, order.signal_ttl if configured_ttl == 999 and order.signal_ttl else configured_ttl)
             ttl_expiry = self._nth_trading_day_after(
                 trading_days,
                 order.strategy_as_of,
@@ -1084,8 +1169,8 @@ class BacktestEngine:
         Unlike the gap check this does not cancel the order: it stays pending
         and is retried on later bars until its TTL expires, so the gate reads
         as "wait for volume" rather than "give up". A missing ratio (history
-        shorter than the averaging window) passes rather than blocks, so a
-        data gap cannot silently suppress every trade.
+        shorter than the averaging window) defers rather than passes: an
+        enabled confirmation must not become a price-only order on missing data.
         """
         threshold = order.min_volume_ratio
         if not threshold or threshold <= 0:
@@ -1093,7 +1178,7 @@ class BacktestEngine:
         ratio = self._prior_volume_ratio.get(date.strftime("%Y-%m-%d"))
         if ratio is None:
             self.volume_gate_data_missing += 1
-            return False
+            return True
         return ratio < threshold
 
     def _should_reject_shrinking_volume_add(
@@ -1106,6 +1191,10 @@ class BacktestEngine:
             or order.order_type != "add"
             or str(order.volume_confirmation or "").lower() != "shrinking"
         ):
+            return False
+        if order.conditions.get("hold_above_price") is not None:
+            # The daily gate already checked fresh completed closes before this
+            # method; do not apply the old generation-date veto a second time.
             return False
         return not self._close_hold_confirmation_passes(order, close_by_date)
 
@@ -1353,6 +1442,9 @@ class BacktestEngine:
                 self.add_capped_position_size += 1
         spend = min(cash, target_spend)
         effective_stop = self._widen_stop(order.stop_loss, execution_price)
+        if effective_stop is not None and effective_stop >= execution_price:
+            self.buy_rejected_risk_budget += 1
+            return cash, position
         spend = self._cap_spend_to_trade_risk(
             order=order,
             execution_price=execution_price,

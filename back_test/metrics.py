@@ -29,7 +29,7 @@ def annualized_return(equity: pd.Series, periods_per_year: int = 252) -> float:
     if n < 2:
         return 0.0
     tr = total_return(equity)
-    years = n / periods_per_year
+    years = (n - 1) / periods_per_year
     if years <= 0:
         return 0.0
     return (1.0 + tr) ** (1.0 / years) - 1.0
@@ -70,25 +70,28 @@ def win_rate(trades: List[dict]) -> Optional[float]:
     `trades` is a list of dicts each with a 'pnl' key (set when the position
     is closed). Open positions without a close are ignored.
     """
-    closed = [t for t in trades if t.get("pnl") is not None]
+    closed = [t for t in trades if t.get("pnl") is not None and t.get("reason") != "end_of_backtest"]
     if not closed:
         return None
     wins = sum(1 for t in closed if t["pnl"] > 0)
     return wins / len(closed)
 
 
-def summarize(equity: pd.Series, trades: Optional[List[dict]] = None) -> dict:
+def summarize(equity: pd.Series, trades: Optional[List[dict]] = None, *, initial_capital: Optional[float] = None) -> dict:
     """Return a dict of all metrics suitable for JSON serialization."""
+    observations = len(equity)
+    if initial_capital is not None and not equity.empty:
+        equity = pd.concat([pd.Series([float(initial_capital)]), equity.reset_index(drop=True)], ignore_index=True)
     rets = daily_returns(equity)
     summary = {
         "total_return":       total_return(equity),
         "annualized_return":  annualized_return(equity),
         "sharpe_ratio":       sharpe_ratio(rets),
         "max_drawdown":       max_drawdown(equity),
-        "n_observations":     int(len(equity)),
+        "n_observations":     int(observations),
     }
     if trades is not None:
         wr = win_rate(trades)
         summary["win_rate"] = wr
-        summary["n_trades"] = len([t for t in trades if t.get("pnl") is not None])
+        summary["n_trades"] = len([t for t in trades if t.get("pnl") is not None and t.get("reason") != "end_of_backtest"])
     return summary

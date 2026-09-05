@@ -19,7 +19,7 @@ class Propagator:
         self,
         company_name: str,
         trade_date: str,
-        holdings_info: Optional[Dict[str, float]] = None,
+        holdings_info: Optional[Dict[str, Any]] = None,
         trading_mode: str = "live",
         trading_history_summary: Optional[Dict[str, Any]] = None,
         prior_pending_orders: Optional[List[Dict[str, Any]]] = None,

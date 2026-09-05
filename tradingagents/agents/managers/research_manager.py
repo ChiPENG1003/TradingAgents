@@ -40,7 +40,7 @@ def create_research_manager(llm, memory):
         )
 
         capital_block = f"\n\n{capital_context}" if capital_context else ""
-        prompt = f"""As the Research Manager and debate facilitator, critically evaluate this round of debate and deliver a clear, actionable investment plan for the trader.
+        prompt = f"""As the Research Manager and debate facilitator, critically evaluate this round of debate and deliver a clear, actionable investment plan for the trader. Keep it within 300 words: thesis, two dated/numeric facts, strongest counter-evidence, invalidation, and missing data. Leave exact execution levels to the Trader and final share sizing to the Portfolio Manager.
 
 {memory_section}{instrument_context}{capital_block}
 

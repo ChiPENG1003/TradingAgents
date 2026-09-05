@@ -1,0 +1,10 @@
+{
+  "total_portfolio": 100000,
+  "currency": "USD",
+  "cash": 55000,
+  "max_position_pct": 30,
+  "holdings": [
+    {"ticker": "AAPL", "quantity": 100, "avg_buy_price": 180, "market_price": 220},
+    {"ticker": "MSFT", "quantity": 50, "avg_buy_price": 350, "market_price": 460}
+  ]
+}

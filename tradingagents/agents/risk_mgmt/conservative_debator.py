@@ -1,8 +1,8 @@
+from tradingagents.agents.utils.decision_context import bounded_text, evidence_brief, risk_handoff
 
 from tradingagents.agents.utils.agent_utils import (
     DEBATE_EVIDENCE_GUARDRAIL,
     build_capital_context,
-    truncate_history,
     get_language_instruction,
 )
 
@@ -10,23 +10,23 @@ from tradingagents.agents.utils.agent_utils import (
 def create_conservative_debator(llm):
     def conservative_node(state) -> dict:
         risk_debate_state = state["risk_debate_state"]
-        history = truncate_history(risk_debate_state.get("history", ""))
+        history = risk_handoff(risk_debate_state)
         conservative_history = risk_debate_state.get("conservative_history", "")
 
-        current_aggressive_response = risk_debate_state.get("current_aggressive_response", "")
-        current_neutral_response = risk_debate_state.get("current_neutral_response", "")
 
-        trader_decision = state["trader_investment_plan"]
+        trader_decision = bounded_text(state["trader_investment_plan"], 2400)
+        evidence = evidence_brief(state)
         capital_context = build_capital_context(state.get("holdings_info"))
         capital_block = f"\n\n{capital_context}" if capital_context else ""
 
-        prompt = f"""You are the Conservative Risk Analyst. Critique the trader's decision by highlighting downside risks and countering aggressive/neutral arguments that overlook threats. Speak conversationally.
+        prompt = f"""You are the Conservative Risk Analyst. Critique the trader's decision by highlighting downside risks and countering aggressive/neutral arguments that overlook threats. Write a compact handoff, at most 180 words: proposed action/size, two sourced facts, strongest counter-evidence, invalidation trigger, and missing data. Carry forward any unresolved material objection from earlier rounds.
 
 Trader's decision: {trader_decision}{capital_block}
 
-Debate history: {history}
-Last aggressive argument: {current_aggressive_response}
-Last neutral argument: {current_neutral_response}{DEBATE_EVIDENCE_GUARDRAIL}{get_language_instruction()}"""
+Evidence available to all risk analysts:
+{evidence}
+
+Latest assessment from each role: {history}{DEBATE_EVIDENCE_GUARDRAIL}{get_language_instruction()}"""
 
         response = llm.invoke(prompt)
 

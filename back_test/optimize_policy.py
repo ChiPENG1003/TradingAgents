@@ -390,7 +390,7 @@ def run_backtest_metrics(
         **engine_params,
     )
     result = engine.run()
-    metrics = summarize(result.equity_curve["Equity"], result.trades)
+    metrics = summarize(result.equity_curve["Equity"], result.trades, initial_capital=initial_capital)
     report = dict(result.report or {})
     oracle = constraint_matched_oracle(
         result.equity_curve["MarkPrice"],

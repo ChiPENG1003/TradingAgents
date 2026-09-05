@@ -100,7 +100,7 @@ class BacktestEngineTest(unittest.TestCase):
         self.assertEqual(result.equity_curve["Position"].tolist(), [0.0, 0.0, 0.0])
         self.assertEqual(result.equity_curve["Equity"].tolist(), [100.0, 100.0, 100.0])
 
-    def test_new_entry_does_not_exit_on_same_day_touch(self):
+    def test_new_entry_obeys_same_day_protective_stop(self):
         with tempfile.TemporaryDirectory() as tmp:
             strategy_dir = Path(tmp)
             ticker = "TEST"
@@ -129,10 +129,10 @@ class BacktestEngineTest(unittest.TestCase):
                 prices=prices,
             ).run()
 
-        self.assertEqual(result.equity_curve["Position"].tolist(), [0.0, 10.0])
+        self.assertEqual(result.equity_curve["Position"].tolist(), [0.0, 0.0])
         self.assertEqual(len(result.trades), 1)
-        self.assertEqual(result.trades[0]["reason"], "end_of_backtest")
-        self.assertEqual(result.trades[0]["exit_price"], 11.0)
+        self.assertEqual(result.trades[0]["reason"], "stop_loss")
+        self.assertEqual(result.trades[0]["exit_price"], 8.0)
         self.assertEqual(result.executions[0]["signal_date"], "2025-01-01")
         self.assertEqual(result.executions[0]["fill_date"], "2025-01-02")
         self.assertEqual(result.report["bias_audit"]["event_timing"]["same_bar_signal_fills"], 0)
@@ -671,7 +671,7 @@ class BacktestEngineTest(unittest.TestCase):
                 valid_until="2025-01-06",
                 action="BUY",
                 entry={"price": 10.0, "size_pct": 100.0},
-                take_profit={"price": 20.0, "size_pct": 100.0},
+                take_profit={"price": 11.5, "size_pct": 100.0},
                 stop_loss={"price": 5.0},
             )
             write_strategy(

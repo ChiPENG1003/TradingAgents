@@ -1,5 +1,6 @@
 from typing import Optional
 import datetime
+import math
 import pandas as pd
 import typer
 from pathlib import Path
@@ -27,6 +28,7 @@ from rich.rule import Rule
 
 from tradingagents.graph.trading_graph import TradingAgentsGraph
 from tradingagents.default_config import DEFAULT_CONFIG
+from tradingagents.live_portfolio import load_live_portfolio
 from tradingagents.dataflows.stockstats_utils import load_ohlcv
 from back_test.calendar import adjust_backtest_window
 from back_test.engine import BacktestEngine
@@ -546,7 +548,7 @@ def get_user_selections():
         )
         review_cadence_trading_days = select_review_cadence()
     else:
-        # Live: ask for the single analysis date, total portfolio NAV, then current holdings.
+        # Live: load a portfolio snapshot when present; otherwise use manual account input.
         default_date = datetime.datetime.now().strftime("%Y-%m-%d")
         console.print(
             create_question_box(
@@ -560,13 +562,11 @@ def get_user_selections():
         console.print(
             create_question_box(
                 "Step 4: Portfolio Context",
-                "Enter your total portfolio NAV (cash + market value of all holdings), "
-                "then optionally specify any existing position in this ticker"
+                "Load the JSON account snapshot from your portfolio folder, "
+                "or enter NAV, target holdings and available cash manually when no file exists"
             )
         )
-        portfolio_nav = get_portfolio_nav()
-        holdings_info = get_holdings_info()
-        holdings_info["nav"] = portfolio_nav
+        holdings_info = get_live_holdings_info(selected_ticker)
 
     # Step 5: Output language
     console.print(
@@ -661,6 +661,37 @@ def get_analysis_date():
             )
 
 
+def get_live_holdings_info(ticker):
+    """A valid snapshot skips all account questions; invalid files abort explicitly."""
+    try:
+        holdings = load_live_portfolio(ticker)
+    except ValueError as exc:
+        console.print(f"Portfolio snapshot error: {exc}", markup=False)
+        raise typer.Exit(code=1) from exc
+    if holdings is not None:
+        console.print(f"Loaded portfolio snapshot: {holdings['portfolio_source']}", markup=False)
+        return holdings
+    nav = get_portfolio_nav()
+    holdings = get_holdings_info()
+    holdings.update(nav=nav, equity=nav, cash=get_available_cash(nav))
+    return holdings
+
+
+def get_available_cash(nav):
+    """Optional manual cash snapshot; never assume all NAV is spendable."""
+    while True:
+        value = typer.prompt("Available cash (blank = unknown; new buys blocked)", default="", show_default=False).strip()
+        if not value:
+            return None
+        try:
+            cash = float(value)
+            if math.isfinite(cash) and 0 <= cash <= nav:
+                return cash
+        except ValueError:
+            pass
+        console.print("[red]Cash must be a finite number between 0 and NAV.[/red]")
+
+
 def get_portfolio_nav():
     """Get total portfolio NAV (cash + market value of all positions) from the user.
 
@@ -671,7 +702,7 @@ def get_portfolio_nav():
         nav_str = typer.prompt("Enter total portfolio NAV", default="100000").strip()
         try:
             nav = float(nav_str)
-            if nav <= 0:
+            if not math.isfinite(nav) or nav <= 0:
                 console.print("[red]Error: NAV must be greater than 0[/red]")
                 continue
             return nav
@@ -693,7 +724,7 @@ def get_holdings_info():
         qty_str = typer.prompt("Enter current holding quantity", default="0").strip()
         try:
             quantity = float(qty_str)
-            if quantity <= 0:
+            if not math.isfinite(quantity) or quantity <= 0:
                 console.print("[red]Error: Quantity must be greater than 0[/red]")
                 continue
             break
@@ -704,7 +735,7 @@ def get_holdings_info():
         price_str = typer.prompt("Enter average buy price", default="0").strip()
         try:
             avg_buy_price = float(price_str)
-            if avg_buy_price <= 0:
+            if not math.isfinite(avg_buy_price) or avg_buy_price <= 0:
                 console.print("[red]Error: Average buy price must be greater than 0[/red]")
                 continue
             break
@@ -1092,7 +1123,7 @@ def _summarize_trading_history(
     """Aggregate realized PnL for trades that closed within the trailing window.
 
     `as_of` is the inclusive right edge of the window (typically the trading
-    day before the next strategy's as_of_date).
+    review close, before the next plan starts trading).
     """
     if not trades or not as_of:
         return {
@@ -1110,6 +1141,8 @@ def _summarize_trading_history(
     left = right - pd.Timedelta(days=window_days)
     in_window = []
     for t in trades:
+        if t.get("reason") == "end_of_backtest":
+            continue  # Valuation of an open position is not realized trading feedback.
         exit_date = t.get("exit_date") or t.get("entry_date")
         if not exit_date:
             continue
@@ -1176,8 +1209,8 @@ def _simulate_backtest_holdings(
         max_add_gap_above_plan_pct=0.008,
         obvious_bull_max_entry_gap_pct=0.015,
         obvious_bull_max_add_gap_pct=0.005,
-        entry_signal_ttl_trading_days=2,
-        add_signal_ttl_trading_days=1,
+        entry_signal_ttl_trading_days=999,
+        add_signal_ttl_trading_days=999,
         block_shrinking_volume_adds=True,
         shrinking_volume_close_hold_days=2,
         add_key_level_tolerance_pct=0.005,
@@ -1332,10 +1365,7 @@ def run_backtest_analysis(selections: dict) -> None:
             console.print(f"  [dim]{step_metrics}[/dim]")
             if i < len(dates):
                 next_strategy_date = dates[i]
-                holdings_as_of = _previous_trading_date(
-                    price_data["Date"],
-                    next_strategy_date,
-                )
+                holdings_as_of = next_strategy_date
                 if holdings_as_of is None:
                     simulated_holdings = selections.get("holdings_info") or {}
                     simulated_holdings.setdefault("cash", 100_000.0)
@@ -1355,7 +1385,7 @@ def run_backtest_analysis(selections: dict) -> None:
                 as_of_label = simulated_holdings.get("as_of_date") or holdings_as_of or "pre-start"
                 if simulated_holdings.get("quantity", 0.0) > 0:
                     console.print(
-                        f"  [dim]simulated holdings before next strategy open ({next_strategy_date}, as of {as_of_label} close): "
+                        f"  [dim]simulated holdings at next review close ({next_strategy_date}, as of {as_of_label} close): "
                         f"{int(simulated_holdings['quantity'])} shares, "
                         f"avg {simulated_holdings.get('avg_buy_price', 0.0):.2f}, "
                         f"cash {simulated_holdings.get('cash', 0.0):.2f}, "
@@ -1363,7 +1393,7 @@ def run_backtest_analysis(selections: dict) -> None:
                     )
                 else:
                     console.print(
-                        f"  [dim]simulated holdings before next strategy open ({next_strategy_date}, as of {as_of_label} close): "
+                        f"  [dim]simulated holdings at next review close ({next_strategy_date}, as of {as_of_label} close): "
                         f"cash {simulated_holdings.get('cash', 0.0):.2f}, "
                         f"equity {simulated_holdings.get('equity', 0.0):.2f}, "
                         "no open position[/dim]"
@@ -1540,6 +1570,13 @@ def run_analysis(checkpoint: bool = False):
             f"Analyzing {selections['ticker']} on {selections['analysis_date']}..."
         )
         update_display(layout, spinner_text, stats_handler=stats_handler, start_time=start_time)
+
+        # Reload the selected file after the questionnaire so external updates
+        # are visible at run start. Keep one consistent snapshot during a run.
+        if (selections.get("holdings_info") or {}).get("portfolio_source"):
+            selections["holdings_info"] = load_live_portfolio(
+                selections["ticker"], path=selections["holdings_info"]["portfolio_source"]
+            )
 
         # Initialize state and get graph args with callbacks
         init_agent_state = graph.propagator.create_initial_state(

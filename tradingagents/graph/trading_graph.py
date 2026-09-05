@@ -206,8 +206,9 @@ class TradingAgentsGraph:
             ),
             "social": ToolNode(
                 [
-                    # News tools for social media analysis
+                    # News and options tools bound by the sentiment analyst.
                     get_news,
+                    get_options_chain,
                 ]
             ),
             "news": ToolNode(
@@ -237,13 +238,16 @@ class TradingAgentsGraph:
         self,
         company_name,
         trade_date,
-        holdings_info: Optional[Dict[str, float]] = None,
+        holdings_info: Optional[Dict[str, Any]] = None,
         trading_mode: str = "live",
         trading_history_summary: Optional[Dict[str, Any]] = None,
         prior_pending_orders: Optional[List[Dict[str, Any]]] = None,
     ):
         """Run the trading agents graph for a company on a specific date."""
 
+        if trading_mode == "live" and holdings_info is None:
+            from tradingagents.live_portfolio import load_live_portfolio
+            holdings_info = load_live_portfolio(company_name, self.config.get("portfolio_dir"))
         self.ticker = company_name
         self.trading_mode = trading_mode
         # Meter each run independently; a sweep aggregates the per-run JSONs.
@@ -367,6 +371,16 @@ class TradingAgentsGraph:
             )
             as_of = datetime.strptime(str(strategy["as_of_date"]), "%Y-%m-%d")
             strategy["valid_until"] = (as_of + timedelta(days=valid_window_days)).strftime("%Y-%m-%d")
+            from back_test.technical_conditions import PROFILES
+            profile = self.config.get("backtest_confirmation_profile", "volume_macd")
+            if profile not in PROFILES:
+                raise ValueError(f"Unknown backtest confirmation profile: {profile}")
+            strategy["execution_conditions"] = {
+                role: {**PROFILES[profile], **strategy.get("execution_conditions", {}).get(role, {})}
+                for role in ("entry", "add")
+            }
+            strategy["signal_ttl_trading_days"] = {"entry": cadence, "add": cadence}
+            strategy["decision_timing"] = "after_close; fills begin next session"
             market_state = final_state.get("market_state")
             if market_state:
                 strategy["market_state"] = market_state

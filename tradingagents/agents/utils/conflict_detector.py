@@ -297,6 +297,6 @@ def create_conflict_detector(llm):
             anchors=anchors,
             llm=llm,
         )
-        return {"conflict_report": report.model_dump()}
+        return {"conflict_report": report.model_dump(), "decision_anchors": anchors}
 
     return conflict_detector_node

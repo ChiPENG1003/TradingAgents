@@ -18,6 +18,7 @@ import sys
 
 import pandas as pd
 from .engine import BacktestEngine, PROJECT_ROOT
+from .technical_conditions import PROFILES
 from .metrics import summarize
 
 
@@ -74,12 +75,12 @@ def main() -> None:
         help="Maximum market-add gap allowed for obvious bull strategies (default 0.005).",
     )
     parser.add_argument(
-        "--entry-signal-ttl-trading-days", type=int, default=2,
-        help="Trading-day TTL for pending entry signals (default 2).",
+        "--entry-signal-ttl-trading-days", type=int, default=999,
+        help="Trading-day TTL override; default 999 uses the plan TTL when provided.",
     )
     parser.add_argument(
-        "--add-signal-ttl-trading-days", type=int, default=1,
-        help="Trading-day TTL for pending add signals (default 1).",
+        "--add-signal-ttl-trading-days", type=int, default=999,
+        help="Trading-day TTL override; default 999 uses the plan TTL when provided.",
     )
     parser.add_argument(
         "--max-adds-per-trade", type=int, default=2,
@@ -144,6 +145,8 @@ def main() -> None:
         "--volume-average-window", type=int, default=20,
         help="Bars in the trailing volume average used by the volume gates (default 20).",
     )
+    parser.add_argument("--confirmation-profile", choices=sorted(PROFILES), default=None,
+        help="Override daily buy confirmations. Default uses each saved plan; price_only is an explicit ablation.")
     args = parser.parse_args()
 
     engine = BacktestEngine(
@@ -175,6 +178,7 @@ def main() -> None:
         entry_min_volume_ratio=args.entry_min_volume_ratio,
         add_min_volume_ratio=args.add_min_volume_ratio,
         volume_average_window=args.volume_average_window,
+        confirmation_profile=args.confirmation_profile,
     )
     try:
         result = engine.run()
@@ -182,7 +186,7 @@ def main() -> None:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)
 
-    metrics = summarize(result.equity_curve["Equity"], result.trades)
+    metrics = summarize(result.equity_curve["Equity"], result.trades, initial_capital=args.initial_capital)
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     effective_start = result.effective_start_date or args.start
@@ -221,6 +225,7 @@ def main() -> None:
         "entry_min_volume_ratio": args.entry_min_volume_ratio,
         "add_min_volume_ratio": args.add_min_volume_ratio,
         "volume_average_window": args.volume_average_window,
+        "confirmation_profile": args.confirmation_profile,
         "output_label": label,
         "output_path": str(out_path),
     }

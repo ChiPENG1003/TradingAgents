@@ -234,22 +234,23 @@ def render_pm_decision(decision: PortfolioDecision) -> str:
 
 
 class LiveDecisionRow(BaseModel):
+    scenario: Literal["base", "defensive", "profit"] = "base"
     item: str = Field(description="Short row label, e.g. core, add 1, hard stop, take profit 1.")
     operation: Literal["HOLD", "BUY", "SELL", "CLEAR"]
     trigger_description: str
-    price_low: Optional[float] = None
-    price_high: Optional[float] = None
+    price_low: Optional[float] = Field(default=None, gt=0, allow_inf_nan=False)
+    price_high: Optional[float] = Field(default=None, gt=0, allow_inf_nan=False)
     confirmation_rule: Optional[str] = None
     shares: Optional[int] = Field(default=None, ge=0)
     target_shares_after: Optional[int] = Field(default=None, ge=0)
-    reference_price: Optional[float] = Field(default=None, gt=0)
+    reference_price: Optional[float] = Field(default=None, gt=0, allow_inf_nan=False)
 
 
 class LivePortfolioDecision(BaseModel):
     ticker: str
     as_of_date: str
     decision: Literal["BUY", "HOLD", "SELL"]
-    current_price: float = Field(gt=0)
+    current_price: Optional[float] = Field(default=None, gt=0, allow_inf_nan=False)
     plan_rows: list[LiveDecisionRow] = Field(min_length=1)
     conditional_notes: list[str] = Field(default_factory=list)
     holding_period: str
@@ -267,7 +268,7 @@ def render_live_portfolio_decision(
 ) -> str:
     """Render a stable table first; all amounts/NAV values are computed in Python."""
     holdings = holdings_info or {}
-    equity = holdings.get("equity")
+    equity = holdings.get("nav") or holdings.get("equity")
     equity = float(equity) if equity not in (None, 0) else None
 
     def money(value: Optional[float]) -> str:
@@ -280,24 +281,13 @@ def render_live_portfolio_decision(
         "| 项目 | 触发条件/价格 | 股数 | 参考金额 | 占 NAV |",
         "| --- | ---: | ---: | ---: | ---: |",
     ]
-    remaining = int(float(holdings.get("quantity") or 0))
     for row in decision.plan_rows:
         trigger = row.trigger_description
         if row.confirmation_rule:
             trigger = f"{trigger}；{row.confirmation_rule}"
         shares = row.shares
-        if row.operation == "CLEAR" and remaining > 0:
-            shares = remaining
-            remaining = 0
-        elif row.operation == "SELL" and shares is not None and remaining > 0:
-            shares = min(shares, remaining)
-            remaining -= shares
-        elif row.operation == "BUY" and shares is not None:
-            remaining += shares
-        elif row.operation == "HOLD" and shares is not None:
-            remaining = shares
         if row.operation == "CLEAR":
-            shares_text = "清仓全部剩余"
+            shares_text = f"清仓全部剩余（当前 {shares:,} 股）" if shares is not None else "清仓全部剩余"
         elif shares is None:
             shares_text = "—"
         elif row.operation == "BUY":
@@ -316,12 +306,23 @@ def render_live_portfolio_decision(
                 ref_price = row.price_high
             else:
                 ref_price = decision.current_price
-        amount = abs(shares * ref_price) if shares is not None else None
+        amount = abs(shares * ref_price) if shares is not None and ref_price is not None else None
         nav_pct = amount / equity * 100.0 if amount is not None and equity else None
         rows.append(
-            f"| {row.item} | {trigger} | {shares_text} | {money(amount)} | {pct(nav_pct)} |"
+            f"| {row.item} ({row.scenario}) | {trigger} | {shares_text} | {money(amount)} | {pct(nav_pct)} |"
         )
 
+    if holdings.get("nav"):
+        from tradingagents.live_portfolio import allocation_context
+        allocation = allocation_context(holdings, decision.current_price)
+        rows.extend(["", f"**组合占比**：目标股票当前 {pct(allocation['target_weight_pct'])}；其他持仓已知市值占比 {pct(allocation['other_known_weight_pct'])}（{allocation['other_position_count']} 只）。"])
+        if allocation["other_unpriced_count"]:
+            rows.append(f"另有 {allocation['other_unpriced_count']} 只其他持仓缺少当前价格；其成本合计 {money(allocation['other_unpriced_cost_basis'])}，不作为市值占比。")
+        buy_shares = sum(r.shares or 0 for r in decision.plan_rows if r.operation == "BUY")
+        if buy_shares and decision.current_price and equity:
+            projected_weight = (float(holdings.get("quantity") or 0) + buy_shares) * decision.current_price / equity * 100
+            rows.append(f"全部买入行成交后，按当前价及不变 NAV 估算目标持仓占比 {projected_weight:.1f}%；配置上限 {allocation['max_position_pct']:g}%。")
+        rows.append("表中占 NAV 为该行交易/持仓的参考金额比例；defensive 与 profit 是互斥情景。其他持仓保持不变。")
     parts = rows
     for note in decision.conditional_notes:
         parts.extend(["", f"> {note}"])

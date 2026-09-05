@@ -1,0 +1,7 @@
+{
+  "total_portfolio": 21600,
+  "holdings": [
+    {"ticker": "AAPL", "quantity": 100, "avg_buy_price": 180},
+    {"ticker": "MSFT", "quantity": 50, "avg_buy_price": 350}
+  ]
+}

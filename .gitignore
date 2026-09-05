@@ -229,3 +229,7 @@ __marimo__/
 
 # Local backtest feature artifacts
 back_test/features/
+
+# Personal live account snapshots (examples live outside this directory)
+/portfolio/*.json
+/portfolio/*.JSON

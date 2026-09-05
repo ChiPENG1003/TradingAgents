@@ -1,3 +1,5 @@
+from tradingagents.agents.utils.decision_context import bounded_text, risk_handoff
+from tradingagents.agents.managers.live_allocation import enforce_live_allocation
 import json
 import logging
 import re
@@ -225,17 +227,18 @@ def create_portfolio_manager(llm, memory):
         )
 
         instrument_context = build_instrument_context(state["company_of_interest"])
-        capital_context = build_capital_context(state.get("holdings_info"))
 
-        history = state["risk_debate_state"]["history"]
+        history = risk_handoff(state["risk_debate_state"])
         risk_debate_state = state["risk_debate_state"]
-        research_plan = state["investment_plan"]
-        trader_plan = state["trader_investment_plan"]
+        research_plan = bounded_text(state["investment_plan"], 2200)
+        trader_plan = bounded_text(state["trader_investment_plan"], 2400)
         holdings_info = state.get("holdings_info") or {}
 
         ticker = state["company_of_interest"]
         trade_date = state["trade_date"]
-        anchors = _compute_short_term_market_anchors(ticker, trade_date)
+        anchors = state["decision_anchors"] if "decision_anchors" in state else _compute_short_term_market_anchors(ticker, trade_date)
+        holdings_info = {**holdings_info, "mark_price": (anchors or {}).get("current_price") or holdings_info.get("mark_price")}
+        capital_context = build_capital_context(holdings_info)
         anchors_block = (
             "\n\n" + _format_short_term_market_anchors(anchors) if anchors else ""
         )
@@ -253,7 +256,7 @@ def create_portfolio_manager(llm, memory):
             else [k for k in required_anchors if anchors.get(k) is None]
         )
         if missing_required:
-            mark = float((holdings_info or {}).get("mark_price") or 1.0)
+            mark = holdings_info.get("mark_price")
             forced_model = LivePortfolioDecision(
                 ticker=ticker,
                 as_of_date=trade_date,
@@ -292,38 +295,11 @@ def create_portfolio_manager(llm, memory):
 
         past_memory_str = ""
         for i, rec in enumerate(past_memories, 1):
-            past_memory_str += rec["recommendation"] + "\n\n"
+            past_memory_str += bounded_text(rec["recommendation"], 600) + "\n\n"
 
         lessons_section = f"- Lessons from past decisions: **{past_memory_str}**\n" if past_memory_str else ""
-        holdings_section = ""
-        if holdings_info:
-            quantity = float(holdings_info.get("quantity") or 0.0)
-            cash = holdings_info.get("cash")
-            avg_buy_price = holdings_info.get("avg_buy_price")
-            mark_price = holdings_info.get("mark_price")
-            equity = holdings_info.get("equity")
-            stop_loss = holdings_info.get("stop_loss")
-            if quantity > 0:
-                holdings_section = (
-                    "- Current simulated holdings: "
-                    f"{quantity:g} shares"
-                    + (f", average buy price {float(avg_buy_price):g}" if avg_buy_price is not None else "")
-                    + (f", mark price {float(mark_price):g}" if mark_price is not None else "")
-                    + (f", active stop {float(stop_loss):g}" if stop_loss is not None else "")
-                    + (f", cash {float(cash):g}" if cash is not None else "")
-                    + (f", equity {float(equity):g}" if equity is not None else "")
-                    + ". Manage this existing position; do not behave as if the portfolio is flat.\n"
-                )
-            else:
-                holdings_section = (
-                    "- Current simulated holdings: no open position"
-                    + (f", cash {float(cash):g}" if cash is not None else "")
-                    + (f", equity {float(equity):g}" if equity is not None else "")
-                    + ". If the regime is favorable, prioritize establishing a starter position.\n"
-                )
-
         capital_block = f"\n\n{capital_context}" if capital_context else ""
-        prompt = f"""You are the Portfolio Manager. Synthesize the risk analysts' debate and deliver the final short-term trading decision.
+        prompt = f"""You are the Portfolio Manager. Resolve the remaining disagreements in the risk handoffs and deliver the final short-term trading decision. Research Manager owns the thesis, Trader owns execution levels, and risk analysts own upside/downside/invalidation checks. Do not repeat their reports; keep rationale within 180 words. Python owns portfolio arithmetic and hard limits.
 
 {instrument_context}{capital_block}
 
@@ -333,15 +309,14 @@ def create_portfolio_manager(llm, memory):
 - Research Manager's plan: {research_plan}
 - Trader's proposal: {trader_plan}
 {lessons_section}
-{holdings_section}
-**Risk Analysts Debate:**
+**Latest compact risk assessments (one per role):**
 {history}{anchors_block}{constraints_block}{conflict_block}
 
 Use the precomputed market anchors verbatim — do not re-derive prices, ATR, support/resistance, or volume_ratio from the analyst reports. Treat the rule constraints as hard caps: position sizing and allowed_actions must respect them even when the debate suggests otherwise; note any constraint that overrode the debate wording in your rationale.
 
 Be decisive and ground every parameter in specific evidence from the debate.{get_language_instruction()}
 
-Return the configured LivePortfolioDecision schema only. plan_rows must be ordered as an executable ladder: existing/core position, entries/adds, defensive reduction, hard stop, profit-taking stages, then trend tail when applicable. Use numeric shares and prices; do not calculate reference_amount or NAV percentage because Python will calculate those. Represent a full exit with operation=CLEAR. Put conditional variants in conditional_notes. Decision audit fields must distinguish data-supported facts from inference."""
+Return the configured LivePortfolioDecision schema only. plan_rows must be ordered as an executable ladder: existing/core position, entries/adds, defensive reduction, hard stop, profit-taking stages, then trend tail when applicable. Use numeric shares and prices; do not calculate reference_amount or NAV percentage because Python will calculate those. Represent a full exit with operation=CLEAR. Set scenario=base for current holdings and buys, defensive for reductions/stops on weakness, and profit for take-profit rows/trend tail. Defensive and profit branches are alternatives, not sequential exits. Size exits against current actual holdings only; pending buys may not fill. Include a numeric defensive CLEAR stop below every proposed buy. Entry cap applies to the first entry; add cap applies to all adds combined; both are percentages of NAV. Put conditional variants in conditional_notes. Decision audit fields must distinguish data-supported facts from inference."""
 
         try:
             decision_model = invoke_live_decision(prompt)
@@ -365,6 +340,7 @@ Return the configured LivePortfolioDecision schema only. plan_rows must be order
         decision_model.ticker = ticker
         decision_model.as_of_date = trade_date
         decision_model.current_price = float(anchors["current_price"])
+        decision_model = enforce_live_allocation(decision_model, holdings_info, constraints)
         decision_text = render_live_portfolio_decision(decision_model, holdings_info)
 
         new_risk_debate_state = {

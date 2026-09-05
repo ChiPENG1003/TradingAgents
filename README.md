@@ -233,3 +233,11 @@ Please reference our work if you find *TradingAgents* provides you with some hel
       url={https://arxiv.org/abs/2412.20138}, 
 }
 ```
+
+### Live portfolio snapshots and agent review
+
+Live mode can load your full account snapshot from `portfolio/*.json` and skip account questions, while analyzing only the selected ticker. See [JSON format and allocation rules](docs/live-portfolio.md) and [agent/tool review and context changes](docs/agent-review.md).
+
+### Backtest conditional execution
+
+Backtest plans now support daily volume/MACD/KDJ/BOLL confirmation, with indicators from the prior completed session and protective exits after entry. See [backtest feasibility review, timing rules, and configuration](docs/backtest-review.md).

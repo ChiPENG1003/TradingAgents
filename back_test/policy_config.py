@@ -151,6 +151,9 @@ class PortfolioStatePolicyConfig:
 
     # 加仓前是否要求“突破后回踩不破”或“连续收盘站稳关键位”等确认。
     add_requires_confirmation: bool = True
+    # Keep the add plan pending and recheck completed closes during execution.
+    # False reproduces the previous generation-day veto.
+    defer_add_confirmation_to_execution: bool = True
     # 加仓确认模式：pullback_or_close_hold / disabled。由策略生成端解释。
     add_confirmation_mode: str = "pullback_or_close_hold"
     # 回踩不破所需交易日数。

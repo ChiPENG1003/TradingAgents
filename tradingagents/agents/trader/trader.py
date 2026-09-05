@@ -1,3 +1,4 @@
+from tradingagents.agents.utils.decision_context import bounded_text, evidence_brief
 import functools
 
 from tradingagents.agents.utils.agent_utils import (
@@ -12,7 +13,8 @@ def create_trader(llm, memory):
         company_name = state["company_of_interest"]
         instrument_context = build_instrument_context(company_name)
         capital_context = build_capital_context(state.get("holdings_info"))
-        investment_plan = state["investment_plan"]
+        investment_plan = bounded_text(state["investment_plan"], 2600)
+        evidence = evidence_brief(state)
         market_research_report = state["market_report"]
         sentiment_report = state["sentiment_report"]
         news_report = state["news_report"]
@@ -30,7 +32,7 @@ def create_trader(llm, memory):
 
         past_memory_str = ""
         for i, rec in enumerate(past_memories, 1):
-            past_memory_str += rec["recommendation"] + "\n\n"
+            past_memory_str += bounded_text(rec["recommendation"], 600) + "\n\n"
 
         memory_section = (
             f" Here are reflections from similar situations you traded in and the lessons learned: {past_memory_str}"
@@ -40,13 +42,13 @@ def create_trader(llm, memory):
         capital_block = f"\n\n{capital_context}" if capital_context else ""
         context = {
             "role": "user",
-            "content": f"Investment plan for {company_name}. {instrument_context}{capital_block}\n\nProposed Investment Plan: {investment_plan}",
+            "content": f"Investment plan for {company_name}. {instrument_context}{capital_block}\n\nProposed Investment Plan: {investment_plan}\n\nSourced evidence and computed anchors: {evidence}",
         }
 
         messages = [
             {
                 "role": "system",
-                "content": f"""You are a short-term trader. Based on the investment plan, provide a trade recommendation that includes all of the following parameters:
+                "content": f"""You are a short-term trader. Own the execution proposal: use the supplied anchors for levels; never invent missing prices. Keep the handoff within 300 words, cite two sourced facts and the strongest opposing fact. Based on the investment plan, provide a trade recommendation that includes all of the following parameters:
 - **Action**: BUY / HOLD / SELL
 - **Entry price range**: specific price level or range to enter the trade
 - **Stop loss**: exact price level to exit and limit losses

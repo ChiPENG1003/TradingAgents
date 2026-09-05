@@ -689,7 +689,11 @@ def _compute_short_term_market_anchors(
     if df is None or df.empty:
         return None
 
-    df = df.sort_values("Date").reset_index(drop=True)
+    # Defend the as-of boundary even if a cache/provider returns extra rows.
+    df = df[pd.to_datetime(df["Date"]) <= pd.Timestamp(trade_date)].copy()
+    df = df.sort_values("Date").drop_duplicates("Date", keep="last").reset_index(drop=True)
+    if df.empty:
+        return None
     structure_analysis = analyze_ohlcv_structure(df, ticker, trade_date)
     df = df.tail(lookback_days).reset_index(drop=True)
     if len(df) < 2:
@@ -764,7 +768,12 @@ def _compute_short_term_market_anchors(
         if len(recent_ratios) == 3:
             volume_ratio_3d = [round(float(v), 3) for v in recent_ratios.tolist()]
 
+    from back_test.technical_conditions import technical_features
+    technical = technical_features(df).iloc[-1].drop(labels="Date")
+    technical = {key: float(value) if pd.notna(value) else None for key, value in technical.items()}
     return {
+        "technical_confirmation": technical,
+        "history_bars": len(df),
         "as_of_close_date": pd.to_datetime(last["Date"]).strftime("%Y-%m-%d"),
         "current_price": round(current_close, 4),
         "atr5": round(atr5, 4),
@@ -822,6 +831,9 @@ def _format_short_term_market_anchors(anchors: dict) -> str:
         f"- last 3 volume ratios vs 20-day average: {_fmt(anchors.get('volume_ratio_3d'))}\n"
         "- proximity rule: a price P is \"within X%\" iff |P - current_price| / current_price <= X/100. "
         "Use this for all distance-to-current checks; do not estimate from the report.\n"
+        + "- MACD(12,26,9), KDJ(9,3,3), BOLL(20,2) snapshot (60-bar warm-up; null=unavailable): "
+        + json.dumps(anchors.get("technical_confirmation") or {}, ensure_ascii=False)
+        + "\nThese are price-derived, correlated signals, not independent evidence. Daily execution rechecks the configured conditions using the prior completed bar.\n"
         + format_structure_analysis_for_prompt(anchors.get("structure_analysis"))
     )
 
@@ -2305,8 +2317,10 @@ def policy_from_market_state(
                 support,
             )
             notes.append(confirmation_note)
-            if not confirmed:
+            if not confirmed and not config.defer_add_confirmation_to_execution:
                 add_size = 0.0
+            elif config.defer_add_confirmation_to_execution:
+                notes.append("add is conditional: execution must recheck completed closes above the saved key level.")
 
     # Stop loss: ATR floor so normal volatility doesn't whipsaw out. Use
     # whichever (support or ATR-below) is FURTHER, not closer. The anchor is
@@ -2473,6 +2487,21 @@ def _compute_market_context_state(
     return context_state, context_anchors, context_volume_regime
 
 
+def _attach_add_execution_condition(strategy: dict, anchors: dict, config) -> dict:
+    if (config.defer_add_confirmation_to_execution and config.add_requires_confirmation
+            and config.add_confirmation_mode != "disabled"
+            and (strategy.get("add_position") or {}).get("size_pct", 0) > 0):
+        key = anchors.get("nearest_support") or anchors.get("ema10") or anchors.get("ema20")
+        if key is None:
+            strategy["add_position"] = {"price": None, "size_pct": 0.0}
+        else:
+            strategy.setdefault("execution_conditions", {}).setdefault("add", {}).update({
+                "hold_above_price": float(key) * (1 - config.add_key_level_tolerance_pct),
+                "close_hold_days": config.add_close_hold_days,
+            })
+    return strategy
+
+
 def policy_from_frozen_snapshot(
     snapshot: dict[str, Any],
     *,
@@ -2513,7 +2542,8 @@ def policy_from_frozen_snapshot(
         trading_history_summary=trading_history_summary or {},
     ).model_dump()
     strategy = _enforce_strategy_rules(strategy, anchors, constraints, holdings_info)
-    return _apply_order_size_multiplier(strategy, config.order_size_multiplier)
+    strategy = _apply_order_size_multiplier(strategy, config.order_size_multiplier)
+    return _attach_add_execution_condition(strategy, anchors, config)
 
 
 def regenerate_strategy(
@@ -2588,7 +2618,7 @@ def regenerate_strategy(
     strategy_dict = _apply_order_size_multiplier(
         strategy_dict, config.order_size_multiplier
     )
-    return strategy_dict
+    return _attach_add_execution_condition(strategy_dict, anchors, config)
 
 
 def create_portfolio_state_manager(
@@ -2847,6 +2877,7 @@ def create_portfolio_state_manager(
             resolved_policy_config.order_size_multiplier,
         )
 
+        strategy_dict = _attach_add_execution_condition(strategy_dict, anchors, resolved_policy_config)
         if market_context_state is not None:
             market_context_text = (
                 f"MarketContext: ticker={resolved_policy_config.market_context_ticker}, "

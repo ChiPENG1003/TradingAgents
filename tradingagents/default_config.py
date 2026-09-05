@@ -43,6 +43,9 @@ DEFAULT_CONFIG = {
     # PortfolioStatePolicyConfig defaults, including ^GSPC market context.
     # Override market_context_ticker or set market_context_enabled=False as needed.
     "portfolio_state_policy": {},
+    # Declarative daily fill confirmations for newly generated backtest plans.
+    # price_only is the ablation baseline; stricter profiles are experiments.
+    "backtest_confirmation_profile": "volume_macd",
     # Data vendor configuration
     # Category-level configuration (default for all tools in category)
     "data_vendors": {

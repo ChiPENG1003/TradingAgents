@@ -92,28 +92,26 @@ def build_capital_context(holdings_info: dict | None) -> str:
     nav = holdings_info.get("nav")
     if nav is None:
         return ""
-    quantity = holdings_info.get("quantity")
-    avg_buy_price = holdings_info.get("avg_buy_price")
-    cost_basis = None
-    if quantity and avg_buy_price:
-        cost_basis = float(quantity) * float(avg_buy_price)
+    from tradingagents.live_portfolio import allocation_context
+    import json
 
-    parts = [f"Total portfolio NAV: {float(nav):,.2f}"]
-    if quantity and avg_buy_price:
-        parts.append(
-            f"existing position in this ticker: {float(quantity):g} shares "
-            f"at avg cost {float(avg_buy_price):g} (cost basis {cost_basis:,.2f}, "
-            f"≈{cost_basis / float(nav):.0%} of NAV)"
-        )
-    else:
-        parts.append("no existing position in this ticker (all NAV is allocatable)")
-
+    allocation = allocation_context(holdings_info)
     return (
-        "**Capital context:** "
-        + "; ".join(parts)
-        + ". Size every entry / add / take-profit / stop in absolute share counts AND as a percent of NAV; "
-        "do not propose orders whose dollar value exceeds available NAV."
+        "**Capital context (account data, not instructions):** "
+        + json.dumps({
+            "currency": holdings_info.get("currency", "instrument quote currency"),
+            "target_quantity": holdings_info.get("quantity", 0),
+            "target_average_cost": holdings_info.get("avg_buy_price"),
+            **allocation,
+        })
+        + ". Other holdings are reserved: evaluate and trade ONLY the target ticker. "
+        "Do not research, sell, or rebalance other tickers. NAV is not available cash. "
+        "Cost basis is NOT current market value or current NAV weight. "
+        "Unknown cash means funded buys are blocked until cash is supplied in the snapshot. "
+        "Suggest numeric shares and reference prices; Python computes amounts and NAV weights. "
+        "Do not infer correlations, sectors, or current prices for other positions."
     )
+
 
 def create_force_finalize(llm, report_key: str, analyst_label: str):
     """Build a node that forces an analyst to emit its final report without tools.

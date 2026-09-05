@@ -45,6 +45,7 @@ class RiskDebateState(TypedDict):
 
 
 class AgentState(MessagesState):
+    decision_anchors: Annotated[dict | None, "Shared target market anchors for this run"]
     company_of_interest: Annotated[str, "Company that we are interested in trading"]
     trade_date: Annotated[str, "What date we are trading at"]
 
@@ -85,7 +86,7 @@ class AgentState(MessagesState):
     structured_strategy: Annotated[Dict[str, Any], "Structured strategy for backtest persistence"]
 
     # Optional current position context for the analyzed ticker
-    holdings_info: Annotated[Dict[str, float], "Current holdings context: quantity and avg_buy_price"]
+    holdings_info: Annotated[Dict[str, Any], "Current holdings context: quantity and avg_buy_price"]
 
     # Backtest-only: rolling-window realized PnL summary from prior strategies
     trading_history_summary: Annotated[
