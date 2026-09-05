@@ -1,0 +1,480 @@
+{
+  "schema_version": "v3",
+  "ticker": "COST",
+  "as_of_date": "2024-12-30",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "COST is in an aligned descending environment across higher, trading, and lower timeframes. A confirmed bearish structural break, lower-high/lower-low sequence, negative moving-average hierarchy, and consecutive negative closes establish coherent downside momentum. Volatility is normal rather than accelerating, while below-baseline volume makes the downside break structurally clear but weakly participation-confirmed. Price is extended toward nearby support, increasing short-horizon reversal sensitivity without altering the prevailing descending classification. | trend_regime=descending | volatility_regime=normal | momentum_regime=negative | liquidity_regime=volume_contraction | event_regime=none | structure_quality=breakdown_attempt | exhaustion_state=negative_extension | policy_adapter_regime=breakdown_risk | policy_adapter_phase=oversold_bear | trend_direction=-0.72 | trend_strength=0.77 | momentum=-0.76 | risk_pressure=0.66 | event_impact=0.00 | confidence=0.79 | volume_regime=soft | invalidation_type=failed_breakdown | invalidation_detail=reclassify_descending_breakdown_state_if_price_closes_back_inside_the_broken_trading_range_and_subsequently_reclaims_the_prior_swing-low_structure_with_follow-through; invalidate_breakdown_continuation_if_lower-high_lower-low_sequence_fails | risks=low-volume confirmation of the breakdown; negative extension near nearby support; potential failed-breakdown reclaim; bearish imbalance overhead; recent regime reclassification from the earlier uptrend | notes=market_context=^GSPC: continuous_multiplier=0.92, trend_regime=descending, volatility_regime=normal, momentum_regime=negative, trend_direction=-0.35, risk_pressure=0.65 | regime=breakdown_risk blocks new entries. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2025-01-10",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "COST",
+    "as_of_date": "2024-12-30",
+    "trend_regime": "descending",
+    "volatility_regime": "normal",
+    "momentum_regime": "negative",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "none",
+    "structure_quality": "breakdown_attempt",
+    "exhaustion_state": "negative_extension",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": -0.72,
+    "trend_strength": 0.77,
+    "momentum_score_value": -0.76,
+    "risk_pressure_score": 0.66,
+    "event_impact_score": 0.0,
+    "confidence": 0.79,
+    "confidence_components": {
+      "anchor_agreement": 0.88,
+      "timeframe_consistency": 0.8,
+      "volatility_stability": 0.74,
+      "contradiction_absence": 0.9,
+      "event_certainty": 0.95
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "descending",
+      "trading_timeframe_trend": "descending",
+      "lower_timeframe_trend": "descending",
+      "alignment": "aligned",
+      "short_term_override": "confirmed_structure_break"
+    },
+    "invalidation": {
+      "invalidation_type": "failed_breakdown",
+      "invalidation_detail": "reclassify_descending_breakdown_state_if_price_closes_back_inside_the_broken_trading_range_and_subsequently_reclaims_the_prior_swing-low_structure_with_follow-through; invalidate_breakdown_continuation_if_lower-high_lower-low_sequence_fails",
+      "reference_timeframe": "trading"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Price is below all supplied short-term EMA and SMA references, including the intermediate moving-average reference.",
+        "Deterministic structure identifies successive lower highs and lower lows, a bearish break of the prior swing low, and a bearish change of character.",
+        "The latest close is below the recent consolidation boundary, while price remains near the lower end of the short-horizon range.",
+        "Three consecutive bearish closes confirm persistent negative near-term impulse.",
+        "Short-horizon ATR is below the longer ATR measure, indicating movement is not currently accelerating despite elevated absolute daily dispersion.",
+        "Latest volume is below its trailing average and all of the last three sessions show below-baseline participation; the breakdown lacks volume expansion.",
+        "A bearish fair-value-gap/imbalance is present above the latest close."
+      ],
+      "event_modifiers": [
+        "No supplied earnings, macroeconomic, policy, filing, or idiosyncratic event is identified as dominant on the observation date."
+      ],
+      "narrative_residual": [
+        "Research-manager recommendation, oscillator framing, and conditional execution language were excluded from primary state scoring.",
+        "Prior historical state records were treated only as dated context; current classification is anchored to the supplied observation-date OHLCV structure."
+      ],
+      "contradictory_signals": [
+        "The structural breakdown and persistent downside impulse are not accompanied by expanding participation, limiting confirmation quality.",
+        "The current price is close to nearby support after a rapid decline, creating negative-extension risk even though no reversal structure is confirmed."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.72,
+      "reversal_risk": 0.49,
+      "breakout_quality": 0.61,
+      "pullback_quality": 0.3,
+      "volume_support": 0.3,
+      "event_risk": 0.05,
+      "reward_risk_quality": 0.43
+    },
+    "state_summary": "COST is in an aligned descending environment across higher, trading, and lower timeframes. A confirmed bearish structural break, lower-high/lower-low sequence, negative moving-average hierarchy, and consecutive negative closes establish coherent downside momentum. Volatility is normal rather than accelerating, while below-baseline volume makes the downside break structurally clear but weakly participation-confirmed. Price is extended toward nearby support, increasing short-horizon reversal sensitivity without altering the prevailing descending classification.",
+    "key_risks": [
+      "low-volume confirmation of the breakdown",
+      "negative extension near nearby support",
+      "potential failed-breakdown reclaim",
+      "bearish imbalance overhead",
+      "recent regime reclassification from the earlier uptrend"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "COST",
+    "as_of_date": "2024-12-30",
+    "short_term_structure": {
+      "trend": "descending",
+      "structure_quality": "coherent",
+      "pattern": "Lower High Lower Low",
+      "breakout_status": "breakdown",
+      "support": 896.9007,
+      "resistance": 913.7818,
+      "volume_confirmation": "soft",
+      "confidence": 0.83,
+      "signals": [
+        "Lower High Lower Low",
+        "Break of Structure",
+        "Change of Character",
+        "Three Black Crows",
+        "Range Breakout"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "descending",
+      "market_phase": "healthy_bear_trend",
+      "key_level": 896.9007,
+      "risk_state": "elevated",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Lower High Lower Low",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.76,
+        "structure_features": [
+          "successive lower highs",
+          "successive lower lows",
+          "downtrend structure"
+        ],
+        "matched_features": [
+          "successive lower highs",
+          "successive lower lows",
+          "downtrend structure"
+        ],
+        "evidence": "2024-12-30: highs 998.609->950.236, lows 956.495->928.04",
+        "lookback_days": 5
+      },
+      {
+        "name": "Break of Structure",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.75,
+        "structure_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "matched_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "evidence": "2024-12-30: close 913.4 broke prior swing low 928",
+        "lookback_days": 10,
+        "abbreviation": "BOS"
+      },
+      {
+        "name": "Change of Character",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.7,
+        "structure_features": [
+          "first major structural reversal",
+          "possible regime shift"
+        ],
+        "matched_features": [
+          "first major structural reversal",
+          "possible regime shift"
+        ],
+        "evidence": "2024-12-30: bearish break followed prior uptrend swing structure",
+        "lookback_days": 20,
+        "abbreviation": "ChoCH"
+      },
+      {
+        "name": "Three Black Crows",
+        "category": "three_candlestick",
+        "direction": "bearish",
+        "confidence": 0.68,
+        "structure_features": [
+          "three consecutive bearish candles",
+          "strong bearish continuation",
+          "persistent selling pressure"
+        ],
+        "matched_features": [
+          "three consecutive bearish candles",
+          "strong bearish continuation",
+          "persistent selling pressure"
+        ],
+        "evidence": "2024-12-30: three bearish closes from 947 to 913.4",
+        "lookback_days": 3
+      },
+      {
+        "name": "Range Breakout",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.66,
+        "structure_features": [
+          "break outside consolidation range",
+          "volatility expansion",
+          "price discovery"
+        ],
+        "matched_features": [
+          "break outside consolidation range",
+          "volatility expansion",
+          "price discovery"
+        ],
+        "evidence": "2024-12-30: close 913.4 broke 20-bar level 923.1, volume_ratio20=0.88",
+        "lookback_days": 20
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-12-30: latest bearish imbalance from 925.2 to 944.9 at bar_index=259",
+        "lookback_days": 1,
+        "abbreviation": "FVG"
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "COST:2024-12-30",
+    "ticker": "COST",
+    "trade_date": "2024-12-30",
+    "as_of_close_date": "2024-12-30",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "COST",
+      "as_of_date": "2024-12-30",
+      "trend_regime": "descending",
+      "volatility_regime": "normal",
+      "momentum_regime": "negative",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "none",
+      "structure_quality": "breakdown_attempt",
+      "exhaustion_state": "negative_extension",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": -0.72,
+      "trend_strength": 0.77,
+      "momentum_score_value": -0.76,
+      "risk_pressure_score": 0.66,
+      "event_impact_score": 0.0,
+      "confidence": 0.79,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "descending",
+        "trading_timeframe_trend": "descending",
+        "lower_timeframe_trend": "descending",
+        "alignment": "aligned",
+        "short_term_override": "confirmed_structure_break"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.72,
+        "reversal_risk": 0.49,
+        "breakout_quality": 0.61,
+        "pullback_quality": 0.3,
+        "volume_support": 0.3,
+        "event_risk": 0.05,
+        "reward_risk_quality": 0.43
+      },
+      "event_certainty": 0.95
+    },
+    "ohlcv_anchors": {
+      "current_price": 913.3915,
+      "atr5": 16.8256,
+      "atr14": 18.6994,
+      "ema5": 933.2929,
+      "ema10": 944.176,
+      "ema20": 949.6754,
+      "sma20": 963.2981,
+      "sma50": 929.5996,
+      "sma200": 842.8536,
+      "nearest_support": 906.7456,
+      "nearest_resistance": 925.2371,
+      "recent_high_10d": 998.6087,
+      "recent_high_20d": 998.6087,
+      "recent_closes_5d": [
+        940.8265,
+        949.6514,
+        946.997,
+        930.7142,
+        913.3915
+      ],
+      "recent_lows_5d": [
+        928.04,
+        936.4092,
+        944.8775,
+        923.0879,
+        906.7456
+      ],
+      "volume_ratio": 0.88,
+      "volume_ratio_3d": [
+        0.467,
+        0.926,
+        0.88
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "descending",
+        "structure_quality": "coherent",
+        "pattern": "Lower High Lower Low",
+        "breakout_status": "breakdown",
+        "support": 896.9007,
+        "resistance": 913.7818,
+        "volume_confirmation": "soft",
+        "confidence": 0.83
+      },
+      "long_term_structure": {
+        "trend": "descending",
+        "market_phase": "healthy_bear_trend",
+        "key_level": 896.9007,
+        "risk_state": "elevated",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Lower High Lower Low",
+          "direction": "bearish",
+          "confidence": 0.76
+        },
+        {
+          "name": "Break of Structure",
+          "direction": "bearish",
+          "confidence": 0.75
+        },
+        {
+          "name": "Change of Character",
+          "direction": "bearish",
+          "confidence": 0.7
+        },
+        {
+          "name": "Three Black Crows",
+          "direction": "bearish",
+          "confidence": 0.68
+        },
+        {
+          "name": "Range Breakout",
+          "direction": "bearish",
+          "confidence": 0.66
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bearish",
+          "confidence": 0.58
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "soft",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-12-30",
+        "trend_regime": "descending",
+        "volatility_regime": "normal",
+        "momentum_regime": "negative",
+        "liquidity_regime": "volume_contraction",
+        "event_regime": "none",
+        "structure_quality": "breakdown_attempt",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": -0.35,
+        "trend_strength": 0.5,
+        "momentum_score_value": -0.25,
+        "risk_pressure_score": 0.65,
+        "event_impact_score": 0.0,
+        "confidence": 0.69,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "descending",
+          "trading_timeframe_trend": "descending",
+          "lower_timeframe_trend": "descending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.33,
+          "reversal_risk": 0.65,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.35,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.53
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "d014ecd685a504b08f2f113325c112ceb55d6bb1fd1039af5d20b13f1ab013db"
+  }
+}

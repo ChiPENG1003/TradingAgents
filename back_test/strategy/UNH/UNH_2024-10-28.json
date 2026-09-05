@@ -1,0 +1,387 @@
+{
+  "schema_version": "v3",
+  "ticker": "UNH",
+  "as_of_date": "2024-10-28",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "UNH is in a higher-timeframe transition with a coherent descending trading and lower-timeframe structure. Negative moving-average positioning and shrinking participation support the near-term negative impulse, while moderated realized volatility reduces the prior expansion signal. Conflicting moderate-confidence reversal and imbalance patterns, together with the unresolved higher-timeframe transition, limit directional persistence confidence. | trend_regime=transition | volatility_regime=normal | momentum_regime=negative | liquidity_regime=volume_contraction | event_regime=none | structure_quality=coherent | exhaustion_state=none | policy_adapter_regime=unclear | policy_adapter_phase=unclear | trend_direction=-0.38 | trend_strength=0.54 | momentum=-0.43 | risk_pressure=0.59 | event_impact=0.00 | confidence=0.63 | volume_regime=shrinking | invalidation_type=timeframe_reclassification | invalidation_detail=Reclassify if the trading-timeframe descending structure gains sustained acceptance beyond its established support-resistance envelope or if the higher-timeframe transition resolves into a coherent directional structure. | risks=higher-timeframe transition unresolved; shrinking participation; conflicting bearish imbalance and bullish reversal patterns; nearby support-resistance containment; negative short-term moving-average hierarchy | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | target_weight=0.00 below threshold; HOLD. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-11-08",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "UNH",
+    "as_of_date": "2024-10-28",
+    "trend_regime": "transition",
+    "volatility_regime": "normal",
+    "momentum_regime": "negative",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "none",
+    "structure_quality": "coherent",
+    "exhaustion_state": "none",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": -0.38,
+    "trend_strength": 0.54,
+    "momentum_score_value": -0.43,
+    "risk_pressure_score": 0.59,
+    "event_impact_score": 0.0,
+    "confidence": 0.63,
+    "confidence_components": {
+      "anchor_agreement": 0.7,
+      "timeframe_consistency": 0.5,
+      "volatility_stability": 0.67,
+      "contradiction_absence": 0.46,
+      "event_certainty": 0.94
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "transition",
+      "trading_timeframe_trend": "descending",
+      "lower_timeframe_trend": "descending",
+      "alignment": "lower_timeframe_noise",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "timeframe_reclassification",
+      "invalidation_detail": "Reclassify if the trading-timeframe descending structure gains sustained acceptance beyond its established support-resistance envelope or if the higher-timeframe transition resolves into a coherent directional structure.",
+      "reference_timeframe": "multi_timeframe"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Deterministic structure classifies the short-term trend as descending and coherent, while the long-term trend remains transition.",
+        "Price is below the short EMA hierarchy and below the intermediate simple-moving-average references, preserving negative near-term impulse.",
+        "The short realized-volatility measure is below the longer realized-volatility measure; dispersion has moderated from the earlier expansion but remains non-compressed relative to price.",
+        "Latest participation is materially below the twenty-session volume baseline, and volume has remained below baseline for three consecutive sessions.",
+        "Price is located between nearby support and resistance rather than at a confirmed structural resolution.",
+        "A bearish fair-value-gap signal and a bullish inverse-head-and-shoulders signal are both detected at moderate confidence, preventing unambiguous directional continuation classification."
+      ],
+      "event_modifiers": [
+        "No dated earnings, macroeconomic, policy, filing, or idiosyncratic catalyst is identified as dominant as of the classification date."
+      ],
+      "narrative_residual": [
+        "Research-manager recommendation and execution-oriented language were excluded from state estimation.",
+        "Embedded bullish and bearish advocacy was treated as low-weight residual material only."
+      ],
+      "contradictory_signals": [
+        "The coherent descending short-term structure conflicts with the transitional long-term classification.",
+        "The bearish imbalance pattern conflicts with the bullish inverse-head-and-shoulders pattern.",
+        "Soft participation limits confirmation of either the bearish short-term structure or a potential reversal pattern."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.48,
+      "reversal_risk": 0.61,
+      "breakout_quality": 0.28,
+      "pullback_quality": 0.4,
+      "volume_support": 0.23,
+      "event_risk": 0.08,
+      "reward_risk_quality": 0.36
+    },
+    "state_summary": "UNH is in a higher-timeframe transition with a coherent descending trading and lower-timeframe structure. Negative moving-average positioning and shrinking participation support the near-term negative impulse, while moderated realized volatility reduces the prior expansion signal. Conflicting moderate-confidence reversal and imbalance patterns, together with the unresolved higher-timeframe transition, limit directional persistence confidence.",
+    "key_risks": [
+      "higher-timeframe transition unresolved",
+      "shrinking participation",
+      "conflicting bearish imbalance and bullish reversal patterns",
+      "nearby support-resistance containment",
+      "negative short-term moving-average hierarchy"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "UNH",
+    "as_of_date": "2024-10-28",
+    "short_term_structure": {
+      "trend": "descending",
+      "structure_quality": "coherent",
+      "pattern": "none",
+      "breakout_status": "none",
+      "support": 537.1841,
+      "resistance": 555.6786,
+      "volume_confirmation": "shrinking",
+      "confidence": 0.72,
+      "signals": [
+        "Fair Value Gap",
+        "Inverse Head and Shoulders"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "transition",
+      "market_phase": "unclear",
+      "key_level": 537.1841,
+      "risk_state": "transition",
+      "confidence": 0.64
+    },
+    "detected_patterns": [
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-10-28: latest bearish imbalance from 552.7 to 573 at bar_index=251",
+        "lookback_days": 9,
+        "abbreviation": "FVG"
+      },
+      {
+        "name": "Inverse Head and Shoulders",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "three troughs",
+          "middle trough lowest",
+          "bullish reversal"
+        ],
+        "matched_features": [
+          "three troughs",
+          "middle trough lowest",
+          "bullish reversal"
+        ],
+        "evidence": "2024-10-28: trough sequence 555.947, 520.877, 537.184",
+        "lookback_days": 80
+      }
+    ],
+    "conflicts": [
+      "short-term trend descending conflicts with long-term trend transition"
+    ],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "UNH:2024-10-28",
+    "ticker": "UNH",
+    "trade_date": "2024-10-28",
+    "as_of_close_date": "2024-10-28",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "UNH",
+      "as_of_date": "2024-10-28",
+      "trend_regime": "transition",
+      "volatility_regime": "normal",
+      "momentum_regime": "negative",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "none",
+      "structure_quality": "coherent",
+      "exhaustion_state": "none",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": -0.38,
+      "trend_strength": 0.54,
+      "momentum_score_value": -0.43,
+      "risk_pressure_score": 0.59,
+      "event_impact_score": 0.0,
+      "confidence": 0.63,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "transition",
+        "trading_timeframe_trend": "descending",
+        "lower_timeframe_trend": "descending",
+        "alignment": "lower_timeframe_noise",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.48,
+        "reversal_risk": 0.61,
+        "breakout_quality": 0.28,
+        "pullback_quality": 0.4,
+        "volume_support": 0.23,
+        "event_risk": 0.08,
+        "reward_risk_quality": 0.36
+      },
+      "event_certainty": 0.94
+    },
+    "ohlcv_anchors": {
+      "current_price": 542.2105,
+      "atr5": 9.4564,
+      "atr14": 13.7277,
+      "ema5": 542.6047,
+      "ema10": 546.0593,
+      "ema20": 550.8543,
+      "sma20": 555.2623,
+      "sma50": 558.4751,
+      "sma200": 502.3671,
+      "nearest_support": 540.647,
+      "nearest_resistance": 545.1746,
+      "recent_high_10d": 555.6786,
+      "recent_high_20d": 583.8328,
+      "recent_closes_5d": [
+        546.6423,
+        541.6351,
+        537.9611,
+        541.5583,
+        542.2105
+      ],
+      "recent_lows_5d": [
+        542.4504,
+        537.1841,
+        537.4814,
+        540.647,
+        539.8795
+      ],
+      "volume_ratio": 0.547,
+      "volume_ratio_3d": [
+        0.758,
+        0.74,
+        0.547
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "descending",
+        "structure_quality": "coherent",
+        "pattern": "none",
+        "breakout_status": "none",
+        "support": 537.1841,
+        "resistance": 555.6786,
+        "volume_confirmation": "shrinking",
+        "confidence": 0.72
+      },
+      "long_term_structure": {
+        "trend": "transition",
+        "market_phase": "unclear",
+        "key_level": 537.1841,
+        "risk_state": "transition",
+        "confidence": 0.64
+      },
+      "detected_patterns": [
+        {
+          "name": "Fair Value Gap",
+          "direction": "bearish",
+          "confidence": 0.58
+        },
+        {
+          "name": "Inverse Head and Shoulders",
+          "direction": "bullish",
+          "confidence": 0.58
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-10-28",
+        "trend_regime": "ascending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "884e263514fb2476882ff384f141d66b629e495ef6f0a30b3bda57d840669f28"
+  }
+}

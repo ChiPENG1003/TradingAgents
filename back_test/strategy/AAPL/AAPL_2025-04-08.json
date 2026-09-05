@@ -1,0 +1,765 @@
+{
+  "schema_version": "v3",
+  "ticker": "AAPL",
+  "as_of_date": "2025-04-08",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "AAPL is in a downside-dominant, high-instability environment defined by a fresh bearish structure failure, shock-like volatility expansion, and persistent high-volume participation into weakness. The prior short-term repair structure has been invalidated by a break below the prior swing low and below the recent range floor, while the higher timeframe remains net descending. The state is anchor-dominant but structurally damaged, with proximity to nearby support leaving room for reflexive counter-moves without changing the primary classification. | trend_regime=descending | volatility_regime=shock | momentum_regime=negative | liquidity_regime=volume_expansion | event_regime=unclear | structure_quality=damaged | exhaustion_state=negative_extension | policy_adapter_regime=downtrend | policy_adapter_phase=macro_event_regime | trend_direction=-0.89 | trend_strength=0.86 | momentum=-0.91 | risk_pressure=0.94 | event_impact=0.00 | confidence=0.84 | volume_regime=expanding | invalidation_type=timeframe_reclassification | invalidation_detail=daily structure reclassifies only if AAPL reclaims the 173.7-180.5 broken support/order-block region and then repairs above the EMA5 resistance cluster; absent that reclaim, the 2025-04-08 downside break remains the dominant trading-timeframe state | risks=Failed-breakdown behavior near 168.321 support could create abrupt countertrend rebounds.; Volatility is shock-like and may remain unstable across the next several sessions.; Reclaim of the 173.7-180.5 broken structure zone would force timeframe reclassification.; Unspecified event backdrop lowers certainty about whether the displacement is purely structural or event-amplified.; Large gap between current price and falling short-term averages increases whipsaw and exhaustion risk. | notes=market_context=^GSPC: continuous_multiplier=0.92, trend_regime=descending, volatility_regime=elevated, momentum_regime=negative, trend_direction=-0.35, risk_pressure=0.65 | regime=downtrend blocks new entries. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2025-04-19",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "AAPL",
+    "as_of_date": "2025-04-08",
+    "trend_regime": "descending",
+    "volatility_regime": "shock",
+    "momentum_regime": "negative",
+    "liquidity_regime": "volume_expansion",
+    "event_regime": "unclear",
+    "structure_quality": "damaged",
+    "exhaustion_state": "negative_extension",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": -0.89,
+    "trend_strength": 0.86,
+    "momentum_score_value": -0.91,
+    "risk_pressure_score": 0.94,
+    "event_impact_score": 0.0,
+    "confidence": 0.84,
+    "confidence_components": {
+      "anchor_agreement": 0.91,
+      "timeframe_consistency": 0.69,
+      "volatility_stability": 0.28,
+      "contradiction_absence": 0.78,
+      "event_certainty": 0.46
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "descending",
+      "trading_timeframe_trend": "descending",
+      "lower_timeframe_trend": "descending",
+      "alignment": "aligned",
+      "short_term_override": "confirmed_structure_break"
+    },
+    "invalidation": {
+      "invalidation_type": "timeframe_reclassification",
+      "invalidation_detail": "daily structure reclassifies only if AAPL reclaims the 173.7-180.5 broken support/order-block region and then repairs above the EMA5 resistance cluster; absent that reclaim, the 2025-04-08 downside break remains the dominant trading-timeframe state",
+      "reference_timeframe": "multi_timeframe"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Current price 171.514 is far below EMA5 188.708, EMA10 199.76, EMA20 209.482, SMA20 210.73, and SMA50 225.806, confirming a strongly bearish short- and intermediate-term moving-average hierarchy.",
+        "ATR(5) 16.5764 materially exceeds ATR(14) 9.4288, and ATR14 is about 5.497% of price, indicating shock-like realized-volatility expansion rather than normal dispersion.",
+        "Latest volume ratio is 1.845 versus the 20-day average, with last three ratios [2.139, 2.536, 1.845], showing persistent volume expansion accompanying the decline.",
+        "5-day range is 224.006 to 168.321 and 10-day range is 224.434 to 168.321, indicating unusually large recent downside displacement and broad price discovery.",
+        "Deterministic short_term structure is trend=ascending, quality=fragmented, breakout_status=breakdown, support=167.4, resistance=174.3, volume=expanding, confidence=0.78.",
+        "Deterministic long_term structure is trend=descending with market_phase=early_bull_reversal and risk_state=transition, so the higher timeframe remains net bearish despite prior repair attempts.",
+        "A bearish Break of Structure is detected because the 2025-04-08 close 171.5 broke prior swing low 215.1, invalidating the prior higher-low sequence.",
+        "A bearish Range Breakout is detected because the 2025-04-08 close 171.5 broke the 20-bar level 173.7 on volume_ratio20=1.84, confirming downside expansion rather than a contained pullback.",
+        "Bearish engulfing evidence and a bearish fair value gap from 193.1 to 200.2 reinforce seller control and overhead supply.",
+        "Nearest resistance above current is 189.34 while nearest support below current is 168.321, leaving price near lower support after a violent downside break rather than in a repaired reclaim structure."
+      ],
+      "event_modifiers": [
+        "No concrete earnings, macro, policy, filing, or idiosyncratic shock catalyst is supplied in the provided context for 2025-04-08.",
+        "Because the displacement is extreme but the catalyst is unspecified, state estimation remains anchor-dominant while event classification stays uncertain."
+      ],
+      "narrative_residual": [
+        "Bullish oversold-bounce arguments are treated as low-weight residual because the hard-anchor set shows a fresh downside structure break with shock-like volatility and volume expansion.",
+        "Bearish and bullish analyst advocacy is not used to set direction; it only indicates discretionary disagreement around an anchor set that is currently downside-dominant."
+      ],
+      "contradictory_signals": [
+        "The deterministic short-term structure had previously been Higher High Higher Low, so the 2025-04-08 break is a violent failure of a repair structure rather than a long-established smooth downtrend.",
+        "Price is close to nearest support 168.321 after an extreme downswing, preserving failed-breakdown and reflex-bounce risk inside the broader damaged state.",
+        "Long-term market_phase=early_bull_reversal and risk_state=transition indicate that the higher timeframe had some prior repair characteristics, reducing confidence in uninterrupted one-way continuation even though the present break is bearish."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.81,
+      "reversal_risk": 0.63,
+      "breakout_quality": 0.84,
+      "pullback_quality": 0.16,
+      "volume_support": 0.87,
+      "event_risk": 0.54,
+      "reward_risk_quality": 0.29
+    },
+    "state_summary": "AAPL is in a downside-dominant, high-instability environment defined by a fresh bearish structure failure, shock-like volatility expansion, and persistent high-volume participation into weakness. The prior short-term repair structure has been invalidated by a break below the prior swing low and below the recent range floor, while the higher timeframe remains net descending. The state is anchor-dominant but structurally damaged, with proximity to nearby support leaving room for reflexive counter-moves without changing the primary classification.",
+    "key_risks": [
+      "Failed-breakdown behavior near 168.321 support could create abrupt countertrend rebounds.",
+      "Volatility is shock-like and may remain unstable across the next several sessions.",
+      "Reclaim of the 173.7-180.5 broken structure zone would force timeframe reclassification.",
+      "Unspecified event backdrop lowers certainty about whether the displacement is purely structural or event-amplified.",
+      "Large gap between current price and falling short-term averages increases whipsaw and exhaustion risk."
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "AAPL",
+    "as_of_date": "2025-04-08",
+    "short_term_structure": {
+      "trend": "ascending",
+      "structure_quality": "fragmented",
+      "pattern": "Higher High Higher Low",
+      "breakout_status": "breakdown",
+      "support": 167.4306,
+      "resistance": 174.2819,
+      "volume_confirmation": "expanding",
+      "confidence": 0.78,
+      "signals": [
+        "Higher High Higher Low",
+        "Break of Structure",
+        "Bearish Engulfing",
+        "Range Breakout",
+        "Double Top"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "descending",
+      "market_phase": "early_bull_reversal",
+      "key_level": null,
+      "risk_state": "transition",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Higher High Higher Low",
+        "category": "market_structure",
+        "direction": "bullish",
+        "confidence": 0.76,
+        "structure_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "matched_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "evidence": "2025-04-08: highs 223.837->224.434, lows 210.169->215.094",
+        "lookback_days": 6
+      },
+      {
+        "name": "Break of Structure",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.75,
+        "structure_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "matched_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "evidence": "2025-04-08: close 171.5 broke prior swing low 215.1",
+        "lookback_days": 10,
+        "abbreviation": "BOS"
+      },
+      {
+        "name": "Bearish Engulfing",
+        "category": "double_candlestick",
+        "direction": "bearish",
+        "confidence": 0.74,
+        "structure_features": [
+          "second bearish candle fully engulfs previous bullish candle",
+          "strong seller takeover",
+          "momentum reversal"
+        ],
+        "matched_features": [
+          "second bearish candle fully engulfs previous bullish candle",
+          "strong seller takeover",
+          "momentum reversal"
+        ],
+        "evidence": "2025-04-08: current real body [171.5, 185.7] engulfs previous [176.3, 180.5]",
+        "lookback_days": 2
+      },
+      {
+        "name": "Range Breakout",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.74,
+        "structure_features": [
+          "break outside consolidation range",
+          "volatility expansion",
+          "price discovery"
+        ],
+        "matched_features": [
+          "break outside consolidation range",
+          "volatility expansion",
+          "price discovery"
+        ],
+        "evidence": "2025-04-08: close 171.5 broke 20-bar level 173.7, volume_ratio20=1.84",
+        "lookback_days": 20
+      },
+      {
+        "name": "Double Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "matched_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "evidence": "2025-04-08: swing highs 223.837 and 224.434 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2025-04-08: latest bearish imbalance from 193.1 to 200.2 at bar_index=258",
+        "lookback_days": 2,
+        "abbreviation": "FVG"
+      },
+      {
+        "name": "Order Block",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.54,
+        "structure_features": [
+          "institutional transaction zone",
+          "strong reaction area"
+        ],
+        "matched_features": [
+          "institutional transaction zone",
+          "strong reaction area"
+        ],
+        "evidence": "2025-04-08: prior opposite candle body zone [176.3, 180.5] before displacement",
+        "lookback_days": 1
+      }
+    ],
+    "conflicts": [
+      "short-term trend ascending conflicts with long-term trend descending",
+      "bearish rejection pattern appears inside short-term ascending structure"
+    ],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "feature_snapshot_v1",
+    "ticker": "AAPL",
+    "trade_date": "2025-04-08",
+    "as_of_close_date": "2025-04-08",
+    "feature_columns": {
+      "llm": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "feature_scores.*",
+        "confidence_components.*",
+        "timeframe_hierarchy.*",
+        "invalidation.*"
+      ],
+      "ohlcv": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "atr14_pct",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma5",
+        "sma10",
+        "sma20",
+        "sma50",
+        "recent_high_5d",
+        "recent_low_5d",
+        "recent_high_10d",
+        "recent_low_10d",
+        "recent_high_20d",
+        "recent_low_20d",
+        "nearest_resistance",
+        "nearest_support",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "execution_context": [
+        "holdings_info.*",
+        "trading_history_summary.*",
+        "prior_pending_orders[]",
+        "constraints.*"
+      ],
+      "exclude_from_ml_features": [
+        "prior_policy_output_do_not_use_as_label.*"
+      ]
+    },
+    "llm_market_state": {
+      "schema_version": "state_v2",
+      "ticker": "AAPL",
+      "as_of_date": "2025-04-08",
+      "trend_regime": "descending",
+      "volatility_regime": "shock",
+      "momentum_regime": "negative",
+      "liquidity_regime": "volume_expansion",
+      "event_regime": "unclear",
+      "structure_quality": "damaged",
+      "exhaustion_state": "negative_extension",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": -0.89,
+      "trend_strength": 0.86,
+      "momentum_score_value": -0.91,
+      "risk_pressure_score": 0.94,
+      "event_impact_score": 0.0,
+      "confidence": 0.84,
+      "confidence_components": {
+        "anchor_agreement": 0.91,
+        "timeframe_consistency": 0.69,
+        "volatility_stability": 0.28,
+        "contradiction_absence": 0.78,
+        "event_certainty": 0.46
+      },
+      "horizon_days": 15,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "descending",
+        "trading_timeframe_trend": "descending",
+        "lower_timeframe_trend": "descending",
+        "alignment": "aligned",
+        "short_term_override": "confirmed_structure_break"
+      },
+      "invalidation": {
+        "invalidation_type": "timeframe_reclassification",
+        "invalidation_detail": "daily structure reclassifies only if AAPL reclaims the 173.7-180.5 broken support/order-block region and then repairs above the EMA5 resistance cluster; absent that reclaim, the 2025-04-08 downside break remains the dominant trading-timeframe state",
+        "reference_timeframe": "multi_timeframe"
+      },
+      "evidence": {
+        "hard_anchors": [
+          "Current price 171.514 is far below EMA5 188.708, EMA10 199.76, EMA20 209.482, SMA20 210.73, and SMA50 225.806, confirming a strongly bearish short- and intermediate-term moving-average hierarchy.",
+          "ATR(5) 16.5764 materially exceeds ATR(14) 9.4288, and ATR14 is about 5.497% of price, indicating shock-like realized-volatility expansion rather than normal dispersion.",
+          "Latest volume ratio is 1.845 versus the 20-day average, with last three ratios [2.139, 2.536, 1.845], showing persistent volume expansion accompanying the decline.",
+          "5-day range is 224.006 to 168.321 and 10-day range is 224.434 to 168.321, indicating unusually large recent downside displacement and broad price discovery.",
+          "Deterministic short_term structure is trend=ascending, quality=fragmented, breakout_status=breakdown, support=167.4, resistance=174.3, volume=expanding, confidence=0.78.",
+          "Deterministic long_term structure is trend=descending with market_phase=early_bull_reversal and risk_state=transition, so the higher timeframe remains net bearish despite prior repair attempts.",
+          "A bearish Break of Structure is detected because the 2025-04-08 close 171.5 broke prior swing low 215.1, invalidating the prior higher-low sequence.",
+          "A bearish Range Breakout is detected because the 2025-04-08 close 171.5 broke the 20-bar level 173.7 on volume_ratio20=1.84, confirming downside expansion rather than a contained pullback.",
+          "Bearish engulfing evidence and a bearish fair value gap from 193.1 to 200.2 reinforce seller control and overhead supply.",
+          "Nearest resistance above current is 189.34 while nearest support below current is 168.321, leaving price near lower support after a violent downside break rather than in a repaired reclaim structure."
+        ],
+        "event_modifiers": [
+          "No concrete earnings, macro, policy, filing, or idiosyncratic shock catalyst is supplied in the provided context for 2025-04-08.",
+          "Because the displacement is extreme but the catalyst is unspecified, state estimation remains anchor-dominant while event classification stays uncertain."
+        ],
+        "narrative_residual": [
+          "Bullish oversold-bounce arguments are treated as low-weight residual because the hard-anchor set shows a fresh downside structure break with shock-like volatility and volume expansion.",
+          "Bearish and bullish analyst advocacy is not used to set direction; it only indicates discretionary disagreement around an anchor set that is currently downside-dominant."
+        ],
+        "contradictory_signals": [
+          "The deterministic short-term structure had previously been Higher High Higher Low, so the 2025-04-08 break is a violent failure of a repair structure rather than a long-established smooth downtrend.",
+          "Price is close to nearest support 168.321 after an extreme downswing, preserving failed-breakdown and reflex-bounce risk inside the broader damaged state.",
+          "Long-term market_phase=early_bull_reversal and risk_state=transition indicate that the higher timeframe had some prior repair characteristics, reducing confidence in uninterrupted one-way continuation even though the present break is bearish."
+        ]
+      },
+      "feature_scores": {
+        "trend_continuation": 0.81,
+        "reversal_risk": 0.63,
+        "breakout_quality": 0.84,
+        "pullback_quality": 0.16,
+        "volume_support": 0.87,
+        "event_risk": 0.54,
+        "reward_risk_quality": 0.29
+      },
+      "state_summary": "AAPL is in a downside-dominant, high-instability environment defined by a fresh bearish structure failure, shock-like volatility expansion, and persistent high-volume participation into weakness. The prior short-term repair structure has been invalidated by a break below the prior swing low and below the recent range floor, while the higher timeframe remains net descending. The state is anchor-dominant but structurally damaged, with proximity to nearby support leaving room for reflexive counter-moves without changing the primary classification.",
+      "key_risks": [
+        "Failed-breakdown behavior near 168.321 support could create abrupt countertrend rebounds.",
+        "Volatility is shock-like and may remain unstable across the next several sessions.",
+        "Reclaim of the 173.7-180.5 broken structure zone would force timeframe reclassification.",
+        "Unspecified event backdrop lowers certainty about whether the displacement is purely structural or event-amplified.",
+        "Large gap between current price and falling short-term averages increases whipsaw and exhaustion risk."
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "schema_version": "state_v2",
+        "ticker": "^GSPC",
+        "as_of_date": "2025-04-08",
+        "trend_regime": "descending",
+        "volatility_regime": "elevated",
+        "momentum_regime": "negative",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "breakdown_attempt",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": -0.35,
+        "trend_strength": 0.5,
+        "momentum_score_value": -0.25,
+        "risk_pressure_score": 0.65,
+        "event_impact_score": 0.0,
+        "confidence": 0.63,
+        "confidence_components": {
+          "anchor_agreement": 0.7,
+          "timeframe_consistency": 0.55,
+          "volatility_stability": 0.45,
+          "contradiction_absence": 0.65,
+          "event_certainty": 0.8
+        },
+        "horizon_days": 5,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "descending",
+          "trading_timeframe_trend": "descending",
+          "lower_timeframe_trend": "descending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "invalidation": {
+          "invalidation_type": "timeframe_reclassification",
+          "invalidation_detail": "Anchor structure changes materially at the next review.",
+          "reference_timeframe": "trading"
+        },
+        "evidence": {
+          "hard_anchors": [
+            "Fallback state derived from price structure, moving averages, ATR, support/resistance, and volume anchors."
+          ],
+          "event_modifiers": [],
+          "narrative_residual": [],
+          "contradictory_signals": []
+        },
+        "feature_scores": {
+          "trend_continuation": 0.33,
+          "reversal_risk": 0.65,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.47
+        },
+        "state_summary": "LLM MarketState JSON was unavailable; fallback latent-state classification was derived from hard OHLCV anchors.",
+        "key_risks": [
+          "Fallback state excludes qualitative news/fundamental nuance",
+          "Single-date technical classification may be noisy"
+        ]
+      }
+    },
+    "ohlcv_anchors": {
+      "as_of_close_date": "2025-04-08",
+      "current_price": 171.5137,
+      "atr5": 16.5764,
+      "atr14": 9.4288,
+      "atr14_pct": 5.497,
+      "ema5": 188.7085,
+      "ema10": 199.7602,
+      "ema20": 209.4819,
+      "sma5": 192.849,
+      "sma10": 206.7018,
+      "sma20": 210.7301,
+      "sma50": 225.8059,
+      "sma200": null,
+      "recent_high_5d": 224.0064,
+      "recent_low_5d": 168.3206,
+      "recent_high_10d": 224.4341,
+      "recent_low_10d": 168.3206,
+      "recent_high_20d": 224.4341,
+      "recent_low_20d": 168.3206,
+      "recent_closes_5d": [
+        222.7132,
+        202.122,
+        187.3899,
+        180.5062,
+        171.5137
+      ],
+      "recent_lows_5d": [
+        219.8583,
+        200.1922,
+        186.3554,
+        173.7022,
+        168.3206
+      ],
+      "nearest_resistance": 189.3396,
+      "nearest_support": 168.3206,
+      "latest_volume": 120859500.0,
+      "volume_20_sma": 65517575.0,
+      "volume_50_sma": 56765958.0,
+      "volume_ratio": 1.845,
+      "volume_ratio_3d": [
+        2.139,
+        2.536,
+        1.845
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "ascending",
+        "structure_quality": "fragmented",
+        "pattern": "Higher High Higher Low",
+        "breakout_status": "breakdown",
+        "support": 167.4306,
+        "resistance": 174.2819,
+        "volume_confirmation": "expanding",
+        "confidence": 0.78,
+        "signals": [
+          "Higher High Higher Low",
+          "Break of Structure",
+          "Bearish Engulfing",
+          "Range Breakout",
+          "Double Top"
+        ]
+      },
+      "long_term_structure": {
+        "trend": "descending",
+        "market_phase": "early_bull_reversal",
+        "key_level": null,
+        "risk_state": "transition",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Higher High Higher Low",
+          "category": "market_structure",
+          "direction": "bullish",
+          "confidence": 0.76,
+          "structure_features": [
+            "successive higher highs",
+            "successive higher lows",
+            "uptrend structure"
+          ],
+          "matched_features": [
+            "successive higher highs",
+            "successive higher lows",
+            "uptrend structure"
+          ],
+          "evidence": "2025-04-08: highs 223.837->224.434, lows 210.169->215.094",
+          "lookback_days": 6
+        },
+        {
+          "name": "Break of Structure",
+          "category": "market_structure",
+          "direction": "bearish",
+          "confidence": 0.75,
+          "structure_features": [
+            "key swing point broken",
+            "trend transition",
+            "structure invalidation"
+          ],
+          "matched_features": [
+            "key swing point broken",
+            "trend transition",
+            "structure invalidation"
+          ],
+          "evidence": "2025-04-08: close 171.5 broke prior swing low 215.1",
+          "lookback_days": 10,
+          "abbreviation": "BOS"
+        },
+        {
+          "name": "Bearish Engulfing",
+          "category": "double_candlestick",
+          "direction": "bearish",
+          "confidence": 0.74,
+          "structure_features": [
+            "second bearish candle fully engulfs previous bullish candle",
+            "strong seller takeover",
+            "momentum reversal"
+          ],
+          "matched_features": [
+            "second bearish candle fully engulfs previous bullish candle",
+            "strong seller takeover",
+            "momentum reversal"
+          ],
+          "evidence": "2025-04-08: current real body [171.5, 185.7] engulfs previous [176.3, 180.5]",
+          "lookback_days": 2
+        },
+        {
+          "name": "Range Breakout",
+          "category": "market_structure",
+          "direction": "bearish",
+          "confidence": 0.74,
+          "structure_features": [
+            "break outside consolidation range",
+            "volatility expansion",
+            "price discovery"
+          ],
+          "matched_features": [
+            "break outside consolidation range",
+            "volatility expansion",
+            "price discovery"
+          ],
+          "evidence": "2025-04-08: close 171.5 broke 20-bar level 173.7, volume_ratio20=1.84",
+          "lookback_days": 20
+        },
+        {
+          "name": "Double Top",
+          "category": "classical_chart",
+          "direction": "bearish",
+          "confidence": 0.62,
+          "structure_features": [
+            "two failed highs",
+            "resistance rejection",
+            "bearish reversal potential"
+          ],
+          "matched_features": [
+            "two failed highs",
+            "resistance rejection",
+            "bearish reversal potential"
+          ],
+          "evidence": "2025-04-08: swing highs 223.837 and 224.434 within 1.8%",
+          "lookback_days": 40
+        },
+        {
+          "name": "Fair Value Gap",
+          "category": "smc_ict",
+          "direction": "bearish",
+          "confidence": 0.58,
+          "structure_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "matched_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "evidence": "2025-04-08: latest bearish imbalance from 193.1 to 200.2 at bar_index=258",
+          "lookback_days": 2,
+          "abbreviation": "FVG"
+        },
+        {
+          "name": "Order Block",
+          "category": "smc_ict",
+          "direction": "bearish",
+          "confidence": 0.54,
+          "structure_features": [
+            "institutional transaction zone",
+            "strong reaction area"
+          ],
+          "matched_features": [
+            "institutional transaction zone",
+            "strong reaction area"
+          ],
+          "evidence": "2025-04-08: prior opposite candle body zone [176.3, 180.5] before displacement",
+          "lookback_days": 1
+        }
+      ],
+      "conflicts": [
+        "short-term trend ascending conflicts with long-term trend descending",
+        "bearish rejection pattern appears inside short-term ascending structure"
+      ]
+    },
+    "derived_regimes": {
+      "volume_regime": "expanding",
+      "recent_phases": [
+        "unclear",
+        "unclear"
+      ]
+    },
+    "execution_context": {
+      "constraints": {
+        "available": true,
+        "allowed_actions": [
+          "BUY",
+          "HOLD",
+          "SELL"
+        ],
+        "entry_mode": "short_term_normal",
+        "max_entry_size_pct": 60,
+        "max_add_position_size_pct": 40,
+        "volume_regime": "expanding",
+        "strong_uptrend": false,
+        "short_term_uptrend": false,
+        "broad_index": false,
+        "bearish_volume_divergence": false,
+        "notes": []
+      },
+      "holdings_info": {
+        "quantity": 0.0,
+        "cash": 99924.82160735999,
+        "mark_price": 180.50624084472656,
+        "equity": 99924.82160735999,
+        "as_of_date": "2025-04-07"
+      },
+      "trading_history_summary": {
+        "window_days": 28,
+        "as_of": "2025-04-07",
+        "n_trades": 0,
+        "n_wins": 0,
+        "win_rate": null,
+        "total_pnl": 0,
+        "avg_pnl": null,
+        "last_n_pnl": []
+      },
+      "prior_pending_orders": []
+    },
+    "prior_policy_output_do_not_use_as_label": {
+      "schema_version": "v3",
+      "ticker": "AAPL",
+      "as_of_date": "2025-04-08",
+      "action": "HOLD",
+      "entry": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "add_position": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "take_profit": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "reduce_stop": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "stop_loss": {
+        "price": null
+      },
+      "rationale_summary": "AAPL is in a downside-dominant, high-instability environment defined by a fresh bearish structure failure, shock-like volatility expansion, and persistent high-volume participation into weakness. The prior short-term repair structure has been invalidated by a break below the prior swing low and below the recent range floor, while the higher timeframe remains net descending. The state is anchor-dominant but structurally damaged, with proximity to nearby support leaving room for reflexive counter-moves without changing the primary classification. | trend_regime=descending | volatility_regime=shock | momentum_regime=negative | liquidity_regime=volume_expansion | event_regime=unclear | structure_quality=damaged | exhaustion_state=negative_extension | policy_adapter_regime=downtrend | policy_adapter_phase=macro_event_regime | trend_direction=-0.89 | trend_strength=0.86 | momentum=-0.91 | risk_pressure=0.94 | event_impact=0.00 | confidence=0.84 | volume_regime=expanding | invalidation_type=timeframe_reclassification | invalidation_detail=daily structure reclassifies only if AAPL reclaims the 173.7-180.5 broken support/order-block region and then repairs above the EMA5 resistance cluster; absent that reclaim, the 2025-04-08 downside break remains the dominant trading-timeframe state | risks=Failed-breakdown behavior near 168.321 support could create abrupt countertrend rebounds.; Volatility is shock-like and may remain unstable across the next several sessions.; Reclaim of the 173.7-180.5 broken structure zone would force timeframe reclassification.; Unspecified event backdrop lowers certainty about whether the displacement is purely structural or event-amplified.; Large gap between current price and falling short-term averages increases whipsaw and exhaustion risk. | notes=market_context=^GSPC: continuous_multiplier=0.92, trend_regime=descending, volatility_regime=elevated, momentum_regime=negative, trend_direction=-0.35, risk_pressure=0.65 | regime=downtrend blocks new entries. | hardcoded_order_size_multiplier=0.8"
+    }
+  }
+}

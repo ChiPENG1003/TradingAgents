@@ -1,0 +1,385 @@
+{
+  "schema_version": "v3",
+  "ticker": "XOM",
+  "as_of_date": "2024-02-05",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "XOM is in a mixed, range-adjacent transition environment across the higher, trading, and lower timeframes. Mixed moving-average placement, a neutral doji, and unresolved nearby boundaries limit directional clarity; short-horizon realized volatility is expanding while participation is soft. | trend_regime=transition | volatility_regime=expanding | momentum_regime=neutral | liquidity_regime=volume_contraction | event_regime=none | structure_quality=fragmented | exhaustion_state=two_sided_chop | policy_adapter_regime=unclear | policy_adapter_phase=unclear | trend_direction=0.08 | trend_strength=0.38 | momentum=-0.04 | risk_pressure=0.61 | event_impact=0.00 | confidence=0.59 | volume_regime=soft | invalidation_type=timeframe_reclassification | invalidation_detail=Reclassify the transition state if trading-timeframe closes establish sustained acceptance above the short-term resistance zone or below the short-term support zone with volume no longer soft. | risks=Expanding short-horizon realized volatility; Mixed moving-average hierarchy; Unresolved nearby range boundaries; Soft volume confirmation; Potential transition into a directional structure | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | target_weight=0.00 below threshold; HOLD. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-02-16",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "XOM",
+    "as_of_date": "2024-02-05",
+    "trend_regime": "transition",
+    "volatility_regime": "expanding",
+    "momentum_regime": "neutral",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "none",
+    "structure_quality": "fragmented",
+    "exhaustion_state": "two_sided_chop",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.08,
+    "trend_strength": 0.38,
+    "momentum_score_value": -0.04,
+    "risk_pressure_score": 0.61,
+    "event_impact_score": 0.0,
+    "confidence": 0.59,
+    "confidence_components": {
+      "anchor_agreement": 0.61,
+      "timeframe_consistency": 0.55,
+      "volatility_stability": 0.42,
+      "contradiction_absence": 0.68,
+      "event_certainty": 0.88
+    },
+    "horizon_days": 10,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "transition",
+      "trading_timeframe_trend": "transition",
+      "lower_timeframe_trend": "transition",
+      "alignment": "aligned",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "timeframe_reclassification",
+      "invalidation_detail": "Reclassify the transition state if trading-timeframe closes establish sustained acceptance above the short-term resistance zone or below the short-term support zone with volume no longer soft.",
+      "reference_timeframe": "trading"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Price is below the 5- and 10-period EMA and SMA references but above the 20-period EMA/SMA and 50-period SMA, producing a mixed moving-average hierarchy rather than a directional trend.",
+        "Deterministic short-term and long-term structure are both transition; short-term quality is unclear and the observed candle is a neutral doji.",
+        "ATR(5) exceeds ATR(14), indicating recent realized movement is expanding versus the intermediate baseline, while ATR(14) remains moderate relative to price.",
+        "Current price sits between nearby short-term support and resistance, with neither boundary resolved.",
+        "Latest volume is below its 20-session average after mixed recent readings; deterministic volume classification is soft.",
+        "A bullish fair-value-gap detection is present near the current area but is lower-confidence and does not supersede the mixed price structure."
+      ],
+      "event_modifiers": [
+        "No concrete earnings, macro, policy, filing, or idiosyncratic event was supplied as dominant for state estimation on this date."
+      ],
+      "narrative_residual": [
+        "Bullish and bearish claims in the research-manager plan are treated as non-decisive residual context.",
+        "Balance-sheet and shareholder-return discussion is fundamental narrative rather than a contemporaneous price-structure anchor."
+      ],
+      "contradictory_signals": [
+        "Short moving averages and recent impulse lean softer, while price remains above intermediate moving-average references.",
+        "Bullish fair-value-gap evidence conflicts with a neutral doji and unresolved range structure.",
+        "Expanding short-horizon volatility conflicts with soft, below-average latest volume."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.4,
+      "reversal_risk": 0.57,
+      "breakout_quality": 0.31,
+      "pullback_quality": 0.46,
+      "volume_support": 0.4,
+      "event_risk": 0.1,
+      "reward_risk_quality": 0.39
+    },
+    "state_summary": "XOM is in a mixed, range-adjacent transition environment across the higher, trading, and lower timeframes. Mixed moving-average placement, a neutral doji, and unresolved nearby boundaries limit directional clarity; short-horizon realized volatility is expanding while participation is soft.",
+    "key_risks": [
+      "Expanding short-horizon realized volatility",
+      "Mixed moving-average hierarchy",
+      "Unresolved nearby range boundaries",
+      "Soft volume confirmation",
+      "Potential transition into a directional structure"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "XOM",
+    "as_of_date": "2024-02-05",
+    "short_term_structure": {
+      "trend": "transition",
+      "structure_quality": "unclear",
+      "pattern": "Doji",
+      "breakout_status": "none",
+      "support": 92.4952,
+      "resistance": 94.2143,
+      "volume_confirmation": "soft",
+      "confidence": 0.6,
+      "signals": [
+        "Doji",
+        "Fair Value Gap"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "transition",
+      "market_phase": "unclear",
+      "key_level": 92.3591,
+      "risk_state": "transition",
+      "confidence": 0.64
+    },
+    "detected_patterns": [
+      {
+        "name": "Doji",
+        "category": "single_candlestick",
+        "direction": "neutral",
+        "confidence": 0.7,
+        "structure_features": [
+          "open approximately equals close",
+          "upper and lower wick present",
+          "market indecision",
+          "trend slowing"
+        ],
+        "matched_features": [
+          "open approximately equals close",
+          "upper and lower wick present"
+        ],
+        "evidence": "2024-02-05: body/range=0.05, upper=0.44, lower=0.51",
+        "lookback_days": 1
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-02-05: latest bullish imbalance from 91.12 to 92.53 at bar_index=253",
+        "lookback_days": 7,
+        "abbreviation": "FVG"
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "XOM:2024-02-05",
+    "ticker": "XOM",
+    "trade_date": "2024-02-05",
+    "as_of_close_date": "2024-02-05",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "XOM",
+      "as_of_date": "2024-02-05",
+      "trend_regime": "transition",
+      "volatility_regime": "expanding",
+      "momentum_regime": "neutral",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "none",
+      "structure_quality": "fragmented",
+      "exhaustion_state": "two_sided_chop",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.08,
+      "trend_strength": 0.38,
+      "momentum_score_value": -0.04,
+      "risk_pressure_score": 0.61,
+      "event_impact_score": 0.0,
+      "confidence": 0.59,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "transition",
+        "trading_timeframe_trend": "transition",
+        "lower_timeframe_trend": "transition",
+        "alignment": "aligned",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.4,
+        "reversal_risk": 0.57,
+        "breakout_quality": 0.31,
+        "pullback_quality": 0.46,
+        "volume_support": 0.4,
+        "event_risk": 0.1,
+        "reward_risk_quality": 0.39
+      },
+      "event_certainty": 0.88
+    },
+    "ohlcv_anchors": {
+      "current_price": 92.8609,
+      "atr5": 2.1123,
+      "atr14": 1.6741,
+      "ema5": 93.3659,
+      "ema10": 92.9916,
+      "ema20": 92.4693,
+      "sma20": 91.5569,
+      "sma50": 92.3591,
+      "sma200": 96.447,
+      "nearest_support": 91.9008,
+      "nearest_resistance": 93.6199,
+      "recent_high_10d": 95.906,
+      "recent_high_20d": 95.906,
+      "recent_closes_5d": [
+        95.8785,
+        94.0131,
+        93.6291,
+        93.245,
+        92.8609
+      ],
+      "recent_lows_5d": [
+        93.3638,
+        93.9765,
+        92.9249,
+        92.9158,
+        91.9008
+      ],
+      "volume_ratio": 0.883,
+      "volume_ratio_3d": [
+        0.998,
+        1.133,
+        0.883
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "transition",
+        "structure_quality": "unclear",
+        "pattern": "Doji",
+        "breakout_status": "none",
+        "support": 92.4952,
+        "resistance": 94.2143,
+        "volume_confirmation": "soft",
+        "confidence": 0.6
+      },
+      "long_term_structure": {
+        "trend": "transition",
+        "market_phase": "unclear",
+        "key_level": 92.3591,
+        "risk_state": "transition",
+        "confidence": 0.64
+      },
+      "detected_patterns": [
+        {
+          "name": "Doji",
+          "direction": "neutral",
+          "confidence": 0.7
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bullish",
+          "confidence": 0.58
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-02-05",
+        "trend_regime": "ascending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "51fa391ca102b21ef97f51878b9e34e606dfff1cc766c76a189686bc0a0b761e"
+  }
+}

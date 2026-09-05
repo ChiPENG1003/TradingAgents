@@ -1,0 +1,487 @@
+{
+  "schema_version": "v3",
+  "ticker": "COST",
+  "as_of_date": "2024-02-20",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "COST retains an ascending higher and trading-timeframe structure with a positive moving-average hierarchy, but the latest upside sweep was rejected back into the short-term range. The resulting shooting-star, upthrust, and liquidity-sweep evidence produces negative near-term momentum, fragmented structure, modest volatility expansion, and late-trend fatigue without a confirmed higher-timeframe reversal. No concrete event dominates classification. | trend_regime=ascending | volatility_regime=expanding | momentum_regime=negative | liquidity_regime=volume_expansion | event_regime=none | structure_quality=fragmented | exhaustion_state=late_trend_fatigue | policy_adapter_regime=weak_uptrend | policy_adapter_phase=late_bull_distribution | trend_direction=0.46 | trend_strength=0.56 | momentum=-0.31 | risk_pressure=0.63 | event_impact=0.00 | confidence=0.62 | volume_regime=normal | invalidation_type=failed_breakout | invalidation_detail=upside_range_sweep_rejected_back_inside_short_term_range_with_shooting_star_and_upthrust_pattern; reclassify_if_rejection_is_followed_by_loss_of_documented_higher_low_structure | risks=false-breakout rejection after upside sweep; negative lower-timeframe impulse; late-trend distribution characteristics; modestly expanding realized volatility; uneven volume confirmation; potential failure of higher-low structure | notes=market_context=^GSPC: continuous_multiplier=0.92, trend_regime=descending, volatility_regime=compressed, momentum_regime=negative, trend_direction=-0.35, risk_pressure=0.65 | market_phase=late_bull_distribution blocks new entries. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-03-02",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "COST",
+    "as_of_date": "2024-02-20",
+    "trend_regime": "ascending",
+    "volatility_regime": "expanding",
+    "momentum_regime": "negative",
+    "liquidity_regime": "volume_expansion",
+    "event_regime": "none",
+    "structure_quality": "fragmented",
+    "exhaustion_state": "late_trend_fatigue",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.46,
+    "trend_strength": 0.56,
+    "momentum_score_value": -0.31,
+    "risk_pressure_score": 0.63,
+    "event_impact_score": 0.0,
+    "confidence": 0.62,
+    "confidence_components": {
+      "anchor_agreement": 0.64,
+      "timeframe_consistency": 0.58,
+      "volatility_stability": 0.65,
+      "contradiction_absence": 0.46,
+      "event_certainty": 0.92
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "ascending",
+      "trading_timeframe_trend": "ascending",
+      "lower_timeframe_trend": "transition",
+      "alignment": "pullback_against_higher_timeframe",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "failed_breakout",
+      "invalidation_detail": "upside_range_sweep_rejected_back_inside_short_term_range_with_shooting_star_and_upthrust_pattern; reclassify_if_rejection_is_followed_by_loss_of_documented_higher_low_structure",
+      "reference_timeframe": "trading"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Price remains above the supplied short-, intermediate-, and longer-horizon moving-average references, preserving a positive moving-average hierarchy.",
+        "Deterministic long- and short-term structure remain ascending with successive higher highs and higher lows.",
+        "The latest session swept prior resistance and closed back inside the range; deterministic short-term classification identifies a false breakout.",
+        "Latest candlestick structure is a bearish shooting star with a long upper wick and low close position after an advance.",
+        "Short-horizon ATR exceeds ATR14, indicating modest realized-volatility expansion rather than stable compression.",
+        "Latest volume is above its trailing baseline, while the prior two observations were below baseline; participation has improved but is uneven.",
+        "A bullish imbalance below current structure coexists with a bearish upthrust/liquidity-sweep rejection."
+      ],
+      "event_modifiers": [
+        "No concrete earnings, macroeconomic, policy, filing, or idiosyncratic event was supplied as a dominant modifier."
+      ],
+      "narrative_residual": [
+        "Research-plan recommendation, proposed actions, oscillator framing, and fundamental-confidence language are excluded from primary state scoring."
+      ],
+      "contradictory_signals": [
+        "Positive moving-average hierarchy and higher-high/higher-low structure conflict with the latest false-breakout rejection.",
+        "Above-baseline latest volume confirms active participation but does not resolve whether the rejection is distribution or a temporary pullback.",
+        "Higher-timeframe ascent remains intact while lower-timeframe momentum has turned negative."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.55,
+      "reversal_risk": 0.64,
+      "breakout_quality": 0.2,
+      "pullback_quality": 0.48,
+      "volume_support": 0.58,
+      "event_risk": 0.07,
+      "reward_risk_quality": 0.39
+    },
+    "state_summary": "COST retains an ascending higher and trading-timeframe structure with a positive moving-average hierarchy, but the latest upside sweep was rejected back into the short-term range. The resulting shooting-star, upthrust, and liquidity-sweep evidence produces negative near-term momentum, fragmented structure, modest volatility expansion, and late-trend fatigue without a confirmed higher-timeframe reversal. No concrete event dominates classification.",
+    "key_risks": [
+      "false-breakout rejection after upside sweep",
+      "negative lower-timeframe impulse",
+      "late-trend distribution characteristics",
+      "modestly expanding realized volatility",
+      "uneven volume confirmation",
+      "potential failure of higher-low structure"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "COST",
+    "as_of_date": "2024-02-20",
+    "short_term_structure": {
+      "trend": "ascending",
+      "structure_quality": "fragmented",
+      "pattern": "Higher High Higher Low",
+      "breakout_status": "false_breakout",
+      "support": 699.2087,
+      "resistance": 718.0734,
+      "volume_confirmation": "normal",
+      "confidence": 0.73,
+      "signals": [
+        "Higher High Higher Low",
+        "Shooting Star",
+        "Upthrust",
+        "Liquidity Sweep",
+        "Fair Value Gap"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "ascending",
+      "market_phase": "late_bull_distribution",
+      "key_level": 699.2087,
+      "risk_state": "elevated",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Higher High Higher Low",
+        "category": "market_structure",
+        "direction": "bullish",
+        "confidence": 0.76,
+        "structure_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "matched_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "evidence": "2024-02-20: highs 704.376->718.073, lows 665.609->699.209",
+        "lookback_days": 10
+      },
+      {
+        "name": "Shooting Star",
+        "category": "single_candlestick",
+        "direction": "bearish",
+        "confidence": 0.75,
+        "structure_features": [
+          "long upper wick",
+          "small real body near bottom",
+          "appears after uptrend",
+          "failed breakout",
+          "seller rejection"
+        ],
+        "matched_features": [
+          "long upper wick",
+          "small real body near bottom",
+          "appears after uptrend",
+          "failed breakout",
+          "seller rejection"
+        ],
+        "evidence": "2024-02-20: upper_wick/range=0.62, close_position=0.18, prior_resistance=719",
+        "lookback_days": 1
+      },
+      {
+        "name": "Upthrust",
+        "category": "wyckoff",
+        "direction": "bearish",
+        "confidence": 0.68,
+        "structure_features": [
+          "false breakout above resistance",
+          "bull trap",
+          "reversal rejection"
+        ],
+        "matched_features": [
+          "false breakout above resistance",
+          "bull trap",
+          "reversal rejection"
+        ],
+        "evidence": "2024-02-20: high 724.8 swept resistance 719, close rejected",
+        "lookback_days": 20
+      },
+      {
+        "name": "Liquidity Sweep",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.67,
+        "structure_features": [
+          "stop-loss hunting",
+          "temporary breakout",
+          "rapid reversal"
+        ],
+        "matched_features": [
+          "stop-loss hunting",
+          "temporary breakout",
+          "rapid reversal"
+        ],
+        "evidence": "2024-02-20: upside sweep above 719 closed back inside range",
+        "lookback_days": 20
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-02-20: latest bullish imbalance from 702.8 to 710.7 at bar_index=252",
+        "lookback_days": 8,
+        "abbreviation": "FVG"
+      },
+      {
+        "name": "Wedge",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.56,
+        "structure_features": [
+          "converging trend lines",
+          "slowing trend momentum",
+          "possible reversal"
+        ],
+        "matched_features": [
+          "converging trend lines",
+          "slowing trend momentum",
+          "possible reversal"
+        ],
+        "evidence": "2024-02-20: same-direction swing lines with compressed recent range",
+        "lookback_days": 60
+      }
+    ],
+    "conflicts": [
+      "bearish rejection pattern appears inside short-term ascending structure"
+    ],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "COST:2024-02-20",
+    "ticker": "COST",
+    "trade_date": "2024-02-20",
+    "as_of_close_date": "2024-02-20",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "COST",
+      "as_of_date": "2024-02-20",
+      "trend_regime": "ascending",
+      "volatility_regime": "expanding",
+      "momentum_regime": "negative",
+      "liquidity_regime": "volume_expansion",
+      "event_regime": "none",
+      "structure_quality": "fragmented",
+      "exhaustion_state": "late_trend_fatigue",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.46,
+      "trend_strength": 0.56,
+      "momentum_score_value": -0.31,
+      "risk_pressure_score": 0.63,
+      "event_impact_score": 0.0,
+      "confidence": 0.62,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "ascending",
+        "trading_timeframe_trend": "ascending",
+        "lower_timeframe_trend": "transition",
+        "alignment": "pullback_against_higher_timeframe",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.55,
+        "reversal_risk": 0.64,
+        "breakout_quality": 0.2,
+        "pullback_quality": 0.48,
+        "volume_support": 0.58,
+        "event_risk": 0.07,
+        "reward_risk_quality": 0.39
+      },
+      "event_certainty": 0.92
+    },
+    "ohlcv_anchors": {
+      "current_price": 715.6278,
+      "atr5": 10.7311,
+      "atr14": 10.0784,
+      "ema5": 713.19,
+      "ema10": 709.1774,
+      "ema20": 698.8199,
+      "sma20": 698.1683,
+      "sma50": 666.0332,
+      "sma200": 560.8465,
+      "nearest_support": 713.6753,
+      "nearest_resistance": 715.9631,
+      "recent_high_10d": 724.7693,
+      "recent_high_20d": 724.7693,
+      "recent_closes_5d": [
+        704.3465,
+        712.1664,
+        714.4641,
+        713.9513,
+        715.6278
+      ],
+      "recent_lows_5d": [
+        699.2087,
+        701.2105,
+        708.3205,
+        708.5374,
+        713.6753
+      ],
+      "volume_ratio": 1.234,
+      "volume_ratio_3d": [
+        0.639,
+        0.903,
+        1.234
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "ascending",
+        "structure_quality": "fragmented",
+        "pattern": "Higher High Higher Low",
+        "breakout_status": "false_breakout",
+        "support": 699.2087,
+        "resistance": 718.0734,
+        "volume_confirmation": "normal",
+        "confidence": 0.73
+      },
+      "long_term_structure": {
+        "trend": "ascending",
+        "market_phase": "late_bull_distribution",
+        "key_level": 699.2087,
+        "risk_state": "elevated",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Higher High Higher Low",
+          "direction": "bullish",
+          "confidence": 0.76
+        },
+        {
+          "name": "Shooting Star",
+          "direction": "bearish",
+          "confidence": 0.75
+        },
+        {
+          "name": "Upthrust",
+          "direction": "bearish",
+          "confidence": 0.68
+        },
+        {
+          "name": "Liquidity Sweep",
+          "direction": "bearish",
+          "confidence": 0.67
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bullish",
+          "confidence": 0.58
+        },
+        {
+          "name": "Wedge",
+          "direction": "bullish",
+          "confidence": 0.56
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-02-20",
+        "trend_regime": "descending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "negative",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "breakdown_attempt",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": -0.35,
+        "trend_strength": 0.5,
+        "momentum_score_value": -0.25,
+        "risk_pressure_score": 0.65,
+        "event_impact_score": 0.0,
+        "confidence": 0.69,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "descending",
+          "trading_timeframe_trend": "descending",
+          "lower_timeframe_trend": "descending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.33,
+          "reversal_risk": 0.65,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.53
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "fab89cd6bbdc5d8415c3f45758d957ea753ca33156ea917baa204f43dc046d42"
+  }
+}

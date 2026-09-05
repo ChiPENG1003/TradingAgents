@@ -1,0 +1,594 @@
+{
+  "schema_version": "v3",
+  "ticker": "AAPL",
+  "as_of_date": "2025-08-18",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": 232.46,
+    "size_pct": 40.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": 224.72
+  },
+  "rationale_summary": "AAPL is best classified as a coherent ascending trading-timeframe environment nested inside a broader higher-timeframe transition. Medium-horizon structure remains constructive with price above the 5/10/20 EMA stack and major moving averages, but recent impulse has turned negative as shown by the three-candle bearish sequence, shrinking volume, and price compression near immediate support. Realized volatility is cooling rather than expanding, so the environment is not shock-like; the more accurate read is an intact up-structure under short-term pullback stress with reduced participation and only moderate continuation quality. | trend_regime=ascending | volatility_regime=normal | momentum_regime=negative | liquidity_regime=volume_contraction | event_regime=none | structure_quality=coherent | exhaustion_state=late_trend_fatigue | policy_adapter_regime=weak_uptrend | policy_adapter_phase=late_bull_distribution | trend_direction=0.31 | trend_strength=0.52 | momentum=-0.27 | risk_pressure=0.49 | event_impact=0.00 | confidence=0.74 | volume_regime=shrinking | invalidation_type=structure_break | invalidation_detail=daily close loses the 229-230 support shelf and subsequently fails to hold above the 219.9 long-term key level, reclassifying the current coherent ascending trading-timeframe structure into broader transition/damage | risks=Loss of the 229-230 support shelf would damage the coherent ascending trading-timeframe read.; Failure to hold above the 219.9 long-term key level would force higher-timeframe reclassification.; Shrinking volume reduces confirmation quality for continuation.; Recent bearish three-candle sequence raises short-horizon follow-through risk.; Conflict between short-term ascent and long-term transition increases whipsaw probability. | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | target_weight=0.06, phase_tp_size=50. Rule adjustment: BUY without an executable entry/add was converted to HOLD. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2025-08-29",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "AAPL",
+    "as_of_date": "2025-08-18",
+    "trend_regime": "ascending",
+    "volatility_regime": "normal",
+    "momentum_regime": "negative",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "none",
+    "structure_quality": "coherent",
+    "exhaustion_state": "late_trend_fatigue",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.31,
+    "trend_strength": 0.52,
+    "momentum_score_value": -0.27,
+    "risk_pressure_score": 0.49,
+    "event_impact_score": 0.0,
+    "confidence": 0.74,
+    "confidence_components": {
+      "anchor_agreement": 0.77,
+      "timeframe_consistency": 0.61,
+      "volatility_stability": 0.84,
+      "contradiction_absence": 0.66,
+      "event_certainty": 0.96
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "transition",
+      "trading_timeframe_trend": "ascending",
+      "lower_timeframe_trend": "descending",
+      "alignment": "pullback_against_higher_timeframe",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "structure_break",
+      "invalidation_detail": "daily close loses the 229-230 support shelf and subsequently fails to hold above the 219.9 long-term key level, reclassifying the current coherent ascending trading-timeframe structure into broader transition/damage",
+      "reference_timeframe": "multi_timeframe"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Current price 230.239 is above EMA5 229.494, EMA10 225.328, and EMA20 219.711, preserving bullish EMA hierarchy on the trading timeframe despite recent pullback pressure.",
+        "SMA10 224.364, SMA20 216.959, and SMA50 209.393 all sit below current price, consistent with positive medium-horizon structure.",
+        "ATR(5) 4.248 is below ATR(14) 6.1719, indicating realized volatility is cooling rather than expanding or shock-like.",
+        "5-day range is 226.429 to 234.457; current price is off the recent high but remains within the upper part of the short-term range.",
+        "Nearest support 230.199 is only 0.02% below current price and nearest resistance 232.462 is 0.97% above, showing price compressed near local support/resistance inside a tight short-term zone.",
+        "Latest volume ratio is 0.593 versus the 20-day average, with last three ratios [0.817, 0.877, 0.593], indicating persistent participation contraction during the recent move.",
+        "Deterministic short_term structure is trend=ascending, quality=coherent, pattern=Three Black Crows, breakout_status=none, support=229, resistance=231.2, volume=shrinking, confidence=0.82.",
+        "Deterministic long_term structure is trend=transition, market_phase=unclear, key_level=219.9, risk_state=transition, confidence=0.64.",
+        "Detected bearish Three Black Crows pattern shows three consecutive bearish closes from 232.1 to 230.2, signaling negative short-horizon impulse inside the broader structure.",
+        "A small bullish fair value gap from 230.1 to 230.2 remains present near current price, offering localized support but not overriding the broader mixed read."
+      ],
+      "event_modifiers": [
+        "No dominant earnings, macro, policy, or idiosyncratic shock catalyst is identified in the supplied context for 2025-08-18.",
+        "State estimation is anchor-dominant rather than event-dominant."
+      ],
+      "narrative_residual": [
+        "Research-manager overweight language, trader HOLD framing, and aggressive analyst advocacy are treated as rhetoric rather than primary evidence.",
+        "Claims about upside continuation are low-weight residuals because hard anchors show shrinking volume and recent bearish candle sequence.",
+        "Absence of fresh negative headlines slightly reduces narrative drag but does not alter the anchor-derived classification."
+      ],
+      "contradictory_signals": [
+        "Trading-timeframe EMA hierarchy remains bullish, but the latest three-candle bearish sequence weakens recent impulse.",
+        "Short-term deterministic trend is ascending while long-term deterministic trend is transition, reducing timeframe alignment.",
+        "Price is holding just above immediate support near 230.199/229-230, but volume contraction weakens confirmation quality.",
+        "Localized bullish FVG support conflicts with the bearish Three Black Crows continuation signal."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.56,
+      "reversal_risk": 0.48,
+      "breakout_quality": 0.34,
+      "pullback_quality": 0.61,
+      "volume_support": 0.29,
+      "event_risk": 0.08,
+      "reward_risk_quality": 0.44
+    },
+    "state_summary": "AAPL is best classified as a coherent ascending trading-timeframe environment nested inside a broader higher-timeframe transition. Medium-horizon structure remains constructive with price above the 5/10/20 EMA stack and major moving averages, but recent impulse has turned negative as shown by the three-candle bearish sequence, shrinking volume, and price compression near immediate support. Realized volatility is cooling rather than expanding, so the environment is not shock-like; the more accurate read is an intact up-structure under short-term pullback stress with reduced participation and only moderate continuation quality.",
+    "key_risks": [
+      "Loss of the 229-230 support shelf would damage the coherent ascending trading-timeframe read.",
+      "Failure to hold above the 219.9 long-term key level would force higher-timeframe reclassification.",
+      "Shrinking volume reduces confirmation quality for continuation.",
+      "Recent bearish three-candle sequence raises short-horizon follow-through risk.",
+      "Conflict between short-term ascent and long-term transition increases whipsaw probability."
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "AAPL",
+    "as_of_date": "2025-08-18",
+    "short_term_structure": {
+      "trend": "ascending",
+      "structure_quality": "coherent",
+      "pattern": "Three Black Crows",
+      "breakout_status": "none",
+      "support": 228.9901,
+      "resistance": 231.1869,
+      "volume_confirmation": "shrinking",
+      "confidence": 0.82,
+      "signals": [
+        "Three Black Crows",
+        "Fair Value Gap"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "transition",
+      "market_phase": "unclear",
+      "key_level": 219.8781,
+      "risk_state": "transition",
+      "confidence": 0.64
+    },
+    "detected_patterns": [
+      {
+        "name": "Three Black Crows",
+        "category": "three_candlestick",
+        "direction": "bearish",
+        "confidence": 0.68,
+        "structure_features": [
+          "three consecutive bearish candles",
+          "strong bearish continuation",
+          "persistent selling pressure"
+        ],
+        "matched_features": [
+          "three consecutive bearish candles",
+          "strong bearish continuation",
+          "persistent selling pressure"
+        ],
+        "evidence": "2025-08-18: three bearish closes from 232.1 to 230.2",
+        "lookback_days": 3
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2025-08-18: latest bullish imbalance from 230.1 to 230.2 at bar_index=257",
+        "lookback_days": 3,
+        "abbreviation": "FVG"
+      }
+    ],
+    "conflicts": [
+      "short-term trend ascending conflicts with long-term trend transition"
+    ],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "feature_snapshot_v1",
+    "ticker": "AAPL",
+    "trade_date": "2025-08-18",
+    "as_of_close_date": "2025-08-18",
+    "feature_columns": {
+      "llm": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "feature_scores.*",
+        "confidence_components.*",
+        "timeframe_hierarchy.*",
+        "invalidation.*"
+      ],
+      "ohlcv": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "atr14_pct",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma5",
+        "sma10",
+        "sma20",
+        "sma50",
+        "recent_high_5d",
+        "recent_low_5d",
+        "recent_high_10d",
+        "recent_low_10d",
+        "recent_high_20d",
+        "recent_low_20d",
+        "nearest_resistance",
+        "nearest_support",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "execution_context": [
+        "holdings_info.*",
+        "trading_history_summary.*",
+        "prior_pending_orders[]",
+        "constraints.*"
+      ],
+      "exclude_from_ml_features": [
+        "prior_policy_output_do_not_use_as_label.*"
+      ]
+    },
+    "llm_market_state": {
+      "schema_version": "state_v2",
+      "ticker": "AAPL",
+      "as_of_date": "2025-08-18",
+      "trend_regime": "ascending",
+      "volatility_regime": "normal",
+      "momentum_regime": "negative",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "none",
+      "structure_quality": "coherent",
+      "exhaustion_state": "late_trend_fatigue",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.31,
+      "trend_strength": 0.52,
+      "momentum_score_value": -0.27,
+      "risk_pressure_score": 0.49,
+      "event_impact_score": 0.0,
+      "confidence": 0.74,
+      "confidence_components": {
+        "anchor_agreement": 0.77,
+        "timeframe_consistency": 0.61,
+        "volatility_stability": 0.84,
+        "contradiction_absence": 0.66,
+        "event_certainty": 0.96
+      },
+      "horizon_days": 15,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "transition",
+        "trading_timeframe_trend": "ascending",
+        "lower_timeframe_trend": "descending",
+        "alignment": "pullback_against_higher_timeframe",
+        "short_term_override": "none"
+      },
+      "invalidation": {
+        "invalidation_type": "structure_break",
+        "invalidation_detail": "daily close loses the 229-230 support shelf and subsequently fails to hold above the 219.9 long-term key level, reclassifying the current coherent ascending trading-timeframe structure into broader transition/damage",
+        "reference_timeframe": "multi_timeframe"
+      },
+      "evidence": {
+        "hard_anchors": [
+          "Current price 230.239 is above EMA5 229.494, EMA10 225.328, and EMA20 219.711, preserving bullish EMA hierarchy on the trading timeframe despite recent pullback pressure.",
+          "SMA10 224.364, SMA20 216.959, and SMA50 209.393 all sit below current price, consistent with positive medium-horizon structure.",
+          "ATR(5) 4.248 is below ATR(14) 6.1719, indicating realized volatility is cooling rather than expanding or shock-like.",
+          "5-day range is 226.429 to 234.457; current price is off the recent high but remains within the upper part of the short-term range.",
+          "Nearest support 230.199 is only 0.02% below current price and nearest resistance 232.462 is 0.97% above, showing price compressed near local support/resistance inside a tight short-term zone.",
+          "Latest volume ratio is 0.593 versus the 20-day average, with last three ratios [0.817, 0.877, 0.593], indicating persistent participation contraction during the recent move.",
+          "Deterministic short_term structure is trend=ascending, quality=coherent, pattern=Three Black Crows, breakout_status=none, support=229, resistance=231.2, volume=shrinking, confidence=0.82.",
+          "Deterministic long_term structure is trend=transition, market_phase=unclear, key_level=219.9, risk_state=transition, confidence=0.64.",
+          "Detected bearish Three Black Crows pattern shows three consecutive bearish closes from 232.1 to 230.2, signaling negative short-horizon impulse inside the broader structure.",
+          "A small bullish fair value gap from 230.1 to 230.2 remains present near current price, offering localized support but not overriding the broader mixed read."
+        ],
+        "event_modifiers": [
+          "No dominant earnings, macro, policy, or idiosyncratic shock catalyst is identified in the supplied context for 2025-08-18.",
+          "State estimation is anchor-dominant rather than event-dominant."
+        ],
+        "narrative_residual": [
+          "Research-manager overweight language, trader HOLD framing, and aggressive analyst advocacy are treated as rhetoric rather than primary evidence.",
+          "Claims about upside continuation are low-weight residuals because hard anchors show shrinking volume and recent bearish candle sequence.",
+          "Absence of fresh negative headlines slightly reduces narrative drag but does not alter the anchor-derived classification."
+        ],
+        "contradictory_signals": [
+          "Trading-timeframe EMA hierarchy remains bullish, but the latest three-candle bearish sequence weakens recent impulse.",
+          "Short-term deterministic trend is ascending while long-term deterministic trend is transition, reducing timeframe alignment.",
+          "Price is holding just above immediate support near 230.199/229-230, but volume contraction weakens confirmation quality.",
+          "Localized bullish FVG support conflicts with the bearish Three Black Crows continuation signal."
+        ]
+      },
+      "feature_scores": {
+        "trend_continuation": 0.56,
+        "reversal_risk": 0.48,
+        "breakout_quality": 0.34,
+        "pullback_quality": 0.61,
+        "volume_support": 0.29,
+        "event_risk": 0.08,
+        "reward_risk_quality": 0.44
+      },
+      "state_summary": "AAPL is best classified as a coherent ascending trading-timeframe environment nested inside a broader higher-timeframe transition. Medium-horizon structure remains constructive with price above the 5/10/20 EMA stack and major moving averages, but recent impulse has turned negative as shown by the three-candle bearish sequence, shrinking volume, and price compression near immediate support. Realized volatility is cooling rather than expanding, so the environment is not shock-like; the more accurate read is an intact up-structure under short-term pullback stress with reduced participation and only moderate continuation quality.",
+      "key_risks": [
+        "Loss of the 229-230 support shelf would damage the coherent ascending trading-timeframe read.",
+        "Failure to hold above the 219.9 long-term key level would force higher-timeframe reclassification.",
+        "Shrinking volume reduces confirmation quality for continuation.",
+        "Recent bearish three-candle sequence raises short-horizon follow-through risk.",
+        "Conflict between short-term ascent and long-term transition increases whipsaw probability."
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "soft",
+      "state": {
+        "schema_version": "state_v2",
+        "ticker": "^GSPC",
+        "as_of_date": "2025-08-18",
+        "trend_regime": "ascending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "positive",
+        "liquidity_regime": "volume_contraction",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "confidence_components": {
+          "anchor_agreement": 0.7,
+          "timeframe_consistency": 0.7,
+          "volatility_stability": 0.75,
+          "contradiction_absence": 0.65,
+          "event_certainty": 0.8
+        },
+        "horizon_days": 5,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "invalidation": {
+          "invalidation_type": "timeframe_reclassification",
+          "invalidation_detail": "Anchor structure changes materially at the next review.",
+          "reference_timeframe": "trading"
+        },
+        "evidence": {
+          "hard_anchors": [
+            "Fallback state derived from price structure, moving averages, ATR, support/resistance, and volume anchors."
+          ],
+          "event_modifiers": [],
+          "narrative_residual": [],
+          "contradictory_signals": []
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.35,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "state_summary": "LLM MarketState JSON was unavailable; fallback latent-state classification was derived from hard OHLCV anchors.",
+        "key_risks": [
+          "Fallback state excludes qualitative news/fundamental nuance",
+          "Single-date technical classification may be noisy"
+        ]
+      }
+    },
+    "ohlcv_anchors": {
+      "as_of_close_date": "2025-08-18",
+      "current_price": 230.2386,
+      "atr5": 4.248,
+      "atr14": 6.1719,
+      "atr14_pct": 2.681,
+      "ema5": 229.494,
+      "ema10": 225.3283,
+      "ema20": 219.711,
+      "sma5": 230.9945,
+      "sma10": 224.3641,
+      "sma20": 216.9594,
+      "sma50": 209.3927,
+      "sma200": null,
+      "recent_high_5d": 234.4567,
+      "recent_low_5d": 226.4294,
+      "recent_high_10d": 234.4567,
+      "recent_low_10d": 201.3612,
+      "recent_high_20d": 234.4567,
+      "recent_low_20d": 200.7038,
+      "recent_closes_5d": [
+        229.0021,
+        232.6718,
+        232.1233,
+        230.9367,
+        230.2386
+      ],
+      "recent_lows_5d": [
+        226.4294,
+        229.7799,
+        230.1988,
+        228.693,
+        229.4608
+      ],
+      "nearest_resistance": 232.4623,
+      "nearest_support": 230.1988,
+      "latest_volume": 37476200.0,
+      "volume_20_sma": 63208410.0,
+      "volume_50_sma": 57376254.0,
+      "volume_ratio": 0.593,
+      "volume_ratio_3d": [
+        0.817,
+        0.877,
+        0.593
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "ascending",
+        "structure_quality": "coherent",
+        "pattern": "Three Black Crows",
+        "breakout_status": "none",
+        "support": 228.9901,
+        "resistance": 231.1869,
+        "volume_confirmation": "shrinking",
+        "confidence": 0.82,
+        "signals": [
+          "Three Black Crows",
+          "Fair Value Gap"
+        ]
+      },
+      "long_term_structure": {
+        "trend": "transition",
+        "market_phase": "unclear",
+        "key_level": 219.8781,
+        "risk_state": "transition",
+        "confidence": 0.64
+      },
+      "detected_patterns": [
+        {
+          "name": "Three Black Crows",
+          "category": "three_candlestick",
+          "direction": "bearish",
+          "confidence": 0.68,
+          "structure_features": [
+            "three consecutive bearish candles",
+            "strong bearish continuation",
+            "persistent selling pressure"
+          ],
+          "matched_features": [
+            "three consecutive bearish candles",
+            "strong bearish continuation",
+            "persistent selling pressure"
+          ],
+          "evidence": "2025-08-18: three bearish closes from 232.1 to 230.2",
+          "lookback_days": 3
+        },
+        {
+          "name": "Fair Value Gap",
+          "category": "smc_ict",
+          "direction": "bullish",
+          "confidence": 0.58,
+          "structure_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "matched_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "evidence": "2025-08-18: latest bullish imbalance from 230.1 to 230.2 at bar_index=257",
+          "lookback_days": 3,
+          "abbreviation": "FVG"
+        }
+      ],
+      "conflicts": [
+        "short-term trend ascending conflicts with long-term trend transition"
+      ]
+    },
+    "derived_regimes": {
+      "volume_regime": "shrinking",
+      "recent_phases": [
+        "oversold_bear",
+        "unclear"
+      ]
+    },
+    "execution_context": {
+      "constraints": {
+        "available": true,
+        "allowed_actions": [
+          "BUY",
+          "HOLD",
+          "SELL"
+        ],
+        "entry_mode": "pullback_or_small_only",
+        "max_entry_size_pct": 30,
+        "max_add_position_size_pct": 20,
+        "volume_regime": "shrinking",
+        "strong_uptrend": true,
+        "short_term_uptrend": true,
+        "broad_index": false,
+        "bearish_volume_divergence": false,
+        "notes": [
+          "Shrinking 20-day volume confirmation limits short-term exposure."
+        ]
+      },
+      "holdings_info": {
+        "quantity": 19.6755101563026,
+        "cash": 95668.42875023084,
+        "mark_price": 230.93667602539065,
+        "equity": 100212.22566483117,
+        "as_of_date": "2025-08-15",
+        "avg_buy_price": 202.59624780213056,
+        "stop_loss": 194.88
+      },
+      "trading_history_summary": {
+        "window_days": 28,
+        "as_of": "2025-08-15",
+        "n_trades": 1,
+        "n_wins": 1,
+        "win_rate": 1.0,
+        "total_pnl": 557.6123833407188,
+        "avg_pnl": 557.6123833407188,
+        "last_n_pnl": [
+          {
+            "exit_date": "2025-08-15",
+            "entry_date": "2025-08-05",
+            "pnl": 557.6123833407188,
+            "reason": "end_of_backtest"
+          }
+        ]
+      },
+      "prior_pending_orders": []
+    },
+    "prior_policy_output_do_not_use_as_label": {
+      "schema_version": "v3",
+      "ticker": "AAPL",
+      "as_of_date": "2025-08-18",
+      "action": "HOLD",
+      "entry": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "add_position": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "take_profit": {
+        "price": 232.46,
+        "size_pct": 40.0
+      },
+      "reduce_stop": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "stop_loss": {
+        "price": 224.72
+      },
+      "rationale_summary": "AAPL is best classified as a coherent ascending trading-timeframe environment nested inside a broader higher-timeframe transition. Medium-horizon structure remains constructive with price above the 5/10/20 EMA stack and major moving averages, but recent impulse has turned negative as shown by the three-candle bearish sequence, shrinking volume, and price compression near immediate support. Realized volatility is cooling rather than expanding, so the environment is not shock-like; the more accurate read is an intact up-structure under short-term pullback stress with reduced participation and only moderate continuation quality. | trend_regime=ascending | volatility_regime=normal | momentum_regime=negative | liquidity_regime=volume_contraction | event_regime=none | structure_quality=coherent | exhaustion_state=late_trend_fatigue | policy_adapter_regime=weak_uptrend | policy_adapter_phase=late_bull_distribution | trend_direction=0.31 | trend_strength=0.52 | momentum=-0.27 | risk_pressure=0.49 | event_impact=0.00 | confidence=0.74 | volume_regime=shrinking | invalidation_type=structure_break | invalidation_detail=daily close loses the 229-230 support shelf and subsequently fails to hold above the 219.9 long-term key level, reclassifying the current coherent ascending trading-timeframe structure into broader transition/damage | risks=Loss of the 229-230 support shelf would damage the coherent ascending trading-timeframe read.; Failure to hold above the 219.9 long-term key level would force higher-timeframe reclassification.; Shrinking volume reduces confirmation quality for continuation.; Recent bearish three-candle sequence raises short-horizon follow-through risk.; Conflict between short-term ascent and long-term transition increases whipsaw probability. | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | target_weight=0.06, phase_tp_size=50. Rule adjustment: BUY without an executable entry/add was converted to HOLD. | hardcoded_order_size_multiplier=0.8"
+    }
+  }
+}

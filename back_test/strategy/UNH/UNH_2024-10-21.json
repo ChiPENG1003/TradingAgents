@@ -1,0 +1,433 @@
+{
+  "schema_version": "v3",
+  "ticker": "UNH",
+  "as_of_date": "2024-10-21",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "UNH is in a multi-timeframe transition: the trading timeframe remains coherently descending beneath its short and intermediate moving-average references, while the latest lower-timeframe rebound is positive. Realized volatility has expanded sharply, and fading latest participation leaves the rebound unconfirmed. Defined nearby range boundaries and unresolved failed-high structure keep directional persistence uncertain. | trend_regime=transition | volatility_regime=expanding | momentum_regime=divergent | liquidity_regime=volume_contraction | event_regime=none | structure_quality=coherent | exhaustion_state=none | policy_adapter_regime=unclear | policy_adapter_phase=unclear | trend_direction=-0.31 | trend_strength=0.50 | momentum=0.18 | risk_pressure=0.68 | event_impact=0.00 | confidence=0.61 | volume_regime=soft | invalidation_type=timeframe_reclassification | invalidation_detail=Reclassify if sustained acceptance outside the defined short-term support-resistance range resolves the descending trading-timeframe structure versus the transitional higher-timeframe structure. | risks=expanding short-horizon realized volatility; lower-timeframe rebound against descending trading structure; transitional higher-timeframe classification; fading participation during rebound; overhead failed-high resistance structure | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | target_weight=0.00 below threshold; HOLD. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-11-01",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "UNH",
+    "as_of_date": "2024-10-21",
+    "trend_regime": "transition",
+    "volatility_regime": "expanding",
+    "momentum_regime": "divergent",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "none",
+    "structure_quality": "coherent",
+    "exhaustion_state": "none",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": -0.31,
+    "trend_strength": 0.5,
+    "momentum_score_value": 0.18,
+    "risk_pressure_score": 0.68,
+    "event_impact_score": 0.0,
+    "confidence": 0.61,
+    "confidence_components": {
+      "anchor_agreement": 0.66,
+      "timeframe_consistency": 0.46,
+      "volatility_stability": 0.38,
+      "contradiction_absence": 0.43,
+      "event_certainty": 0.94
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "transition",
+      "trading_timeframe_trend": "descending",
+      "lower_timeframe_trend": "ascending",
+      "alignment": "countertrend_move",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "timeframe_reclassification",
+      "invalidation_detail": "Reclassify if sustained acceptance outside the defined short-term support-resistance range resolves the descending trading-timeframe structure versus the transitional higher-timeframe structure.",
+      "reference_timeframe": "multi_timeframe"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Price remains below the short EMA cluster and below the intermediate SMA references, retaining a negative short-to-intermediate moving-average hierarchy.",
+        "Deterministic analysis classifies the short-term structure as coherent descending, bounded by nearby defined support and resistance, while the long-term structure is transition.",
+        "The latest three sessions show consecutive bullish closes, creating a positive lower-timeframe impulse that conflicts with the descending trading-timeframe classification.",
+        "Short-horizon ATR materially exceeds ATR(14), indicating expanding realized dispersion rather than the earlier compressed-volatility condition.",
+        "Latest volume is below its 20-session average after two above-average sessions; participation has faded during the latest rebound and does not provide persistent directional confirmation.",
+        "Multiple failed highs form an overhead resistance pattern, while the current rebound is close to nearby support-resistance boundaries rather than a confirmed range resolution."
+      ],
+      "event_modifiers": [
+        "No dated earnings, macroeconomic, policy, filing, or idiosyncratic catalyst is identified as the dominant driver of the observed state."
+      ],
+      "narrative_residual": [
+        "Research-manager recommendation, directional rationale, and execution language were excluded from state estimation.",
+        "Embedded bullish and bearish advocacy was treated as low-weight residual only."
+      ],
+      "contradictory_signals": [
+        "The descending coherent short-term structure conflicts with three consecutive bullish closes and a positive lower-timeframe impulse.",
+        "The transitional higher-timeframe classification conflicts with the negative short-to-intermediate moving-average hierarchy.",
+        "Expanding ATR conflicts with fading latest volume, reducing clarity around whether the rebound represents durable participation.",
+        "Bullish candlestick continuation evidence conflicts with clustered failed-high and bearish-imbalance evidence."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.4,
+      "reversal_risk": 0.66,
+      "breakout_quality": 0.3,
+      "pullback_quality": 0.42,
+      "volume_support": 0.4,
+      "event_risk": 0.07,
+      "reward_risk_quality": 0.34
+    },
+    "state_summary": "UNH is in a multi-timeframe transition: the trading timeframe remains coherently descending beneath its short and intermediate moving-average references, while the latest lower-timeframe rebound is positive. Realized volatility has expanded sharply, and fading latest participation leaves the rebound unconfirmed. Defined nearby range boundaries and unresolved failed-high structure keep directional persistence uncertain.",
+    "key_risks": [
+      "expanding short-horizon realized volatility",
+      "lower-timeframe rebound against descending trading structure",
+      "transitional higher-timeframe classification",
+      "fading participation during rebound",
+      "overhead failed-high resistance structure"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "UNH",
+    "as_of_date": "2024-10-21",
+    "short_term_structure": {
+      "trend": "descending",
+      "structure_quality": "coherent",
+      "pattern": "Three White Soldiers",
+      "breakout_status": "none",
+      "support": 545.4374,
+      "resistance": 555.8372,
+      "volume_confirmation": "soft",
+      "confidence": 0.82,
+      "signals": [
+        "Three White Soldiers",
+        "Triple Top",
+        "Double Top",
+        "Fair Value Gap"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "transition",
+      "market_phase": "unclear",
+      "key_level": 542.9396,
+      "risk_state": "transition",
+      "confidence": 0.64
+    },
+    "detected_patterns": [
+      {
+        "name": "Three White Soldiers",
+        "category": "three_candlestick",
+        "direction": "bullish",
+        "confidence": 0.68,
+        "structure_features": [
+          "three consecutive bullish candles",
+          "strong bullish continuation",
+          "short covering"
+        ],
+        "matched_features": [
+          "three consecutive bullish candles",
+          "strong bullish continuation"
+        ],
+        "evidence": "2024-10-21: three bullish closes from 543 to 548.2",
+        "lookback_days": 3
+      },
+      {
+        "name": "Triple Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.64,
+        "structure_features": [
+          "three failed highs",
+          "strong resistance zone"
+        ],
+        "matched_features": [
+          "three failed highs",
+          "strong resistance zone"
+        ],
+        "evidence": "2024-10-21: last three swing highs clustered near 579.4",
+        "lookback_days": 60
+      },
+      {
+        "name": "Double Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "matched_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "evidence": "2024-10-21: swing highs 579.89 and 583.833 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-10-21: latest bearish imbalance from 552.7 to 573 at bar_index=256",
+        "lookback_days": 4,
+        "abbreviation": "FVG"
+      }
+    ],
+    "conflicts": [
+      "short-term trend descending conflicts with long-term trend transition"
+    ],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "UNH:2024-10-21",
+    "ticker": "UNH",
+    "trade_date": "2024-10-21",
+    "as_of_close_date": "2024-10-21",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "UNH",
+      "as_of_date": "2024-10-21",
+      "trend_regime": "transition",
+      "volatility_regime": "expanding",
+      "momentum_regime": "divergent",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "none",
+      "structure_quality": "coherent",
+      "exhaustion_state": "none",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": -0.31,
+      "trend_strength": 0.5,
+      "momentum_score_value": 0.18,
+      "risk_pressure_score": 0.68,
+      "event_impact_score": 0.0,
+      "confidence": 0.61,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "transition",
+        "trading_timeframe_trend": "descending",
+        "lower_timeframe_trend": "ascending",
+        "alignment": "countertrend_move",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.4,
+        "reversal_risk": 0.66,
+        "breakout_quality": 0.3,
+        "pullback_quality": 0.42,
+        "volume_support": 0.4,
+        "event_risk": 0.07,
+        "reward_risk_quality": 0.34
+      },
+      "event_certainty": 0.94
+    },
+    "ohlcv_anchors": {
+      "current_price": 548.1867,
+      "atr5": 21.9804,
+      "atr14": 14.2237,
+      "ema5": 549.301,
+      "ema10": 553.5545,
+      "ema20": 556.7072,
+      "sma20": 558.5108,
+      "sma50": 559.2658,
+      "sma200": 501.567,
+      "nearest_support": 545.5296,
+      "nearest_resistance": 552.7048,
+      "recent_high_10d": 583.8328,
+      "recent_high_20d": 583.8328,
+      "recent_closes_5d": [
+        533.6252,
+        548.0621,
+        542.9684,
+        546.4025,
+        548.1867
+      ],
+      "recent_lows_5d": [
+        520.8767,
+        532.5029,
+        535.9562,
+        540.1002,
+        545.5296
+      ],
+      "volume_ratio": 0.876,
+      "volume_ratio_3d": [
+        1.598,
+        1.08,
+        0.876
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "descending",
+        "structure_quality": "coherent",
+        "pattern": "Three White Soldiers",
+        "breakout_status": "none",
+        "support": 545.4374,
+        "resistance": 555.8372,
+        "volume_confirmation": "soft",
+        "confidence": 0.82
+      },
+      "long_term_structure": {
+        "trend": "transition",
+        "market_phase": "unclear",
+        "key_level": 542.9396,
+        "risk_state": "transition",
+        "confidence": 0.64
+      },
+      "detected_patterns": [
+        {
+          "name": "Three White Soldiers",
+          "direction": "bullish",
+          "confidence": 0.68
+        },
+        {
+          "name": "Triple Top",
+          "direction": "bearish",
+          "confidence": 0.64
+        },
+        {
+          "name": "Double Top",
+          "direction": "bearish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bearish",
+          "confidence": 0.58
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-10-21",
+        "trend_regime": "ascending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "6c13d399338644a1e2a186c0175607adf23c36d65f5f22687a302436c3b62aeb"
+  }
+}

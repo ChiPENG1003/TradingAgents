@@ -59,9 +59,9 @@ cover/
 *.pot
 
 # Backtest results
-back_test/*.json
-back_test/strategy/
-back_test/results/
+# back_test/*.json
+# back_test/strategy/
+# back_test/results/
 
 
 # Django stuff:

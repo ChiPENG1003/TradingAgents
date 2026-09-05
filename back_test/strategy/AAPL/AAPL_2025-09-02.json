@@ -1,0 +1,672 @@
+{
+  "schema_version": "v3",
+  "ticker": "AAPL",
+  "as_of_date": "2025-09-02",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "AAPL is best classified as a transition-to-range environment with modestly constructive underlying structure but no confirmed directional resolution on the trading timeframe. Price remains above EMA10, EMA20, and key moving averages, yet below EMA5 and pinned between very near support and resistance, while realized volatility is stable and volume remains below average despite recent improvement. Conflicting bullish and bearish pattern evidence keeps the short-horizon tape two-sided, so the dominant statistical environment is low-event, moderate-volatility consolidation rather than confirmed trend continuation or breakdown. | trend_regime=transition | volatility_regime=normal | momentum_regime=neutral | liquidity_regime=volume_contraction | event_regime=none | structure_quality=range_bound | exhaustion_state=two_sided_chop | policy_adapter_regime=unclear | policy_adapter_phase=unclear | trend_direction=0.18 | trend_strength=0.39 | momentum=0.07 | risk_pressure=0.47 | event_impact=0.00 | confidence=0.80 | volume_regime=soft | invalidation_type=timeframe_reclassification | invalidation_detail=daily structure reclassifies if price loses the 228.7-229.0 support/EMA10 cluster and fails to reclaim it, or if price secures follow-through above the 230.2-230.7 resistance/FVG zone and exits the current transition range | risks=Nearby support and resistance clustering raises whipsaw probability.; Below-average volume weakens confirmation quality despite recent improvement.; Conflicting reversal and rejection patterns reduce directional persistence.; Loss of the 228.7-229.0 support cluster would increase downside reclassification risk.; Failure to clear the 230.2-230.7 overhead zone would preserve the transition/range regime. | notes=market_context=^GSPC: continuous_multiplier=0.92, trend_regime=descending, volatility_regime=compressed, momentum_regime=negative, trend_direction=-0.35, risk_pressure=0.65 | target_weight=0.00 below threshold; HOLD. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2025-09-13",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "AAPL",
+    "as_of_date": "2025-09-02",
+    "trend_regime": "transition",
+    "volatility_regime": "normal",
+    "momentum_regime": "neutral",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "none",
+    "structure_quality": "range_bound",
+    "exhaustion_state": "two_sided_chop",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.18,
+    "trend_strength": 0.39,
+    "momentum_score_value": 0.07,
+    "risk_pressure_score": 0.47,
+    "event_impact_score": 0.0,
+    "confidence": 0.8,
+    "confidence_components": {
+      "anchor_agreement": 0.82,
+      "timeframe_consistency": 0.78,
+      "volatility_stability": 0.87,
+      "contradiction_absence": 0.69,
+      "event_certainty": 0.97
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "transition",
+      "trading_timeframe_trend": "transition",
+      "lower_timeframe_trend": "sideways",
+      "alignment": "higher_timeframe_transition",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "timeframe_reclassification",
+      "invalidation_detail": "daily structure reclassifies if price loses the 228.7-229.0 support/EMA10 cluster and fails to reclaim it, or if price secures follow-through above the 230.2-230.7 resistance/FVG zone and exits the current transition range",
+      "reference_timeframe": "multi_timeframe"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Current price 229.072 is below EMA5 229.78 but above EMA10 228.714 and EMA20 225.482, indicating mixed short-horizon positioning inside a still constructive medium-horizon backdrop rather than a clean impulse trend.",
+        "SMA10 228.415, SMA20 226.389, and SMA50 215.351 remain below current price, preserving broader positive underlying structure while short-term direction remains unresolved.",
+        "ATR(5) 3.7275 is slightly below ATR(14) 3.8869, showing realized volatility is stable and cooling modestly rather than expanding into a shock regime.",
+        "The 5-day range is 224.056 to 232.751 and the 10-day range is 223.149 to 232.751; current price sits in the middle-lower portion of both ranges, consistent with consolidation/rebalancing after a prior advance.",
+        "Nearest resistance 230.199 is only 0.49% above current price and nearest support 228.693 is only 0.17% below, placing price in a tight two-sided decision area with elevated whipsaw potential.",
+        "Latest volume ratio is 0.814 versus the 20-day average, with the last three ratios [0.646, 0.708, 0.814], indicating participation is still below average but improving from recent contraction.",
+        "Deterministic short_term structure is trend=transition, quality=unclear, breakout_status=none, support=229, resistance=231.2, volume=soft, confidence=0.5.",
+        "Deterministic long_term structure is trend=transition, market_phase=unclear, key_level=228.7, risk_state=transition, confidence=0.64.",
+        "Detected patterns are balanced rather than directional: bearish Double Top confidence 0.62 conflicts with bullish Double Bottom confidence 0.62, while a bullish FVG from 230.2 to 230.7 and an inverse head and shoulders confidence 0.58 provide constructive but not decisive support.",
+        "Price is interacting with the 228.7-230.7 support/resistance and imbalance cluster, supporting a range-bound transition interpretation instead of confirmed breakout or breakdown."
+      ],
+      "event_modifiers": [
+        "No dominant earnings, macro, policy, or idiosyncratic shock catalyst is identified in the supplied context for 2025-09-02.",
+        "State estimation is anchor-dominant rather than event-dominant."
+      ],
+      "narrative_residual": [
+        "Research-manager overweight language, trader HOLD framing, and risk-analyst advocacy are treated as rhetoric rather than primary evidence.",
+        "Constructive commentary about intact EMA support is low-weight residual because hard anchors still classify the tape as transition with nearby two-sided levels and below-average volume.",
+        "The absence of fresh company-specific negative news slightly reduces narrative drag but does not override anchor-derived structure."
+      ],
+      "contradictory_signals": [
+        "Price is above EMA10/EMA20 and major SMAs, but below EMA5, reducing short-horizon trend clarity.",
+        "Volume is improving versus the last two sessions, but remains below the 20-day average, so participation confirmation is incomplete.",
+        "Bullish reversal structures and FVG support conflict with the bearish double-top/rejection evidence.",
+        "Broader structure is constructive, but both short-term and long-term deterministic trend reads remain transition rather than ascending."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.49,
+      "reversal_risk": 0.5,
+      "breakout_quality": 0.38,
+      "pullback_quality": 0.57,
+      "volume_support": 0.42,
+      "event_risk": 0.06,
+      "reward_risk_quality": 0.43
+    },
+    "state_summary": "AAPL is best classified as a transition-to-range environment with modestly constructive underlying structure but no confirmed directional resolution on the trading timeframe. Price remains above EMA10, EMA20, and key moving averages, yet below EMA5 and pinned between very near support and resistance, while realized volatility is stable and volume remains below average despite recent improvement. Conflicting bullish and bearish pattern evidence keeps the short-horizon tape two-sided, so the dominant statistical environment is low-event, moderate-volatility consolidation rather than confirmed trend continuation or breakdown.",
+    "key_risks": [
+      "Nearby support and resistance clustering raises whipsaw probability.",
+      "Below-average volume weakens confirmation quality despite recent improvement.",
+      "Conflicting reversal and rejection patterns reduce directional persistence.",
+      "Loss of the 228.7-229.0 support cluster would increase downside reclassification risk.",
+      "Failure to clear the 230.2-230.7 overhead zone would preserve the transition/range regime."
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "AAPL",
+    "as_of_date": "2025-09-02",
+    "short_term_structure": {
+      "trend": "transition",
+      "structure_quality": "unclear",
+      "pattern": "none",
+      "breakout_status": "none",
+      "support": 228.9901,
+      "resistance": 231.187,
+      "volume_confirmation": "soft",
+      "confidence": 0.5,
+      "signals": [
+        "Double Top",
+        "Double Bottom",
+        "Fair Value Gap",
+        "Inverse Head and Shoulders"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "transition",
+      "market_phase": "unclear",
+      "key_level": 228.693,
+      "risk_state": "transition",
+      "confidence": 0.64
+    },
+    "detected_patterns": [
+      {
+        "name": "Double Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "matched_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "evidence": "2025-09-02: swing highs 234.457 and 232.751 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Double Bottom",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed lows",
+          "support holding",
+          "bullish reversal potential"
+        ],
+        "matched_features": [
+          "two failed lows",
+          "support holding",
+          "bullish reversal potential"
+        ],
+        "evidence": "2025-09-02: swing lows 223.149 and 224.056 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2025-09-02: latest bullish imbalance from 230.2 to 230.7 at bar_index=258",
+        "lookback_days": 2,
+        "abbreviation": "FVG"
+      },
+      {
+        "name": "Inverse Head and Shoulders",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "three troughs",
+          "middle trough lowest",
+          "bullish reversal"
+        ],
+        "matched_features": [
+          "three troughs",
+          "middle trough lowest",
+          "bullish reversal"
+        ],
+        "evidence": "2025-09-02: trough sequence 228.693, 223.149, 224.056",
+        "lookback_days": 80
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "feature_snapshot_v1",
+    "ticker": "AAPL",
+    "trade_date": "2025-09-02",
+    "as_of_close_date": "2025-09-02",
+    "feature_columns": {
+      "llm": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "feature_scores.*",
+        "confidence_components.*",
+        "timeframe_hierarchy.*",
+        "invalidation.*"
+      ],
+      "ohlcv": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "atr14_pct",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma5",
+        "sma10",
+        "sma20",
+        "sma50",
+        "recent_high_5d",
+        "recent_low_5d",
+        "recent_high_10d",
+        "recent_low_10d",
+        "recent_high_20d",
+        "recent_low_20d",
+        "nearest_resistance",
+        "nearest_support",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "execution_context": [
+        "holdings_info.*",
+        "trading_history_summary.*",
+        "prior_pending_orders[]",
+        "constraints.*"
+      ],
+      "exclude_from_ml_features": [
+        "prior_policy_output_do_not_use_as_label.*"
+      ]
+    },
+    "llm_market_state": {
+      "schema_version": "state_v2",
+      "ticker": "AAPL",
+      "as_of_date": "2025-09-02",
+      "trend_regime": "transition",
+      "volatility_regime": "normal",
+      "momentum_regime": "neutral",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "none",
+      "structure_quality": "range_bound",
+      "exhaustion_state": "two_sided_chop",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.18,
+      "trend_strength": 0.39,
+      "momentum_score_value": 0.07,
+      "risk_pressure_score": 0.47,
+      "event_impact_score": 0.0,
+      "confidence": 0.8,
+      "confidence_components": {
+        "anchor_agreement": 0.82,
+        "timeframe_consistency": 0.78,
+        "volatility_stability": 0.87,
+        "contradiction_absence": 0.69,
+        "event_certainty": 0.97
+      },
+      "horizon_days": 15,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "transition",
+        "trading_timeframe_trend": "transition",
+        "lower_timeframe_trend": "sideways",
+        "alignment": "higher_timeframe_transition",
+        "short_term_override": "none"
+      },
+      "invalidation": {
+        "invalidation_type": "timeframe_reclassification",
+        "invalidation_detail": "daily structure reclassifies if price loses the 228.7-229.0 support/EMA10 cluster and fails to reclaim it, or if price secures follow-through above the 230.2-230.7 resistance/FVG zone and exits the current transition range",
+        "reference_timeframe": "multi_timeframe"
+      },
+      "evidence": {
+        "hard_anchors": [
+          "Current price 229.072 is below EMA5 229.78 but above EMA10 228.714 and EMA20 225.482, indicating mixed short-horizon positioning inside a still constructive medium-horizon backdrop rather than a clean impulse trend.",
+          "SMA10 228.415, SMA20 226.389, and SMA50 215.351 remain below current price, preserving broader positive underlying structure while short-term direction remains unresolved.",
+          "ATR(5) 3.7275 is slightly below ATR(14) 3.8869, showing realized volatility is stable and cooling modestly rather than expanding into a shock regime.",
+          "The 5-day range is 224.056 to 232.751 and the 10-day range is 223.149 to 232.751; current price sits in the middle-lower portion of both ranges, consistent with consolidation/rebalancing after a prior advance.",
+          "Nearest resistance 230.199 is only 0.49% above current price and nearest support 228.693 is only 0.17% below, placing price in a tight two-sided decision area with elevated whipsaw potential.",
+          "Latest volume ratio is 0.814 versus the 20-day average, with the last three ratios [0.646, 0.708, 0.814], indicating participation is still below average but improving from recent contraction.",
+          "Deterministic short_term structure is trend=transition, quality=unclear, breakout_status=none, support=229, resistance=231.2, volume=soft, confidence=0.5.",
+          "Deterministic long_term structure is trend=transition, market_phase=unclear, key_level=228.7, risk_state=transition, confidence=0.64.",
+          "Detected patterns are balanced rather than directional: bearish Double Top confidence 0.62 conflicts with bullish Double Bottom confidence 0.62, while a bullish FVG from 230.2 to 230.7 and an inverse head and shoulders confidence 0.58 provide constructive but not decisive support.",
+          "Price is interacting with the 228.7-230.7 support/resistance and imbalance cluster, supporting a range-bound transition interpretation instead of confirmed breakout or breakdown."
+        ],
+        "event_modifiers": [
+          "No dominant earnings, macro, policy, or idiosyncratic shock catalyst is identified in the supplied context for 2025-09-02.",
+          "State estimation is anchor-dominant rather than event-dominant."
+        ],
+        "narrative_residual": [
+          "Research-manager overweight language, trader HOLD framing, and risk-analyst advocacy are treated as rhetoric rather than primary evidence.",
+          "Constructive commentary about intact EMA support is low-weight residual because hard anchors still classify the tape as transition with nearby two-sided levels and below-average volume.",
+          "The absence of fresh company-specific negative news slightly reduces narrative drag but does not override anchor-derived structure."
+        ],
+        "contradictory_signals": [
+          "Price is above EMA10/EMA20 and major SMAs, but below EMA5, reducing short-horizon trend clarity.",
+          "Volume is improving versus the last two sessions, but remains below the 20-day average, so participation confirmation is incomplete.",
+          "Bullish reversal structures and FVG support conflict with the bearish double-top/rejection evidence.",
+          "Broader structure is constructive, but both short-term and long-term deterministic trend reads remain transition rather than ascending."
+        ]
+      },
+      "feature_scores": {
+        "trend_continuation": 0.49,
+        "reversal_risk": 0.5,
+        "breakout_quality": 0.38,
+        "pullback_quality": 0.57,
+        "volume_support": 0.42,
+        "event_risk": 0.06,
+        "reward_risk_quality": 0.43
+      },
+      "state_summary": "AAPL is best classified as a transition-to-range environment with modestly constructive underlying structure but no confirmed directional resolution on the trading timeframe. Price remains above EMA10, EMA20, and key moving averages, yet below EMA5 and pinned between very near support and resistance, while realized volatility is stable and volume remains below average despite recent improvement. Conflicting bullish and bearish pattern evidence keeps the short-horizon tape two-sided, so the dominant statistical environment is low-event, moderate-volatility consolidation rather than confirmed trend continuation or breakdown.",
+      "key_risks": [
+        "Nearby support and resistance clustering raises whipsaw probability.",
+        "Below-average volume weakens confirmation quality despite recent improvement.",
+        "Conflicting reversal and rejection patterns reduce directional persistence.",
+        "Loss of the 228.7-229.0 support cluster would increase downside reclassification risk.",
+        "Failure to clear the 230.2-230.7 overhead zone would preserve the transition/range regime."
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "schema_version": "state_v2",
+        "ticker": "^GSPC",
+        "as_of_date": "2025-09-02",
+        "trend_regime": "descending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "negative",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "breakdown_attempt",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": -0.35,
+        "trend_strength": 0.5,
+        "momentum_score_value": -0.25,
+        "risk_pressure_score": 0.65,
+        "event_impact_score": 0.0,
+        "confidence": 0.69,
+        "confidence_components": {
+          "anchor_agreement": 0.7,
+          "timeframe_consistency": 0.55,
+          "volatility_stability": 0.75,
+          "contradiction_absence": 0.65,
+          "event_certainty": 0.8
+        },
+        "horizon_days": 5,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "descending",
+          "trading_timeframe_trend": "descending",
+          "lower_timeframe_trend": "descending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "invalidation": {
+          "invalidation_type": "timeframe_reclassification",
+          "invalidation_detail": "Anchor structure changes materially at the next review.",
+          "reference_timeframe": "trading"
+        },
+        "evidence": {
+          "hard_anchors": [
+            "Fallback state derived from price structure, moving averages, ATR, support/resistance, and volume anchors."
+          ],
+          "event_modifiers": [],
+          "narrative_residual": [],
+          "contradictory_signals": []
+        },
+        "feature_scores": {
+          "trend_continuation": 0.33,
+          "reversal_risk": 0.65,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.53
+        },
+        "state_summary": "LLM MarketState JSON was unavailable; fallback latent-state classification was derived from hard OHLCV anchors.",
+        "key_risks": [
+          "Fallback state excludes qualitative news/fundamental nuance",
+          "Single-date technical classification may be noisy"
+        ]
+      }
+    },
+    "ohlcv_anchors": {
+      "as_of_close_date": "2025-09-02",
+      "current_price": 229.0719,
+      "atr5": 3.7275,
+      "atr14": 3.8869,
+      "atr14_pct": 1.697,
+      "ema5": 229.7801,
+      "ema10": 228.7142,
+      "ema20": 225.4825,
+      "sma5": 230.1928,
+      "sma10": 228.4148,
+      "sma20": 226.3895,
+      "sma50": 215.3511,
+      "sma200": null,
+      "recent_high_5d": 232.7515,
+      "recent_low_5d": 224.0561,
+      "recent_high_10d": 232.7515,
+      "recent_low_10d": 223.1487,
+      "recent_high_20d": 234.4567,
+      "recent_low_20d": 201.3612,
+      "recent_closes_5d": [
+        228.6631,
+        229.8398,
+        231.9039,
+        231.4851,
+        229.0719
+      ],
+      "recent_lows_5d": [
+        224.0561,
+        227.616,
+        228.693,
+        230.7173,
+        226.3297
+      ],
+      "nearest_resistance": 230.1988,
+      "nearest_support": 228.693,
+      "latest_volume": 44075600.0,
+      "volume_20_sma": 54130545.0,
+      "volume_50_sma": 54147896.0,
+      "volume_ratio": 0.814,
+      "volume_ratio_3d": [
+        0.646,
+        0.708,
+        0.814
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "transition",
+        "structure_quality": "unclear",
+        "pattern": "none",
+        "breakout_status": "none",
+        "support": 228.9901,
+        "resistance": 231.187,
+        "volume_confirmation": "soft",
+        "confidence": 0.5,
+        "signals": [
+          "Double Top",
+          "Double Bottom",
+          "Fair Value Gap",
+          "Inverse Head and Shoulders"
+        ]
+      },
+      "long_term_structure": {
+        "trend": "transition",
+        "market_phase": "unclear",
+        "key_level": 228.693,
+        "risk_state": "transition",
+        "confidence": 0.64
+      },
+      "detected_patterns": [
+        {
+          "name": "Double Top",
+          "category": "classical_chart",
+          "direction": "bearish",
+          "confidence": 0.62,
+          "structure_features": [
+            "two failed highs",
+            "resistance rejection",
+            "bearish reversal potential"
+          ],
+          "matched_features": [
+            "two failed highs",
+            "resistance rejection",
+            "bearish reversal potential"
+          ],
+          "evidence": "2025-09-02: swing highs 234.457 and 232.751 within 1.8%",
+          "lookback_days": 40
+        },
+        {
+          "name": "Double Bottom",
+          "category": "classical_chart",
+          "direction": "bullish",
+          "confidence": 0.62,
+          "structure_features": [
+            "two failed lows",
+            "support holding",
+            "bullish reversal potential"
+          ],
+          "matched_features": [
+            "two failed lows",
+            "support holding",
+            "bullish reversal potential"
+          ],
+          "evidence": "2025-09-02: swing lows 223.149 and 224.056 within 1.8%",
+          "lookback_days": 40
+        },
+        {
+          "name": "Fair Value Gap",
+          "category": "smc_ict",
+          "direction": "bullish",
+          "confidence": 0.58,
+          "structure_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "matched_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "evidence": "2025-09-02: latest bullish imbalance from 230.2 to 230.7 at bar_index=258",
+          "lookback_days": 2,
+          "abbreviation": "FVG"
+        },
+        {
+          "name": "Inverse Head and Shoulders",
+          "category": "classical_chart",
+          "direction": "bullish",
+          "confidence": 0.58,
+          "structure_features": [
+            "three troughs",
+            "middle trough lowest",
+            "bullish reversal"
+          ],
+          "matched_features": [
+            "three troughs",
+            "middle trough lowest",
+            "bullish reversal"
+          ],
+          "evidence": "2025-09-02: trough sequence 228.693, 223.149, 224.056",
+          "lookback_days": 80
+        }
+      ],
+      "conflicts": []
+    },
+    "derived_regimes": {
+      "volume_regime": "soft",
+      "recent_phases": [
+        "late_bull_distribution",
+        "unclear"
+      ]
+    },
+    "execution_context": {
+      "constraints": {
+        "available": true,
+        "allowed_actions": [
+          "BUY",
+          "HOLD",
+          "SELL"
+        ],
+        "entry_mode": "pullback_or_reduced_size",
+        "max_entry_size_pct": 45,
+        "max_add_position_size_pct": 30,
+        "volume_regime": "soft",
+        "strong_uptrend": true,
+        "short_term_uptrend": true,
+        "broad_index": false,
+        "bearish_volume_divergence": false,
+        "notes": [
+          "Sub-normal 20-day volume caps short-term entries at 45% and adds at 30%."
+        ]
+      },
+      "holdings_info": {
+        "quantity": 11.80530609378156,
+        "cash": 97497.93638660449,
+        "mark_price": 231.485107421875,
+        "equity": 100230.68893587163,
+        "as_of_date": "2025-08-29",
+        "avg_buy_price": 202.59624780213056,
+        "stop_loss": 194.88
+      },
+      "trading_history_summary": {
+        "window_days": 28,
+        "as_of": "2025-08-29",
+        "n_trades": 2,
+        "n_wins": 2,
+        "win_rate": 1.0,
+        "total_pnl": 576.0756543811627,
+        "avg_pnl": 288.03782719058137,
+        "last_n_pnl": [
+          {
+            "exit_date": "2025-08-28",
+            "entry_date": "2025-08-05",
+            "pnl": 235.03382386979374,
+            "reason": "take_profit"
+          },
+          {
+            "exit_date": "2025-08-29",
+            "entry_date": "2025-08-05",
+            "pnl": 341.041830511369,
+            "reason": "end_of_backtest"
+          }
+        ]
+      },
+      "prior_pending_orders": []
+    },
+    "prior_policy_output_do_not_use_as_label": {
+      "schema_version": "v3",
+      "ticker": "AAPL",
+      "as_of_date": "2025-09-02",
+      "action": "HOLD",
+      "entry": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "add_position": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "take_profit": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "reduce_stop": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "stop_loss": {
+        "price": null
+      },
+      "rationale_summary": "AAPL is best classified as a transition-to-range environment with modestly constructive underlying structure but no confirmed directional resolution on the trading timeframe. Price remains above EMA10, EMA20, and key moving averages, yet below EMA5 and pinned between very near support and resistance, while realized volatility is stable and volume remains below average despite recent improvement. Conflicting bullish and bearish pattern evidence keeps the short-horizon tape two-sided, so the dominant statistical environment is low-event, moderate-volatility consolidation rather than confirmed trend continuation or breakdown. | trend_regime=transition | volatility_regime=normal | momentum_regime=neutral | liquidity_regime=volume_contraction | event_regime=none | structure_quality=range_bound | exhaustion_state=two_sided_chop | policy_adapter_regime=unclear | policy_adapter_phase=unclear | trend_direction=0.18 | trend_strength=0.39 | momentum=0.07 | risk_pressure=0.47 | event_impact=0.00 | confidence=0.80 | volume_regime=soft | invalidation_type=timeframe_reclassification | invalidation_detail=daily structure reclassifies if price loses the 228.7-229.0 support/EMA10 cluster and fails to reclaim it, or if price secures follow-through above the 230.2-230.7 resistance/FVG zone and exits the current transition range | risks=Nearby support and resistance clustering raises whipsaw probability.; Below-average volume weakens confirmation quality despite recent improvement.; Conflicting reversal and rejection patterns reduce directional persistence.; Loss of the 228.7-229.0 support cluster would increase downside reclassification risk.; Failure to clear the 230.2-230.7 overhead zone would preserve the transition/range regime. | notes=market_context=^GSPC: continuous_multiplier=0.92, trend_regime=descending, volatility_regime=compressed, momentum_regime=negative, trend_direction=-0.35, risk_pressure=0.65 | target_weight=0.00 below threshold; HOLD. | hardcoded_order_size_multiplier=0.8"
+    }
+  }
+}

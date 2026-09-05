@@ -1,0 +1,457 @@
+{
+  "schema_version": "v3",
+  "ticker": "COST",
+  "as_of_date": "2024-07-01",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "COST is in a fragmented transition state: a persistent bearish lower-timeframe impulse has weakened short-term moving-average positioning, while the longer baseline remains intact. Realized volatility is normal and stable and participation is near normal, but conflicting reversal and support patterns leave the directional structure unresolved. No concrete event dominates the classification. | trend_regime=transition | volatility_regime=normal | momentum_regime=negative | liquidity_regime=normal | event_regime=none | structure_quality=fragmented | exhaustion_state=late_trend_fatigue | policy_adapter_regime=unclear | policy_adapter_phase=unclear | trend_direction=-0.22 | trend_strength=0.38 | momentum=-0.56 | risk_pressure=0.62 | event_impact=0.00 | confidence=0.64 | volume_regime=normal | invalidation_type=timeframe_reclassification | invalidation_detail=reclassify_transition_state_if_close_and_swing_structure_resolve_outside_recent_range_with_confirmed_follow_through_and_moving_average_hierarchy_alignment | risks=persistent bearish lower-timeframe impulse; fragmented transition structure; conflicting top and bottom pattern evidence; late-trend distribution characteristics; loss of nearby support structure | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | target_weight=0.00 below threshold; HOLD. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-07-12",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "COST",
+    "as_of_date": "2024-07-01",
+    "trend_regime": "transition",
+    "volatility_regime": "normal",
+    "momentum_regime": "negative",
+    "liquidity_regime": "normal",
+    "event_regime": "none",
+    "structure_quality": "fragmented",
+    "exhaustion_state": "late_trend_fatigue",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": -0.22,
+    "trend_strength": 0.38,
+    "momentum_score_value": -0.56,
+    "risk_pressure_score": 0.62,
+    "event_impact_score": 0.0,
+    "confidence": 0.64,
+    "confidence_components": {
+      "anchor_agreement": 0.68,
+      "timeframe_consistency": 0.56,
+      "volatility_stability": 0.78,
+      "contradiction_absence": 0.52,
+      "event_certainty": 0.94
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "transition",
+      "trading_timeframe_trend": "transition",
+      "lower_timeframe_trend": "descending",
+      "alignment": "higher_timeframe_transition",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "timeframe_reclassification",
+      "invalidation_detail": "reclassify_transition_state_if_close_and_swing_structure_resolve_outside_recent_range_with_confirmed_follow_through_and_moving_average_hierarchy_alignment",
+      "reference_timeframe": "multi_timeframe"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Price is below the shortest EMA and SMA references and below the intermediate SMA reference, while remaining above the longer moving-average baseline.",
+        "The short-term deterministic structure is transition and fragmented, with no confirmed breakout status.",
+        "Three consecutive bearish closes establish a negative lower-timeframe impulse.",
+        "Short-horizon ATR is below longer-horizon ATR and longer-horizon ATR is moderate relative to price, consistent with stable normal volatility rather than a volatility shock.",
+        "Latest participation is near the trailing baseline; recent volume observations are mixed and do not confirm a decisive directional resolution.",
+        "Price is near immediate support and remains below nearby short-term resistance within the recent range.",
+        "Bearish double-top and distribution detections coexist with a bullish double-bottom support pattern, leaving directional structure unresolved."
+      ],
+      "event_modifiers": [
+        "No concrete earnings, macroeconomic, policy, filing, or idiosyncratic event was supplied as a dominant modifier for the observation date."
+      ],
+      "narrative_residual": [
+        "Research-manager directional advocacy, oscillator framing, fundamental-data availability claims, and execution language were excluded from primary state scoring."
+      ],
+      "contradictory_signals": [
+        "Negative short-term moving-average placement and bearish candle sequence conflict with price remaining above the longer moving-average baseline.",
+        "Bearish double-top and distribution patterns conflict with the detected double-bottom support pattern.",
+        "The deterministic long-term trend is transition rather than a confirmed continuation or reversal."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.36,
+      "reversal_risk": 0.65,
+      "breakout_quality": 0.22,
+      "pullback_quality": 0.4,
+      "volume_support": 0.49,
+      "event_risk": 0.05,
+      "reward_risk_quality": 0.31
+    },
+    "state_summary": "COST is in a fragmented transition state: a persistent bearish lower-timeframe impulse has weakened short-term moving-average positioning, while the longer baseline remains intact. Realized volatility is normal and stable and participation is near normal, but conflicting reversal and support patterns leave the directional structure unresolved. No concrete event dominates the classification.",
+    "key_risks": [
+      "persistent bearish lower-timeframe impulse",
+      "fragmented transition structure",
+      "conflicting top and bottom pattern evidence",
+      "late-trend distribution characteristics",
+      "loss of nearby support structure"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "COST",
+    "as_of_date": "2024-07-01",
+    "short_term_structure": {
+      "trend": "transition",
+      "structure_quality": "fragmented",
+      "pattern": "Three Black Crows",
+      "breakout_status": "none",
+      "support": 831.1738,
+      "resistance": 849.1799,
+      "volume_confirmation": "normal",
+      "confidence": 0.6,
+      "signals": [
+        "Three Black Crows",
+        "Double Top",
+        "Double Bottom",
+        "Fair Value Gap",
+        "Distribution"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "transition",
+      "market_phase": "unclear",
+      "key_level": 831.1738,
+      "risk_state": "transition",
+      "confidence": 0.64
+    },
+    "detected_patterns": [
+      {
+        "name": "Three Black Crows",
+        "category": "three_candlestick",
+        "direction": "bearish",
+        "confidence": 0.68,
+        "structure_features": [
+          "three consecutive bearish candles",
+          "strong bearish continuation",
+          "persistent selling pressure"
+        ],
+        "matched_features": [
+          "three consecutive bearish candles",
+          "strong bearish continuation",
+          "persistent selling pressure"
+        ],
+        "evidence": "2024-07-01: three bearish closes from 840.2 to 835.3",
+        "lookback_days": 3
+      },
+      {
+        "name": "Double Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "matched_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "evidence": "2024-07-01: swing highs 863.225 and 849.18 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Double Bottom",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed lows",
+          "support holding",
+          "bullish reversal potential"
+        ],
+        "matched_features": [
+          "two failed lows",
+          "support holding",
+          "bullish reversal potential"
+        ],
+        "evidence": "2024-07-01: swing lows 827.263 and 831.174 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-07-01: latest bearish imbalance from 840.2 to 850 at bar_index=254",
+        "lookback_days": 6,
+        "abbreviation": "FVG"
+      },
+      {
+        "name": "Distribution",
+        "category": "wyckoff",
+        "direction": "bearish",
+        "confidence": 0.56,
+        "structure_features": [
+          "sideways range after rally",
+          "institutional selling",
+          "demand exhaustion"
+        ],
+        "matched_features": [
+          "sideways range after rally",
+          "institutional selling",
+          "demand exhaustion"
+        ],
+        "evidence": "2024-07-01: prior_return=14.3%, recent_range_pct=7.9%",
+        "lookback_days": 50
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "COST:2024-07-01",
+    "ticker": "COST",
+    "trade_date": "2024-07-01",
+    "as_of_close_date": "2024-07-01",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "COST",
+      "as_of_date": "2024-07-01",
+      "trend_regime": "transition",
+      "volatility_regime": "normal",
+      "momentum_regime": "negative",
+      "liquidity_regime": "normal",
+      "event_regime": "none",
+      "structure_quality": "fragmented",
+      "exhaustion_state": "late_trend_fatigue",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": -0.22,
+      "trend_strength": 0.38,
+      "momentum_score_value": -0.56,
+      "risk_pressure_score": 0.62,
+      "event_impact_score": 0.0,
+      "confidence": 0.64,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "transition",
+        "trading_timeframe_trend": "transition",
+        "lower_timeframe_trend": "descending",
+        "alignment": "higher_timeframe_transition",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.36,
+        "reversal_risk": 0.65,
+        "breakout_quality": 0.22,
+        "pullback_quality": 0.4,
+        "volume_support": 0.49,
+        "event_risk": 0.05,
+        "reward_risk_quality": 0.31
+      },
+      "event_certainty": 0.94
+    },
+    "ohlcv_anchors": {
+      "current_price": 835.2827,
+      "atr5": 11.0605,
+      "atr14": 11.8886,
+      "ema5": 839.7529,
+      "ema10": 840.3037,
+      "ema20": 832.3048,
+      "sma20": 838.0084,
+      "sma50": 789.5319,
+      "sma200": 673.685,
+      "nearest_support": 834.6209,
+      "nearest_resistance": 845.1796,
+      "recent_high_10d": 863.2253,
+      "recent_high_20d": 863.2253,
+      "recent_closes_5d": [
+        845.0018,
+        846.3156,
+        840.1719,
+        839.5497,
+        835.2827
+      ],
+      "recent_lows_5d": [
+        834.6209,
+        839.6188,
+        838.2162,
+        836.4088,
+        830.1762
+      ],
+      "volume_ratio": 1.092,
+      "volume_ratio_3d": [
+        0.644,
+        1.099,
+        1.092
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "transition",
+        "structure_quality": "fragmented",
+        "pattern": "Three Black Crows",
+        "breakout_status": "none",
+        "support": 831.1738,
+        "resistance": 849.1799,
+        "volume_confirmation": "normal",
+        "confidence": 0.6
+      },
+      "long_term_structure": {
+        "trend": "transition",
+        "market_phase": "unclear",
+        "key_level": 831.1738,
+        "risk_state": "transition",
+        "confidence": 0.64
+      },
+      "detected_patterns": [
+        {
+          "name": "Three Black Crows",
+          "direction": "bearish",
+          "confidence": 0.68
+        },
+        {
+          "name": "Double Top",
+          "direction": "bearish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Double Bottom",
+          "direction": "bullish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bearish",
+          "confidence": 0.58
+        },
+        {
+          "name": "Distribution",
+          "direction": "bearish",
+          "confidence": 0.56
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "soft",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-07-01",
+        "trend_regime": "ascending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "positive",
+        "liquidity_regime": "volume_contraction",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.35,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "1c81703bda33e7e9c6b620af37dab26a75afd56a2c9ff6bbe7378c18ae2b3474"
+  }
+}

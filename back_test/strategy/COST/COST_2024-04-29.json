@@ -1,0 +1,410 @@
+{
+  "schema_version": "v3",
+  "ticker": "COST",
+  "as_of_date": "2024-04-29",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "COST exhibits aligned ascending higher, trading, and lower timeframe structure, with a coherent higher-high/higher-low sequence and modest positive short-horizon momentum. Realized volatility is normal and stable, but participation is persistently below baseline. The state is tempered by nearby resistance, a bearish double-top signal, price below an intermediate longer moving-average reference, and a late-bull-distribution long-term phase. | trend_regime=ascending | volatility_regime=normal | momentum_regime=positive | liquidity_regime=volume_contraction | event_regime=none | structure_quality=coherent | exhaustion_state=late_trend_fatigue | policy_adapter_regime=strong_uptrend | policy_adapter_phase=late_bull_distribution | trend_direction=0.48 | trend_strength=0.67 | momentum=0.31 | risk_pressure=0.49 | event_impact=0.00 | confidence=0.72 | volume_regime=soft | invalidation_type=structure_break | invalidation_detail=reclassify_ascending_state_if_confirmed_failure_of_the_higher_low_higher_high_sequence_is_accompanied_by_loss_of_the_short_moving_average_cluster | risks=soft participation near resistance; bearish double-top conflict; late-trend distribution risk; intermediate moving-average overhead; failure of higher-low structure | notes=market_context=^GSPC: continuous_multiplier=1.03, trend_regime=ascending, volatility_regime=normal, momentum_regime=positive, trend_direction=0.35, risk_pressure=0.45 | market_phase=late_bull_distribution blocks new entries. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-05-10",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "COST",
+    "as_of_date": "2024-04-29",
+    "trend_regime": "ascending",
+    "volatility_regime": "normal",
+    "momentum_regime": "positive",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "none",
+    "structure_quality": "coherent",
+    "exhaustion_state": "late_trend_fatigue",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.48,
+    "trend_strength": 0.67,
+    "momentum_score_value": 0.31,
+    "risk_pressure_score": 0.49,
+    "event_impact_score": 0.0,
+    "confidence": 0.72,
+    "confidence_components": {
+      "anchor_agreement": 0.75,
+      "timeframe_consistency": 0.79,
+      "volatility_stability": 0.83,
+      "contradiction_absence": 0.58,
+      "event_certainty": 0.95
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "ascending",
+      "trading_timeframe_trend": "ascending",
+      "lower_timeframe_trend": "ascending",
+      "alignment": "aligned",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "structure_break",
+      "invalidation_detail": "reclassify_ascending_state_if_confirmed_failure_of_the_higher_low_higher_high_sequence_is_accompanied_by_loss_of_the_short_moving_average_cluster",
+      "reference_timeframe": "trading"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Deterministic short-term structure is coherent ascending with a higher-high/higher-low sequence.",
+        "Deterministic long-term structure is ascending, although its phase is classified as late-bull distribution with elevated structural risk.",
+        "The short EMA and short SMA hierarchy is positively aligned, while price remains below the intermediate longer moving-average reference.",
+        "Short-horizon ATR is slightly below ATR14 and ATR14 is near its normal proportion of price, indicating stable normal realized volatility.",
+        "Latest volume and each of the last three sessions are below the trailing volume baseline, indicating contracting participation.",
+        "Price is near short-term resistance and above nearby support; no deterministic breakout is confirmed."
+      ],
+      "event_modifiers": [
+        "No concrete earnings, macroeconomic, policy, filing, or idiosyncratic event modifier was supplied for the observation date."
+      ],
+      "narrative_residual": [
+        "Research-manager recommendation and conditional directional arguments are excluded from primary state scoring.",
+        "Unverified valuation, options, and fundamental assertions are treated as unavailable rather than directional evidence."
+      ],
+      "contradictory_signals": [
+        "A bearish double-top pattern conflicts with the deterministic higher-high/higher-low structure.",
+        "The positive short moving-average hierarchy conflicts with price remaining below the intermediate longer moving-average reference.",
+        "Soft volume does not confirm the ascending structure near resistance.",
+        "Long-term late-bull-distribution classification raises fatigue risk despite aligned ascending timeframes."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.58,
+      "reversal_risk": 0.53,
+      "breakout_quality": 0.36,
+      "pullback_quality": 0.55,
+      "volume_support": 0.31,
+      "event_risk": 0.05,
+      "reward_risk_quality": 0.46
+    },
+    "state_summary": "COST exhibits aligned ascending higher, trading, and lower timeframe structure, with a coherent higher-high/higher-low sequence and modest positive short-horizon momentum. Realized volatility is normal and stable, but participation is persistently below baseline. The state is tempered by nearby resistance, a bearish double-top signal, price below an intermediate longer moving-average reference, and a late-bull-distribution long-term phase.",
+    "key_risks": [
+      "soft participation near resistance",
+      "bearish double-top conflict",
+      "late-trend distribution risk",
+      "intermediate moving-average overhead",
+      "failure of higher-low structure"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "COST",
+    "as_of_date": "2024-04-29",
+    "short_term_structure": {
+      "trend": "ascending",
+      "structure_quality": "coherent",
+      "pattern": "Higher High Higher Low",
+      "breakout_status": "none",
+      "support": 716.6632,
+      "resistance": 718.0734,
+      "volume_confirmation": "soft",
+      "confidence": 0.83,
+      "signals": [
+        "Higher High Higher Low",
+        "Double Top",
+        "Fair Value Gap"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "ascending",
+      "market_phase": "late_bull_distribution",
+      "key_level": 705.635,
+      "risk_state": "elevated",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Higher High Higher Low",
+        "category": "market_structure",
+        "direction": "bullish",
+        "confidence": 0.76,
+        "structure_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "matched_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "evidence": "2024-04-29: highs 725.687->730.726, lows 692.266->705.635",
+        "lookback_days": 20
+      },
+      {
+        "name": "Double Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "matched_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "evidence": "2024-04-29: swing highs 725.687 and 730.726 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-04-29: latest bullish imbalance from 705 to 706.4 at bar_index=255",
+        "lookback_days": 5,
+        "abbreviation": "FVG"
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "COST:2024-04-29",
+    "ticker": "COST",
+    "trade_date": "2024-04-29",
+    "as_of_close_date": "2024-04-29",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "COST",
+      "as_of_date": "2024-04-29",
+      "trend_regime": "ascending",
+      "volatility_regime": "normal",
+      "momentum_regime": "positive",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "none",
+      "structure_quality": "coherent",
+      "exhaustion_state": "late_trend_fatigue",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.48,
+      "trend_strength": 0.67,
+      "momentum_score_value": 0.31,
+      "risk_pressure_score": 0.49,
+      "event_impact_score": 0.0,
+      "confidence": 0.72,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "ascending",
+        "trading_timeframe_trend": "ascending",
+        "lower_timeframe_trend": "ascending",
+        "alignment": "aligned",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.58,
+        "reversal_risk": 0.53,
+        "breakout_quality": 0.36,
+        "pullback_quality": 0.55,
+        "volume_support": 0.31,
+        "event_risk": 0.05,
+        "reward_risk_quality": 0.46
+      },
+      "event_certainty": 0.95
+    },
+    "ohlcv_anchors": {
+      "current_price": 717.4086,
+      "atr5": 11.6513,
+      "atr14": 12.1319,
+      "ema5": 715.0301,
+      "ema10": 712.5982,
+      "ema20": 712.2696,
+      "sma20": 708.307,
+      "sma50": 720.2261,
+      "sma200": 615.2479,
+      "nearest_support": 711.3736,
+      "nearest_resistance": 718.3568,
+      "recent_high_10d": 723.2558,
+      "recent_high_20d": 730.7255,
+      "recent_closes_5d": [
+        712.6595,
+        713.8528,
+        712.9935,
+        720.2236,
+        717.4086
+      ],
+      "recent_lows_5d": [
+        706.3679,
+        706.161,
+        705.635,
+        706.2178,
+        711.3736
+      ],
+      "volume_ratio": 0.879,
+      "volume_ratio_3d": [
+        0.922,
+        0.876,
+        0.879
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "ascending",
+        "structure_quality": "coherent",
+        "pattern": "Higher High Higher Low",
+        "breakout_status": "none",
+        "support": 716.6632,
+        "resistance": 718.0734,
+        "volume_confirmation": "soft",
+        "confidence": 0.83
+      },
+      "long_term_structure": {
+        "trend": "ascending",
+        "market_phase": "late_bull_distribution",
+        "key_level": 705.635,
+        "risk_state": "elevated",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Higher High Higher Low",
+          "direction": "bullish",
+          "confidence": 0.76
+        },
+        {
+          "name": "Double Top",
+          "direction": "bearish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bullish",
+          "confidence": 0.58
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-04-29",
+        "trend_regime": "ascending",
+        "volatility_regime": "normal",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "breakout_attempt",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.35,
+        "trend_strength": 0.5,
+        "momentum_score_value": 0.25,
+        "risk_pressure_score": 0.45,
+        "event_impact_score": 0.0,
+        "confidence": 0.69,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.68,
+          "reversal_risk": 0.45,
+          "breakout_quality": 0.7,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.58
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "050dde03148b82598bbfad978058301241485c703855263e6f046a2b2f0310eb"
+  }
+}

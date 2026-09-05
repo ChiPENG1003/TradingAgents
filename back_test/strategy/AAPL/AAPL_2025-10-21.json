@@ -1,0 +1,824 @@
+{
+  "schema_version": "v3",
+  "ticker": "AAPL",
+  "as_of_date": "2025-10-21",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": 263.63,
+    "size_pct": 40.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": 254.19
+  },
+  "rationale_summary": "AAPL remains in an ascending higher- and trading-timeframe environment, supported by bullish moving-average alignment and a recent bullish break of structure, but the immediate post-breakout tape is mixed. The latest session showed expanding realized movement and an upside sweep above resistance that failed to hold, leaving a fragmented structure with divergent short-term momentum signals rather than a clean breakout regime. With no dominant event driver, the current environment is anchor-driven: intact uptrend context, normal participation, and rising near-term instability from rejection near resistance and late-trend fatigue. | trend_regime=ascending | volatility_regime=expanding | momentum_regime=divergent | liquidity_regime=normal | event_regime=none | structure_quality=fragmented | exhaustion_state=late_trend_fatigue | policy_adapter_regime=weak_uptrend | policy_adapter_phase=late_bull_distribution | trend_direction=0.58 | trend_strength=0.64 | momentum=0.34 | risk_pressure=0.58 | event_impact=0.00 | confidence=0.78 | volume_regime=normal | invalidation_type=failed_breakout | invalidation_detail=AAPL loses the 261.091 nearby support / upper-imbalance floor after the 2025-10-21 upside sweep above 263.634 and fails to sustain the bullish BOS above 258.5, reclassifying the current ascending state toward transition/fragmentation. | risks=Failed breakout behavior could reclassify the state from ascending to transition if nearby support is lost.; Expanding ATR increases overshoot and reversal risk after a sharp three-session advance.; Bearish rejection patterns inside an uptrend raise near-term momentum-divergence risk.; Late-bull-distribution backdrop reduces tolerance for repeated resistance failures.; Conflicted pattern stack lowers structural cleanliness despite intact higher-timeframe trend. | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=normal, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | target_weight=0.16, phase_tp_size=50. Rule adjustment: BUY without an executable entry/add was converted to HOLD. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2025-11-01",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "AAPL",
+    "as_of_date": "2025-10-21",
+    "trend_regime": "ascending",
+    "volatility_regime": "expanding",
+    "momentum_regime": "divergent",
+    "liquidity_regime": "normal",
+    "event_regime": "none",
+    "structure_quality": "fragmented",
+    "exhaustion_state": "late_trend_fatigue",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.58,
+    "trend_strength": 0.64,
+    "momentum_score_value": 0.34,
+    "risk_pressure_score": 0.58,
+    "event_impact_score": 0.0,
+    "confidence": 0.78,
+    "confidence_components": {
+      "anchor_agreement": 0.8,
+      "timeframe_consistency": 0.74,
+      "volatility_stability": 0.68,
+      "contradiction_absence": 0.63,
+      "event_certainty": 0.96
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "ascending",
+      "trading_timeframe_trend": "ascending",
+      "lower_timeframe_trend": "transition",
+      "alignment": "pullback_against_higher_timeframe",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "failed_breakout",
+      "invalidation_detail": "AAPL loses the 261.091 nearby support / upper-imbalance floor after the 2025-10-21 upside sweep above 263.634 and fails to sustain the bullish BOS above 258.5, reclassifying the current ascending state toward transition/fragmentation.",
+      "reference_timeframe": "trading"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Current price 262.029 is above EMA5 256.271, EMA10 253.904, EMA20 251.316, and SMA50 241.756, preserving an ascending moving-average hierarchy on the trading horizon.",
+        "Deterministic short-term structure is ascending but quality=fragmented with breakout_status=false_breakout; deterministic long-term structure is ascending with market_phase=late_bull_distribution and risk_state=elevated.",
+        "Bullish BOS is present: 2025-10-21 close 262 broke prior swing high 258.5, supporting continuation structure despite intraday rejection.",
+        "Price probed above nearest resistance 263.634 to a 5-day/10-day high of 264.542, but the session closed back inside the prior range, matching an upthrust/liquidity-sweep/false-breakout condition.",
+        "Latest candlestick/pattern stack is conflicted: Shooting Star, Upthrust, and Liquidity Sweep are bearish rejection anchors inside an otherwise ascending structure; Three White Soldiers and bullish FVG support the prior upward impulse.",
+        "ATR5 6.027 is above ATR14 5.2573, indicating recent realized movement is expanding rather than compressing.",
+        "Nearest support 261.091 is within 1% of current price by the supplied proximity rule, so the market is sitting in a tight post-breakout decision area rather than a cleanly resolved expansion.",
+        "Latest volume ratio 1.027 is near average after a prior 1.962 expansion day; last three ratios [1.048, 1.962, 1.027] indicate participation improved during the rally but is not accelerating further on the latest rejection bar."
+      ],
+      "event_modifiers": [
+        "No dominant earnings, macro, policy, filing, or idiosyncratic shock catalyst is identified in the supplied context for AAPL on 2025-10-21.",
+        "State estimation is anchor-dominant rather than event-dominant."
+      ],
+      "narrative_residual": [
+        "Research-manager overweight language, trader HOLD framing, portfolio-management instructions, and debate advocacy are treated as low-weight narrative residuals and do not determine classification.",
+        "Bullish and bearish rhetoric is contradictory and subordinate to the supplied EMA hierarchy, ATR behavior, support/resistance interaction, volume context, and deterministic structure outputs."
+      ],
+      "contradictory_signals": [
+        "Ascending EMA and BOS structure conflicts with short-term false-breakout, Shooting Star, Upthrust, and liquidity-sweep rejection evidence.",
+        "Three White Soldiers continuation evidence conflicts with same-session seller rejection at resistance.",
+        "Normal latest volume participation limits conviction in both the bullish continuation and bearish reversal interpretations.",
+        "Long-term ascending structure remains intact, but market_phase=late_bull_distribution and elevated risk_state reduce structural cleanliness."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.61,
+      "reversal_risk": 0.57,
+      "breakout_quality": 0.42,
+      "pullback_quality": 0.49,
+      "volume_support": 0.55,
+      "event_risk": 0.08,
+      "reward_risk_quality": 0.46
+    },
+    "state_summary": "AAPL remains in an ascending higher- and trading-timeframe environment, supported by bullish moving-average alignment and a recent bullish break of structure, but the immediate post-breakout tape is mixed. The latest session showed expanding realized movement and an upside sweep above resistance that failed to hold, leaving a fragmented structure with divergent short-term momentum signals rather than a clean breakout regime. With no dominant event driver, the current environment is anchor-driven: intact uptrend context, normal participation, and rising near-term instability from rejection near resistance and late-trend fatigue.",
+    "key_risks": [
+      "Failed breakout behavior could reclassify the state from ascending to transition if nearby support is lost.",
+      "Expanding ATR increases overshoot and reversal risk after a sharp three-session advance.",
+      "Bearish rejection patterns inside an uptrend raise near-term momentum-divergence risk.",
+      "Late-bull-distribution backdrop reduces tolerance for repeated resistance failures.",
+      "Conflicted pattern stack lowers structural cleanliness despite intact higher-timeframe trend."
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "AAPL",
+    "as_of_date": "2025-10-21",
+    "short_term_structure": {
+      "trend": "ascending",
+      "structure_quality": "fragmented",
+      "pattern": "Shooting Star",
+      "breakout_status": "false_breakout",
+      "support": 253.2336,
+      "resistance": 264.5416,
+      "volume_confirmation": "normal",
+      "confidence": 0.73,
+      "signals": [
+        "Shooting Star",
+        "Break of Structure",
+        "Three White Soldiers",
+        "Upthrust",
+        "Liquidity Sweep"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "ascending",
+      "market_phase": "late_bull_distribution",
+      "key_level": 253.2336,
+      "risk_state": "elevated",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Shooting Star",
+        "category": "single_candlestick",
+        "direction": "bearish",
+        "confidence": 0.75,
+        "structure_features": [
+          "long upper wick",
+          "small real body near bottom",
+          "appears after uptrend",
+          "failed breakout",
+          "seller rejection"
+        ],
+        "matched_features": [
+          "long upper wick",
+          "small real body near bottom",
+          "appears after uptrend",
+          "failed breakout",
+          "seller rejection"
+        ],
+        "evidence": "2025-10-21: upper_wick/range=0.73, close_position=0.27, prior_resistance=263.6",
+        "lookback_days": 1
+      },
+      {
+        "name": "Break of Structure",
+        "category": "market_structure",
+        "direction": "bullish",
+        "confidence": 0.75,
+        "structure_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "matched_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "evidence": "2025-10-21: close 262 broke prior swing high 258.5",
+        "lookback_days": 10,
+        "abbreviation": "BOS"
+      },
+      {
+        "name": "Three White Soldiers",
+        "category": "three_candlestick",
+        "direction": "bullish",
+        "confidence": 0.68,
+        "structure_features": [
+          "three consecutive bullish candles",
+          "strong bullish continuation",
+          "short covering"
+        ],
+        "matched_features": [
+          "three consecutive bullish candles",
+          "strong bullish continuation"
+        ],
+        "evidence": "2025-10-21: three bullish closes from 251.6 to 262",
+        "lookback_days": 3
+      },
+      {
+        "name": "Upthrust",
+        "category": "wyckoff",
+        "direction": "bearish",
+        "confidence": 0.68,
+        "structure_features": [
+          "false breakout above resistance",
+          "bull trap",
+          "reversal rejection"
+        ],
+        "matched_features": [
+          "false breakout above resistance",
+          "bull trap",
+          "reversal rejection"
+        ],
+        "evidence": "2025-10-21: high 264.5 swept resistance 263.6, close rejected",
+        "lookback_days": 20
+      },
+      {
+        "name": "Liquidity Sweep",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.67,
+        "structure_features": [
+          "stop-loss hunting",
+          "temporary breakout",
+          "rapid reversal"
+        ],
+        "matched_features": [
+          "stop-loss hunting",
+          "temporary breakout",
+          "rapid reversal"
+        ],
+        "evidence": "2025-10-21: upside sweep above 263.6 closed back inside range",
+        "lookback_days": 20
+      },
+      {
+        "name": "Triple Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.64,
+        "structure_features": [
+          "three failed highs",
+          "strong resistance zone"
+        ],
+        "matched_features": [
+          "three failed highs",
+          "strong resistance zone"
+        ],
+        "evidence": "2025-10-21: last three swing highs clustered near 257.3",
+        "lookback_days": 60
+      },
+      {
+        "name": "Double Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "matched_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "evidence": "2025-10-21: swing highs 256.873 and 258.509 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2025-10-21: latest bullish imbalance from 252.7 to 261.1 at bar_index=259",
+        "lookback_days": 1,
+        "abbreviation": "FVG"
+      }
+    ],
+    "conflicts": [
+      "bearish rejection pattern appears inside short-term ascending structure"
+    ],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "feature_snapshot_v1",
+    "ticker": "AAPL",
+    "trade_date": "2025-10-21",
+    "as_of_close_date": "2025-10-21",
+    "feature_columns": {
+      "llm": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "feature_scores.*",
+        "confidence_components.*",
+        "timeframe_hierarchy.*",
+        "invalidation.*"
+      ],
+      "ohlcv": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "atr14_pct",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma5",
+        "sma10",
+        "sma20",
+        "sma50",
+        "recent_high_5d",
+        "recent_low_5d",
+        "recent_high_10d",
+        "recent_low_10d",
+        "recent_high_20d",
+        "recent_low_20d",
+        "nearest_resistance",
+        "nearest_support",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "execution_context": [
+        "holdings_info.*",
+        "trading_history_summary.*",
+        "prior_pending_orders[]",
+        "constraints.*"
+      ],
+      "exclude_from_ml_features": [
+        "prior_policy_output_do_not_use_as_label.*"
+      ]
+    },
+    "llm_market_state": {
+      "schema_version": "state_v2",
+      "ticker": "AAPL",
+      "as_of_date": "2025-10-21",
+      "trend_regime": "ascending",
+      "volatility_regime": "expanding",
+      "momentum_regime": "divergent",
+      "liquidity_regime": "normal",
+      "event_regime": "none",
+      "structure_quality": "fragmented",
+      "exhaustion_state": "late_trend_fatigue",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.58,
+      "trend_strength": 0.64,
+      "momentum_score_value": 0.34,
+      "risk_pressure_score": 0.58,
+      "event_impact_score": 0.0,
+      "confidence": 0.78,
+      "confidence_components": {
+        "anchor_agreement": 0.8,
+        "timeframe_consistency": 0.74,
+        "volatility_stability": 0.68,
+        "contradiction_absence": 0.63,
+        "event_certainty": 0.96
+      },
+      "horizon_days": 15,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "ascending",
+        "trading_timeframe_trend": "ascending",
+        "lower_timeframe_trend": "transition",
+        "alignment": "pullback_against_higher_timeframe",
+        "short_term_override": "none"
+      },
+      "invalidation": {
+        "invalidation_type": "failed_breakout",
+        "invalidation_detail": "AAPL loses the 261.091 nearby support / upper-imbalance floor after the 2025-10-21 upside sweep above 263.634 and fails to sustain the bullish BOS above 258.5, reclassifying the current ascending state toward transition/fragmentation.",
+        "reference_timeframe": "trading"
+      },
+      "evidence": {
+        "hard_anchors": [
+          "Current price 262.029 is above EMA5 256.271, EMA10 253.904, EMA20 251.316, and SMA50 241.756, preserving an ascending moving-average hierarchy on the trading horizon.",
+          "Deterministic short-term structure is ascending but quality=fragmented with breakout_status=false_breakout; deterministic long-term structure is ascending with market_phase=late_bull_distribution and risk_state=elevated.",
+          "Bullish BOS is present: 2025-10-21 close 262 broke prior swing high 258.5, supporting continuation structure despite intraday rejection.",
+          "Price probed above nearest resistance 263.634 to a 5-day/10-day high of 264.542, but the session closed back inside the prior range, matching an upthrust/liquidity-sweep/false-breakout condition.",
+          "Latest candlestick/pattern stack is conflicted: Shooting Star, Upthrust, and Liquidity Sweep are bearish rejection anchors inside an otherwise ascending structure; Three White Soldiers and bullish FVG support the prior upward impulse.",
+          "ATR5 6.027 is above ATR14 5.2573, indicating recent realized movement is expanding rather than compressing.",
+          "Nearest support 261.091 is within 1% of current price by the supplied proximity rule, so the market is sitting in a tight post-breakout decision area rather than a cleanly resolved expansion.",
+          "Latest volume ratio 1.027 is near average after a prior 1.962 expansion day; last three ratios [1.048, 1.962, 1.027] indicate participation improved during the rally but is not accelerating further on the latest rejection bar."
+        ],
+        "event_modifiers": [
+          "No dominant earnings, macro, policy, filing, or idiosyncratic shock catalyst is identified in the supplied context for AAPL on 2025-10-21.",
+          "State estimation is anchor-dominant rather than event-dominant."
+        ],
+        "narrative_residual": [
+          "Research-manager overweight language, trader HOLD framing, portfolio-management instructions, and debate advocacy are treated as low-weight narrative residuals and do not determine classification.",
+          "Bullish and bearish rhetoric is contradictory and subordinate to the supplied EMA hierarchy, ATR behavior, support/resistance interaction, volume context, and deterministic structure outputs."
+        ],
+        "contradictory_signals": [
+          "Ascending EMA and BOS structure conflicts with short-term false-breakout, Shooting Star, Upthrust, and liquidity-sweep rejection evidence.",
+          "Three White Soldiers continuation evidence conflicts with same-session seller rejection at resistance.",
+          "Normal latest volume participation limits conviction in both the bullish continuation and bearish reversal interpretations.",
+          "Long-term ascending structure remains intact, but market_phase=late_bull_distribution and elevated risk_state reduce structural cleanliness."
+        ]
+      },
+      "feature_scores": {
+        "trend_continuation": 0.61,
+        "reversal_risk": 0.57,
+        "breakout_quality": 0.42,
+        "pullback_quality": 0.49,
+        "volume_support": 0.55,
+        "event_risk": 0.08,
+        "reward_risk_quality": 0.46
+      },
+      "state_summary": "AAPL remains in an ascending higher- and trading-timeframe environment, supported by bullish moving-average alignment and a recent bullish break of structure, but the immediate post-breakout tape is mixed. The latest session showed expanding realized movement and an upside sweep above resistance that failed to hold, leaving a fragmented structure with divergent short-term momentum signals rather than a clean breakout regime. With no dominant event driver, the current environment is anchor-driven: intact uptrend context, normal participation, and rising near-term instability from rejection near resistance and late-trend fatigue.",
+      "key_risks": [
+        "Failed breakout behavior could reclassify the state from ascending to transition if nearby support is lost.",
+        "Expanding ATR increases overshoot and reversal risk after a sharp three-session advance.",
+        "Bearish rejection patterns inside an uptrend raise near-term momentum-divergence risk.",
+        "Late-bull-distribution backdrop reduces tolerance for repeated resistance failures.",
+        "Conflicted pattern stack lowers structural cleanliness despite intact higher-timeframe trend."
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "schema_version": "state_v2",
+        "ticker": "^GSPC",
+        "as_of_date": "2025-10-21",
+        "trend_regime": "ascending",
+        "volatility_regime": "normal",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "confidence_components": {
+          "anchor_agreement": 0.7,
+          "timeframe_consistency": 0.7,
+          "volatility_stability": 0.75,
+          "contradiction_absence": 0.65,
+          "event_certainty": 0.8
+        },
+        "horizon_days": 5,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "invalidation": {
+          "invalidation_type": "timeframe_reclassification",
+          "invalidation_detail": "Anchor structure changes materially at the next review.",
+          "reference_timeframe": "trading"
+        },
+        "evidence": {
+          "hard_anchors": [
+            "Fallback state derived from price structure, moving averages, ATR, support/resistance, and volume anchors."
+          ],
+          "event_modifiers": [],
+          "narrative_residual": [],
+          "contradictory_signals": []
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "state_summary": "LLM MarketState JSON was unavailable; fallback latent-state classification was derived from hard OHLCV anchors.",
+        "key_risks": [
+          "Fallback state excludes qualitative news/fundamental nuance",
+          "Single-date technical classification may be noisy"
+        ]
+      }
+    },
+    "ohlcv_anchors": {
+      "as_of_close_date": "2025-10-21",
+      "current_price": 262.0287,
+      "atr5": 6.027,
+      "atr14": 5.2573,
+      "atr14_pct": 2.006,
+      "ema5": 256.2707,
+      "ema10": 253.9041,
+      "ema20": 251.3164,
+      "sma5": 254.0991,
+      "sma10": 251.9761,
+      "sma20": 253.5008,
+      "sma50": 241.756,
+      "sma200": null,
+      "recent_high_5d": 264.5416,
+      "recent_low_5d": 244.4385,
+      "recent_high_10d": 264.5416,
+      "recent_low_10d": 243.3116,
+      "recent_high_20d": 264.5416,
+      "recent_low_20d": 243.3116,
+      "recent_closes_5d": [
+        248.6366,
+        246.7519,
+        251.5782,
+        261.5002,
+        262.0287
+      ],
+      "recent_lows_5d": [
+        246.7718,
+        244.4385,
+        246.5724,
+        254.9088,
+        261.0913
+      ],
+      "nearest_resistance": 263.6342,
+      "nearest_support": 261.0913,
+      "latest_volume": 46695900.0,
+      "volume_20_sma": 45448455.0,
+      "volume_50_sma": 51462072.0,
+      "volume_ratio": 1.027,
+      "volume_ratio_3d": [
+        1.048,
+        1.962,
+        1.027
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "ascending",
+        "structure_quality": "fragmented",
+        "pattern": "Shooting Star",
+        "breakout_status": "false_breakout",
+        "support": 253.2336,
+        "resistance": 264.5416,
+        "volume_confirmation": "normal",
+        "confidence": 0.73,
+        "signals": [
+          "Shooting Star",
+          "Break of Structure",
+          "Three White Soldiers",
+          "Upthrust",
+          "Liquidity Sweep"
+        ]
+      },
+      "long_term_structure": {
+        "trend": "ascending",
+        "market_phase": "late_bull_distribution",
+        "key_level": 253.2336,
+        "risk_state": "elevated",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Shooting Star",
+          "category": "single_candlestick",
+          "direction": "bearish",
+          "confidence": 0.75,
+          "structure_features": [
+            "long upper wick",
+            "small real body near bottom",
+            "appears after uptrend",
+            "failed breakout",
+            "seller rejection"
+          ],
+          "matched_features": [
+            "long upper wick",
+            "small real body near bottom",
+            "appears after uptrend",
+            "failed breakout",
+            "seller rejection"
+          ],
+          "evidence": "2025-10-21: upper_wick/range=0.73, close_position=0.27, prior_resistance=263.6",
+          "lookback_days": 1
+        },
+        {
+          "name": "Break of Structure",
+          "category": "market_structure",
+          "direction": "bullish",
+          "confidence": 0.75,
+          "structure_features": [
+            "key swing point broken",
+            "trend transition",
+            "structure invalidation"
+          ],
+          "matched_features": [
+            "key swing point broken",
+            "trend transition",
+            "structure invalidation"
+          ],
+          "evidence": "2025-10-21: close 262 broke prior swing high 258.5",
+          "lookback_days": 10,
+          "abbreviation": "BOS"
+        },
+        {
+          "name": "Three White Soldiers",
+          "category": "three_candlestick",
+          "direction": "bullish",
+          "confidence": 0.68,
+          "structure_features": [
+            "three consecutive bullish candles",
+            "strong bullish continuation",
+            "short covering"
+          ],
+          "matched_features": [
+            "three consecutive bullish candles",
+            "strong bullish continuation"
+          ],
+          "evidence": "2025-10-21: three bullish closes from 251.6 to 262",
+          "lookback_days": 3
+        },
+        {
+          "name": "Upthrust",
+          "category": "wyckoff",
+          "direction": "bearish",
+          "confidence": 0.68,
+          "structure_features": [
+            "false breakout above resistance",
+            "bull trap",
+            "reversal rejection"
+          ],
+          "matched_features": [
+            "false breakout above resistance",
+            "bull trap",
+            "reversal rejection"
+          ],
+          "evidence": "2025-10-21: high 264.5 swept resistance 263.6, close rejected",
+          "lookback_days": 20
+        },
+        {
+          "name": "Liquidity Sweep",
+          "category": "smc_ict",
+          "direction": "bearish",
+          "confidence": 0.67,
+          "structure_features": [
+            "stop-loss hunting",
+            "temporary breakout",
+            "rapid reversal"
+          ],
+          "matched_features": [
+            "stop-loss hunting",
+            "temporary breakout",
+            "rapid reversal"
+          ],
+          "evidence": "2025-10-21: upside sweep above 263.6 closed back inside range",
+          "lookback_days": 20
+        },
+        {
+          "name": "Triple Top",
+          "category": "classical_chart",
+          "direction": "bearish",
+          "confidence": 0.64,
+          "structure_features": [
+            "three failed highs",
+            "strong resistance zone"
+          ],
+          "matched_features": [
+            "three failed highs",
+            "strong resistance zone"
+          ],
+          "evidence": "2025-10-21: last three swing highs clustered near 257.3",
+          "lookback_days": 60
+        },
+        {
+          "name": "Double Top",
+          "category": "classical_chart",
+          "direction": "bearish",
+          "confidence": 0.62,
+          "structure_features": [
+            "two failed highs",
+            "resistance rejection",
+            "bearish reversal potential"
+          ],
+          "matched_features": [
+            "two failed highs",
+            "resistance rejection",
+            "bearish reversal potential"
+          ],
+          "evidence": "2025-10-21: swing highs 256.873 and 258.509 within 1.8%",
+          "lookback_days": 40
+        },
+        {
+          "name": "Fair Value Gap",
+          "category": "smc_ict",
+          "direction": "bullish",
+          "confidence": 0.58,
+          "structure_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "matched_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "evidence": "2025-10-21: latest bullish imbalance from 252.7 to 261.1 at bar_index=259",
+          "lookback_days": 1,
+          "abbreviation": "FVG"
+        }
+      ],
+      "conflicts": [
+        "bearish rejection pattern appears inside short-term ascending structure"
+      ]
+    },
+    "derived_regimes": {
+      "volume_regime": "normal",
+      "recent_phases": [
+        "late_bull_distribution",
+        "unclear"
+      ]
+    },
+    "execution_context": {
+      "constraints": {
+        "available": true,
+        "allowed_actions": [
+          "BUY",
+          "HOLD",
+          "SELL"
+        ],
+        "entry_mode": "short_term_normal",
+        "max_entry_size_pct": 60,
+        "max_add_position_size_pct": 40,
+        "volume_regime": "normal",
+        "strong_uptrend": true,
+        "short_term_uptrend": true,
+        "broad_index": false,
+        "bearish_volume_divergence": false,
+        "notes": []
+      },
+      "holdings_info": {
+        "quantity": 25.105765322900858,
+        "cash": 94688.3265504088,
+        "mark_price": 261.50018310546875,
+        "equity": 101253.4887793503,
+        "as_of_date": "2025-10-20",
+        "avg_buy_price": 229.02955543253714,
+        "stop_loss": 230.55
+      },
+      "trading_history_summary": {
+        "window_days": 28,
+        "as_of": "2025-10-20",
+        "n_trades": 3,
+        "n_wins": 3,
+        "win_rate": 1.0,
+        "total_pnl": 1363.8391207372567,
+        "avg_pnl": 454.61304024575225,
+        "last_n_pnl": [
+          {
+            "exit_date": "2025-09-23",
+            "entry_date": "2025-08-05",
+            "pnl": 98.56903533388075,
+            "reason": "take_profit"
+          },
+          {
+            "exit_date": "2025-09-25",
+            "entry_date": "2025-08-05",
+            "pnl": 450.0701271594644,
+            "reason": "take_profit"
+          },
+          {
+            "exit_date": "2025-10-20",
+            "entry_date": "2025-08-05",
+            "pnl": 815.1999582439115,
+            "reason": "end_of_backtest"
+          }
+        ]
+      },
+      "prior_pending_orders": []
+    },
+    "prior_policy_output_do_not_use_as_label": {
+      "schema_version": "v3",
+      "ticker": "AAPL",
+      "as_of_date": "2025-10-21",
+      "action": "HOLD",
+      "entry": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "add_position": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "take_profit": {
+        "price": 263.63,
+        "size_pct": 40.0
+      },
+      "reduce_stop": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "stop_loss": {
+        "price": 254.19
+      },
+      "rationale_summary": "AAPL remains in an ascending higher- and trading-timeframe environment, supported by bullish moving-average alignment and a recent bullish break of structure, but the immediate post-breakout tape is mixed. The latest session showed expanding realized movement and an upside sweep above resistance that failed to hold, leaving a fragmented structure with divergent short-term momentum signals rather than a clean breakout regime. With no dominant event driver, the current environment is anchor-driven: intact uptrend context, normal participation, and rising near-term instability from rejection near resistance and late-trend fatigue. | trend_regime=ascending | volatility_regime=expanding | momentum_regime=divergent | liquidity_regime=normal | event_regime=none | structure_quality=fragmented | exhaustion_state=late_trend_fatigue | policy_adapter_regime=weak_uptrend | policy_adapter_phase=late_bull_distribution | trend_direction=0.58 | trend_strength=0.64 | momentum=0.34 | risk_pressure=0.58 | event_impact=0.00 | confidence=0.78 | volume_regime=normal | invalidation_type=failed_breakout | invalidation_detail=AAPL loses the 261.091 nearby support / upper-imbalance floor after the 2025-10-21 upside sweep above 263.634 and fails to sustain the bullish BOS above 258.5, reclassifying the current ascending state toward transition/fragmentation. | risks=Failed breakout behavior could reclassify the state from ascending to transition if nearby support is lost.; Expanding ATR increases overshoot and reversal risk after a sharp three-session advance.; Bearish rejection patterns inside an uptrend raise near-term momentum-divergence risk.; Late-bull-distribution backdrop reduces tolerance for repeated resistance failures.; Conflicted pattern stack lowers structural cleanliness despite intact higher-timeframe trend. | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=normal, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | target_weight=0.16, phase_tp_size=50. Rule adjustment: BUY without an executable entry/add was converted to HOLD. | hardcoded_order_size_multiplier=0.8"
+    }
+  }
+}

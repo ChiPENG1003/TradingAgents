@@ -1,0 +1,681 @@
+{
+  "schema_version": "v3",
+  "ticker": "AAPL",
+  "as_of_date": "2026-01-16",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "AAPL is in a coherent descending environment across higher, trading, and lower timeframes. Price is below the full short-to-medium moving-average stack, deterministic structure shows lower highs/lower lows with a confirmed bearish structure break and range breakdown, and the latest downside move is supported by expanding volume. Realized volatility is active but stable rather than shock-like, so the current environment is best described as an anchor-dominant healthy bearish trend with elevated but not chaotic risk pressure. | trend_regime=descending | volatility_regime=normal | momentum_regime=negative | liquidity_regime=volume_expansion | event_regime=none | structure_quality=coherent | exhaustion_state=none | policy_adapter_regime=breakdown_risk | policy_adapter_phase=early_bear_reversal | trend_direction=-0.82 | trend_strength=0.79 | momentum=-0.71 | risk_pressure=0.62 | event_impact=0.00 | confidence=0.90 | volume_regime=expanding | invalidation_type=timeframe_reclassification | invalidation_detail=AAPL restores acceptance above the short EMA cluster and negates the 2026-01-16 bearish structure break / 20-bar range breakdown that occurred near 255.2 with follow-through failure in the lower-high lower-low sequence. | risks=Nearby support may create short-term absorption or whipsaw.; Elevated higher-timeframe risk state can amplify downside instability.; Failure to sustain the recent breakdown would force timeframe reclassification.; Volume expansion on the break could reverse quickly if follow-through is absent. | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | regime=breakdown_risk blocks new entries. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2026-01-27",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "AAPL",
+    "as_of_date": "2026-01-16",
+    "trend_regime": "descending",
+    "volatility_regime": "normal",
+    "momentum_regime": "negative",
+    "liquidity_regime": "volume_expansion",
+    "event_regime": "none",
+    "structure_quality": "coherent",
+    "exhaustion_state": "none",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": -0.82,
+    "trend_strength": 0.79,
+    "momentum_score_value": -0.71,
+    "risk_pressure_score": 0.62,
+    "event_impact_score": 0.0,
+    "confidence": 0.9,
+    "confidence_components": {
+      "anchor_agreement": 0.94,
+      "timeframe_consistency": 0.9,
+      "volatility_stability": 0.79,
+      "contradiction_absence": 0.95,
+      "event_certainty": 0.97
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "descending",
+      "trading_timeframe_trend": "descending",
+      "lower_timeframe_trend": "descending",
+      "alignment": "aligned",
+      "short_term_override": "confirmed_structure_break"
+    },
+    "invalidation": {
+      "invalidation_type": "timeframe_reclassification",
+      "invalidation_detail": "AAPL restores acceptance above the short EMA cluster and negates the 2026-01-16 bearish structure break / 20-bar range breakdown that occurred near 255.2 with follow-through failure in the lower-high lower-low sequence.",
+      "reference_timeframe": "trading"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Current price 255.056 is below EMA5 258.003, EMA10 260.52, EMA20 264.365 and below SMA5 258.52, SMA10 259.853, SMA20 265.979, SMA50 270.991, confirming bearish moving-average pressure across short and medium horizons.",
+        "ATR(5) 4.1902 is essentially equal to ATR(14) 4.1965 while ATR14 is about 1.645% of price, indicating realized movement is active but not shock-like and no longer clearly accelerating beyond the established range.",
+        "Deterministic short-term structure is descending with coherent quality, Lower High Lower Low pattern, breakout_status=breakdown, support=254.7, resistance=256.6, volume=expanding, confidence=0.88.",
+        "Deterministic long-term structure is descending with market_phase=healthy_bear_trend, risk_state=elevated, confidence=0.76, so higher timeframe structure agrees with trading-timeframe weakness.",
+        "Detected bearish patterns align: bearish Break of Structure, bearish Range Breakout, bearish Change of Character, and bearish Fair Value Gap from 258.8 to 261.6.",
+        "Current price is only 0.24% above nearest support 254.457 and 1.32% below nearest resistance 258.42, placing AAPL near the lower edge of a recently broken local range.",
+        "Latest volume ratio is 1.617 versus the 20-day average, after prior ratios of 0.922 and 0.905, showing fresh participation expansion accompanying the downside break."
+      ],
+      "event_modifiers": [
+        "No dominant earnings, macro, policy, filing, or idiosyncratic shock catalyst is identified in the supplied context for AAPL on 2026-01-16.",
+        "State estimation is anchor-dominant rather than event-dominant."
+      ],
+      "narrative_residual": [
+        "Research-manager overweight framing, trader proposal, and risk-analyst debate are rhetorical inputs and are excluded from directional scoring.",
+        "Bullish oversold/support arguments conflict with bearish trend-damage rhetoric, but these remain residual to the supplied OHLCV, structure, ATR, and volume anchors."
+      ],
+      "contradictory_signals": [
+        "Price is very close to nearby support after an extended downswing, which can raise local mean-reversion noise even inside a coherent bearish structure.",
+        "ATR5 is not expanding above ATR14, so downside continuation is structurally confirmed but not volatility-impulsive.",
+        "Support shelf behavior around 254.5-254.7 may create short-term absorption risk despite the confirmed breakdown state."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.78,
+      "reversal_risk": 0.37,
+      "breakout_quality": 0.74,
+      "pullback_quality": 0.29,
+      "volume_support": 0.8,
+      "event_risk": 0.05,
+      "reward_risk_quality": 0.48
+    },
+    "state_summary": "AAPL is in a coherent descending environment across higher, trading, and lower timeframes. Price is below the full short-to-medium moving-average stack, deterministic structure shows lower highs/lower lows with a confirmed bearish structure break and range breakdown, and the latest downside move is supported by expanding volume. Realized volatility is active but stable rather than shock-like, so the current environment is best described as an anchor-dominant healthy bearish trend with elevated but not chaotic risk pressure.",
+    "key_risks": [
+      "Nearby support may create short-term absorption or whipsaw.",
+      "Elevated higher-timeframe risk state can amplify downside instability.",
+      "Failure to sustain the recent breakdown would force timeframe reclassification.",
+      "Volume expansion on the break could reverse quickly if follow-through is absent."
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "AAPL",
+    "as_of_date": "2026-01-16",
+    "short_term_structure": {
+      "trend": "descending",
+      "structure_quality": "coherent",
+      "pattern": "Lower High Lower Low",
+      "breakout_status": "breakdown",
+      "support": 254.7094,
+      "resistance": 256.614,
+      "volume_confirmation": "expanding",
+      "confidence": 0.88,
+      "signals": [
+        "Lower High Lower Low",
+        "Break of Structure",
+        "Range Breakout",
+        "Change of Character",
+        "Fair Value Gap"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "descending",
+      "market_phase": "healthy_bear_trend",
+      "key_level": 233.3184,
+      "risk_state": "elevated",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Lower High Lower Low",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.76,
+        "structure_features": [
+          "successive lower highs",
+          "successive lower lows",
+          "downtrend structure"
+        ],
+        "matched_features": [
+          "successive lower highs",
+          "successive lower lows",
+          "downtrend structure"
+        ],
+        "evidence": "2026-01-16: highs 277.325->261.334, lows 269.06->255.226",
+        "lookback_days": 4
+      },
+      {
+        "name": "Break of Structure",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.75,
+        "structure_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "matched_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "evidence": "2026-01-16: close 255.1 broke prior swing low 255.2",
+        "lookback_days": 10,
+        "abbreviation": "BOS"
+      },
+      {
+        "name": "Range Breakout",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.74,
+        "structure_features": [
+          "break outside consolidation range",
+          "volatility expansion",
+          "price discovery"
+        ],
+        "matched_features": [
+          "break outside consolidation range",
+          "volatility expansion",
+          "price discovery"
+        ],
+        "evidence": "2026-01-16: close 255.1 broke 20-bar level 255.2, volume_ratio20=1.62",
+        "lookback_days": 20
+      },
+      {
+        "name": "Change of Character",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.7,
+        "structure_features": [
+          "first major structural reversal",
+          "possible regime shift"
+        ],
+        "matched_features": [
+          "first major structural reversal",
+          "possible regime shift"
+        ],
+        "evidence": "2026-01-16: bearish break followed prior uptrend swing structure",
+        "lookback_days": 20,
+        "abbreviation": "ChoCH"
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2026-01-16: latest bearish imbalance from 258.8 to 261.6 at bar_index=253",
+        "lookback_days": 7,
+        "abbreviation": "FVG"
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "feature_snapshot_v1",
+    "ticker": "AAPL",
+    "trade_date": "2026-01-16",
+    "as_of_close_date": "2026-01-16",
+    "feature_columns": {
+      "llm": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "feature_scores.*",
+        "confidence_components.*",
+        "timeframe_hierarchy.*",
+        "invalidation.*"
+      ],
+      "ohlcv": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "atr14_pct",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma5",
+        "sma10",
+        "sma20",
+        "sma50",
+        "recent_high_5d",
+        "recent_low_5d",
+        "recent_high_10d",
+        "recent_low_10d",
+        "recent_high_20d",
+        "recent_low_20d",
+        "nearest_resistance",
+        "nearest_support",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "execution_context": [
+        "holdings_info.*",
+        "trading_history_summary.*",
+        "prior_pending_orders[]",
+        "constraints.*"
+      ],
+      "exclude_from_ml_features": [
+        "prior_policy_output_do_not_use_as_label.*"
+      ]
+    },
+    "llm_market_state": {
+      "schema_version": "state_v2",
+      "ticker": "AAPL",
+      "as_of_date": "2026-01-16",
+      "trend_regime": "descending",
+      "volatility_regime": "normal",
+      "momentum_regime": "negative",
+      "liquidity_regime": "volume_expansion",
+      "event_regime": "none",
+      "structure_quality": "coherent",
+      "exhaustion_state": "none",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": -0.82,
+      "trend_strength": 0.79,
+      "momentum_score_value": -0.71,
+      "risk_pressure_score": 0.62,
+      "event_impact_score": 0.0,
+      "confidence": 0.9,
+      "confidence_components": {
+        "anchor_agreement": 0.94,
+        "timeframe_consistency": 0.9,
+        "volatility_stability": 0.79,
+        "contradiction_absence": 0.95,
+        "event_certainty": 0.97
+      },
+      "horizon_days": 15,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "descending",
+        "trading_timeframe_trend": "descending",
+        "lower_timeframe_trend": "descending",
+        "alignment": "aligned",
+        "short_term_override": "confirmed_structure_break"
+      },
+      "invalidation": {
+        "invalidation_type": "timeframe_reclassification",
+        "invalidation_detail": "AAPL restores acceptance above the short EMA cluster and negates the 2026-01-16 bearish structure break / 20-bar range breakdown that occurred near 255.2 with follow-through failure in the lower-high lower-low sequence.",
+        "reference_timeframe": "trading"
+      },
+      "evidence": {
+        "hard_anchors": [
+          "Current price 255.056 is below EMA5 258.003, EMA10 260.52, EMA20 264.365 and below SMA5 258.52, SMA10 259.853, SMA20 265.979, SMA50 270.991, confirming bearish moving-average pressure across short and medium horizons.",
+          "ATR(5) 4.1902 is essentially equal to ATR(14) 4.1965 while ATR14 is about 1.645% of price, indicating realized movement is active but not shock-like and no longer clearly accelerating beyond the established range.",
+          "Deterministic short-term structure is descending with coherent quality, Lower High Lower Low pattern, breakout_status=breakdown, support=254.7, resistance=256.6, volume=expanding, confidence=0.88.",
+          "Deterministic long-term structure is descending with market_phase=healthy_bear_trend, risk_state=elevated, confidence=0.76, so higher timeframe structure agrees with trading-timeframe weakness.",
+          "Detected bearish patterns align: bearish Break of Structure, bearish Range Breakout, bearish Change of Character, and bearish Fair Value Gap from 258.8 to 261.6.",
+          "Current price is only 0.24% above nearest support 254.457 and 1.32% below nearest resistance 258.42, placing AAPL near the lower edge of a recently broken local range.",
+          "Latest volume ratio is 1.617 versus the 20-day average, after prior ratios of 0.922 and 0.905, showing fresh participation expansion accompanying the downside break."
+        ],
+        "event_modifiers": [
+          "No dominant earnings, macro, policy, filing, or idiosyncratic shock catalyst is identified in the supplied context for AAPL on 2026-01-16.",
+          "State estimation is anchor-dominant rather than event-dominant."
+        ],
+        "narrative_residual": [
+          "Research-manager overweight framing, trader proposal, and risk-analyst debate are rhetorical inputs and are excluded from directional scoring.",
+          "Bullish oversold/support arguments conflict with bearish trend-damage rhetoric, but these remain residual to the supplied OHLCV, structure, ATR, and volume anchors."
+        ],
+        "contradictory_signals": [
+          "Price is very close to nearby support after an extended downswing, which can raise local mean-reversion noise even inside a coherent bearish structure.",
+          "ATR5 is not expanding above ATR14, so downside continuation is structurally confirmed but not volatility-impulsive.",
+          "Support shelf behavior around 254.5-254.7 may create short-term absorption risk despite the confirmed breakdown state."
+        ]
+      },
+      "feature_scores": {
+        "trend_continuation": 0.78,
+        "reversal_risk": 0.37,
+        "breakout_quality": 0.74,
+        "pullback_quality": 0.29,
+        "volume_support": 0.8,
+        "event_risk": 0.05,
+        "reward_risk_quality": 0.48
+      },
+      "state_summary": "AAPL is in a coherent descending environment across higher, trading, and lower timeframes. Price is below the full short-to-medium moving-average stack, deterministic structure shows lower highs/lower lows with a confirmed bearish structure break and range breakdown, and the latest downside move is supported by expanding volume. Realized volatility is active but stable rather than shock-like, so the current environment is best described as an anchor-dominant healthy bearish trend with elevated but not chaotic risk pressure.",
+      "key_risks": [
+        "Nearby support may create short-term absorption or whipsaw.",
+        "Elevated higher-timeframe risk state can amplify downside instability.",
+        "Failure to sustain the recent breakdown would force timeframe reclassification.",
+        "Volume expansion on the break could reverse quickly if follow-through is absent."
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "schema_version": "state_v2",
+        "ticker": "^GSPC",
+        "as_of_date": "2026-01-16",
+        "trend_regime": "ascending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "confidence_components": {
+          "anchor_agreement": 0.7,
+          "timeframe_consistency": 0.7,
+          "volatility_stability": 0.75,
+          "contradiction_absence": 0.65,
+          "event_certainty": 0.8
+        },
+        "horizon_days": 5,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "invalidation": {
+          "invalidation_type": "timeframe_reclassification",
+          "invalidation_detail": "Anchor structure changes materially at the next review.",
+          "reference_timeframe": "trading"
+        },
+        "evidence": {
+          "hard_anchors": [
+            "Fallback state derived from price structure, moving averages, ATR, support/resistance, and volume anchors."
+          ],
+          "event_modifiers": [],
+          "narrative_residual": [],
+          "contradictory_signals": []
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "state_summary": "LLM MarketState JSON was unavailable; fallback latent-state classification was derived from hard OHLCV anchors.",
+        "key_risks": [
+          "Fallback state excludes qualitative news/fundamental nuance",
+          "Single-date technical classification may be noisy"
+        ]
+      }
+    },
+    "ohlcv_anchors": {
+      "as_of_close_date": "2026-01-16",
+      "current_price": 255.0561,
+      "atr5": 4.1902,
+      "atr14": 4.1965,
+      "atr14_pct": 1.645,
+      "ema5": 258.0031,
+      "ema10": 260.5196,
+      "ema20": 264.3647,
+      "sma5": 258.5197,
+      "sma10": 259.8532,
+      "sma20": 265.9793,
+      "sma50": 270.9907,
+      "sma200": null,
+      "recent_high_5d": 261.3345,
+      "recent_low_5d": 254.4572,
+      "recent_high_10d": 271.0065,
+      "recent_low_10d": 254.4572,
+      "recent_high_20d": 277.3247,
+      "recent_low_20d": 254.4572,
+      "recent_closes_5d": [
+        259.7674,
+        260.5659,
+        259.4779,
+        257.7311,
+        255.0561
+      ],
+      "recent_lows_5d": [
+        256.3238,
+        257.9108,
+        256.2339,
+        256.5733,
+        254.4572
+      ],
+      "nearest_resistance": 258.4199,
+      "nearest_support": 254.4572,
+      "latest_volume": 72142800.0,
+      "volume_20_sma": 44608310.0,
+      "volume_50_sma": 44394930.0,
+      "volume_ratio": 1.617,
+      "volume_ratio_3d": [
+        0.922,
+        0.905,
+        1.617
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "descending",
+        "structure_quality": "coherent",
+        "pattern": "Lower High Lower Low",
+        "breakout_status": "breakdown",
+        "support": 254.7094,
+        "resistance": 256.614,
+        "volume_confirmation": "expanding",
+        "confidence": 0.88,
+        "signals": [
+          "Lower High Lower Low",
+          "Break of Structure",
+          "Range Breakout",
+          "Change of Character",
+          "Fair Value Gap"
+        ]
+      },
+      "long_term_structure": {
+        "trend": "descending",
+        "market_phase": "healthy_bear_trend",
+        "key_level": 233.3184,
+        "risk_state": "elevated",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Lower High Lower Low",
+          "category": "market_structure",
+          "direction": "bearish",
+          "confidence": 0.76,
+          "structure_features": [
+            "successive lower highs",
+            "successive lower lows",
+            "downtrend structure"
+          ],
+          "matched_features": [
+            "successive lower highs",
+            "successive lower lows",
+            "downtrend structure"
+          ],
+          "evidence": "2026-01-16: highs 277.325->261.334, lows 269.06->255.226",
+          "lookback_days": 4
+        },
+        {
+          "name": "Break of Structure",
+          "category": "market_structure",
+          "direction": "bearish",
+          "confidence": 0.75,
+          "structure_features": [
+            "key swing point broken",
+            "trend transition",
+            "structure invalidation"
+          ],
+          "matched_features": [
+            "key swing point broken",
+            "trend transition",
+            "structure invalidation"
+          ],
+          "evidence": "2026-01-16: close 255.1 broke prior swing low 255.2",
+          "lookback_days": 10,
+          "abbreviation": "BOS"
+        },
+        {
+          "name": "Range Breakout",
+          "category": "market_structure",
+          "direction": "bearish",
+          "confidence": 0.74,
+          "structure_features": [
+            "break outside consolidation range",
+            "volatility expansion",
+            "price discovery"
+          ],
+          "matched_features": [
+            "break outside consolidation range",
+            "volatility expansion",
+            "price discovery"
+          ],
+          "evidence": "2026-01-16: close 255.1 broke 20-bar level 255.2, volume_ratio20=1.62",
+          "lookback_days": 20
+        },
+        {
+          "name": "Change of Character",
+          "category": "market_structure",
+          "direction": "bearish",
+          "confidence": 0.7,
+          "structure_features": [
+            "first major structural reversal",
+            "possible regime shift"
+          ],
+          "matched_features": [
+            "first major structural reversal",
+            "possible regime shift"
+          ],
+          "evidence": "2026-01-16: bearish break followed prior uptrend swing structure",
+          "lookback_days": 20,
+          "abbreviation": "ChoCH"
+        },
+        {
+          "name": "Fair Value Gap",
+          "category": "smc_ict",
+          "direction": "bearish",
+          "confidence": 0.58,
+          "structure_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "matched_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "evidence": "2026-01-16: latest bearish imbalance from 258.8 to 261.6 at bar_index=253",
+          "lookback_days": 7,
+          "abbreviation": "FVG"
+        }
+      ],
+      "conflicts": []
+    },
+    "derived_regimes": {
+      "volume_regime": "expanding",
+      "recent_phases": [
+        "early_bear_reversal",
+        "unclear"
+      ]
+    },
+    "execution_context": {
+      "constraints": {
+        "available": true,
+        "allowed_actions": [
+          "BUY",
+          "HOLD",
+          "SELL"
+        ],
+        "entry_mode": "short_term_normal",
+        "max_entry_size_pct": 60,
+        "max_add_position_size_pct": 40,
+        "volume_regime": "expanding",
+        "strong_uptrend": false,
+        "short_term_uptrend": false,
+        "broad_index": false,
+        "bearish_volume_divergence": false,
+        "notes": []
+      },
+      "holdings_info": {
+        "quantity": 0.0,
+        "cash": 100610.3285470705,
+        "mark_price": 257.73114013671875,
+        "equity": 100610.3285470705,
+        "as_of_date": "2026-01-15"
+      },
+      "trading_history_summary": {
+        "window_days": 28,
+        "as_of": "2026-01-15",
+        "n_trades": 0,
+        "n_wins": 0,
+        "win_rate": null,
+        "total_pnl": 0,
+        "avg_pnl": null,
+        "last_n_pnl": []
+      },
+      "prior_pending_orders": []
+    },
+    "prior_policy_output_do_not_use_as_label": {
+      "schema_version": "v3",
+      "ticker": "AAPL",
+      "as_of_date": "2026-01-16",
+      "action": "HOLD",
+      "entry": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "add_position": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "take_profit": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "reduce_stop": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "stop_loss": {
+        "price": null
+      },
+      "rationale_summary": "AAPL is in a coherent descending environment across higher, trading, and lower timeframes. Price is below the full short-to-medium moving-average stack, deterministic structure shows lower highs/lower lows with a confirmed bearish structure break and range breakdown, and the latest downside move is supported by expanding volume. Realized volatility is active but stable rather than shock-like, so the current environment is best described as an anchor-dominant healthy bearish trend with elevated but not chaotic risk pressure. | trend_regime=descending | volatility_regime=normal | momentum_regime=negative | liquidity_regime=volume_expansion | event_regime=none | structure_quality=coherent | exhaustion_state=none | policy_adapter_regime=breakdown_risk | policy_adapter_phase=early_bear_reversal | trend_direction=-0.82 | trend_strength=0.79 | momentum=-0.71 | risk_pressure=0.62 | event_impact=0.00 | confidence=0.90 | volume_regime=expanding | invalidation_type=timeframe_reclassification | invalidation_detail=AAPL restores acceptance above the short EMA cluster and negates the 2026-01-16 bearish structure break / 20-bar range breakdown that occurred near 255.2 with follow-through failure in the lower-high lower-low sequence. | risks=Nearby support may create short-term absorption or whipsaw.; Elevated higher-timeframe risk state can amplify downside instability.; Failure to sustain the recent breakdown would force timeframe reclassification.; Volume expansion on the break could reverse quickly if follow-through is absent. | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | regime=breakdown_risk blocks new entries. | hardcoded_order_size_multiplier=0.8"
+    }
+  }
+}

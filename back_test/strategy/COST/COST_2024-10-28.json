@@ -1,0 +1,501 @@
+{
+  "schema_version": "v3",
+  "ticker": "COST",
+  "as_of_date": "2024-10-28",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "COST is in a fragmented transition environment: the trading timeframe is sideways, the higher timeframe has not established a resolved direction, and the lower timeframe has a modest negative impulse. Moderate, stable realized volatility contrasts with contracting participation and competing support-resistance formations, producing two-sided chop rather than coherent directional continuation. | trend_regime=transition | volatility_regime=normal | momentum_regime=negative | liquidity_regime=volume_contraction | event_regime=none | structure_quality=fragmented | exhaustion_state=two_sided_chop | policy_adapter_regime=unclear | policy_adapter_phase=unclear | trend_direction=-0.22 | trend_strength=0.31 | momentum=-0.36 | risk_pressure=0.63 | event_impact=0.00 | confidence=0.57 | volume_regime=shrinking | invalidation_type=timeframe_reclassification | invalidation_detail=reclassify_transition_state_if_short_term_sideways_structure_resolves_with_confirmed_directional_swing_sequence_and_participation_returns_to_trailing_baseline | risks=fragmented range structure; contracting participation; bearish lower-timeframe impulse; competing reversal formations; unresolved higher-timeframe transition | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | target_weight=0.00 below threshold; HOLD. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-11-08",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "COST",
+    "as_of_date": "2024-10-28",
+    "trend_regime": "transition",
+    "volatility_regime": "normal",
+    "momentum_regime": "negative",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "none",
+    "structure_quality": "fragmented",
+    "exhaustion_state": "two_sided_chop",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": -0.22,
+    "trend_strength": 0.31,
+    "momentum_score_value": -0.36,
+    "risk_pressure_score": 0.63,
+    "event_impact_score": 0.0,
+    "confidence": 0.57,
+    "confidence_components": {
+      "anchor_agreement": 0.58,
+      "timeframe_consistency": 0.42,
+      "volatility_stability": 0.78,
+      "contradiction_absence": 0.38,
+      "event_certainty": 0.95
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "transition",
+      "trading_timeframe_trend": "sideways",
+      "lower_timeframe_trend": "descending",
+      "alignment": "conflicted",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "timeframe_reclassification",
+      "invalidation_detail": "reclassify_transition_state_if_short_term_sideways_structure_resolves_with_confirmed_directional_swing_sequence_and_participation_returns_to_trailing_baseline",
+      "reference_timeframe": "multi_timeframe"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Trading-timeframe structure is classified sideways and fragmented, while the higher-timeframe structure remains in transition.",
+        "Recent candles form a bearish three-candle continuation pattern, producing negative lower-timeframe impulse.",
+        "Price is clustered around the short moving-average references rather than maintaining a clean directional hierarchy.",
+        "Realized volatility is moderate and slightly compressed at the short horizon relative to the longer horizon, without shock characteristics.",
+        "Latest volume is materially below its trailing average and the recent volume sequence has weakened, indicating participation contraction.",
+        "Repeated upper and lower swing failures define competing resistance and support, consistent with a congested range."
+      ],
+      "event_modifiers": [
+        "No supplied earnings, macroeconomic, policy, filing, or idiosyncratic event is dominant as of the observation date."
+      ],
+      "narrative_residual": [
+        "Research-plan recommendation, fundamental claims, valuation comments, and conditional exposure language are excluded from primary state scoring."
+      ],
+      "contradictory_signals": [
+        "Bearish three-candle and repeated-high patterns conflict with repeated-low support patterns.",
+        "Short-term sideways classification conflicts with the higher-timeframe transition classification.",
+        "A low-confidence bullish imbalance and cup-and-handle pattern conflict with weakening recent price impulse.",
+        "Volume contraction limits confirmation of either directional interpretation."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.37,
+      "reversal_risk": 0.61,
+      "breakout_quality": 0.24,
+      "pullback_quality": 0.46,
+      "volume_support": 0.22,
+      "event_risk": 0.04,
+      "reward_risk_quality": 0.34
+    },
+    "state_summary": "COST is in a fragmented transition environment: the trading timeframe is sideways, the higher timeframe has not established a resolved direction, and the lower timeframe has a modest negative impulse. Moderate, stable realized volatility contrasts with contracting participation and competing support-resistance formations, producing two-sided chop rather than coherent directional continuation.",
+    "key_risks": [
+      "fragmented range structure",
+      "contracting participation",
+      "bearish lower-timeframe impulse",
+      "competing reversal formations",
+      "unresolved higher-timeframe transition"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "COST",
+    "as_of_date": "2024-10-28",
+    "short_term_structure": {
+      "trend": "sideways",
+      "structure_quality": "fragmented",
+      "pattern": "Three Black Crows",
+      "breakout_status": "none",
+      "support": 881.2594,
+      "resistance": 881.4275,
+      "volume_confirmation": "shrinking",
+      "confidence": 0.6,
+      "signals": [
+        "Three Black Crows",
+        "Triple Top",
+        "Triple Bottom",
+        "Double Top",
+        "Double Bottom"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "transition",
+      "market_phase": "unclear",
+      "key_level": 875.8687,
+      "risk_state": "transition",
+      "confidence": 0.64
+    },
+    "detected_patterns": [
+      {
+        "name": "Three Black Crows",
+        "category": "three_candlestick",
+        "direction": "bearish",
+        "confidence": 0.68,
+        "structure_features": [
+          "three consecutive bearish candles",
+          "strong bearish continuation",
+          "persistent selling pressure"
+        ],
+        "matched_features": [
+          "three consecutive bearish candles",
+          "strong bearish continuation",
+          "persistent selling pressure"
+        ],
+        "evidence": "2024-10-28: three bearish closes from 883.7 to 881.3",
+        "lookback_days": 3
+      },
+      {
+        "name": "Triple Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.64,
+        "structure_features": [
+          "three failed highs",
+          "strong resistance zone"
+        ],
+        "matched_features": [
+          "three failed highs",
+          "strong resistance zone"
+        ],
+        "evidence": "2024-10-28: last three swing highs clustered near 895.6",
+        "lookback_days": 60
+      },
+      {
+        "name": "Triple Bottom",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.64,
+        "structure_features": [
+          "three failed lows",
+          "strong support zone"
+        ],
+        "matched_features": [
+          "three failed lows",
+          "strong support zone"
+        ],
+        "evidence": "2024-10-28: last three swing lows clustered near 869.5",
+        "lookback_days": 60
+      },
+      {
+        "name": "Double Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "matched_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "evidence": "2024-10-28: swing highs 890.854 and 895.829 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Double Bottom",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed lows",
+          "support holding",
+          "bullish reversal potential"
+        ],
+        "matched_features": [
+          "two failed lows",
+          "support holding",
+          "bullish reversal potential"
+        ],
+        "evidence": "2024-10-28: swing lows 875.869 and 869.934 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-10-28: latest bullish imbalance from 881.7 to 885.3 at bar_index=256",
+        "lookback_days": 4,
+        "abbreviation": "FVG"
+      },
+      {
+        "name": "Cup and Handle",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.54,
+        "structure_features": [
+          "rounded bottom",
+          "small pullback handle",
+          "long-term accumulation"
+        ],
+        "matched_features": [
+          "rounded bottom",
+          "small pullback handle",
+          "long-term accumulation"
+        ],
+        "evidence": "2024-10-28: 80-bar trough centered with rim highs 885.7/913.8",
+        "lookback_days": 80
+      }
+    ],
+    "conflicts": [
+      "short-term trend sideways conflicts with long-term trend transition"
+    ],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "COST:2024-10-28",
+    "ticker": "COST",
+    "trade_date": "2024-10-28",
+    "as_of_close_date": "2024-10-28",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "COST",
+      "as_of_date": "2024-10-28",
+      "trend_regime": "transition",
+      "volatility_regime": "normal",
+      "momentum_regime": "negative",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "none",
+      "structure_quality": "fragmented",
+      "exhaustion_state": "two_sided_chop",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": -0.22,
+      "trend_strength": 0.31,
+      "momentum_score_value": -0.36,
+      "risk_pressure_score": 0.63,
+      "event_impact_score": 0.0,
+      "confidence": 0.57,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "transition",
+        "trading_timeframe_trend": "sideways",
+        "lower_timeframe_trend": "descending",
+        "alignment": "conflicted",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.37,
+        "reversal_risk": 0.61,
+        "breakout_quality": 0.24,
+        "pullback_quality": 0.46,
+        "volume_support": 0.22,
+        "event_risk": 0.04,
+        "reward_risk_quality": 0.34
+      },
+      "event_certainty": 0.95
+    },
+    "ohlcv_anchors": {
+      "current_price": 881.2694,
+      "atr5": 11.003,
+      "atr14": 11.8073,
+      "ema5": 882.304,
+      "ema10": 881.9084,
+      "ema20": 881.4722,
+      "sma20": 878.9394,
+      "sma50": 882.036,
+      "sma200": 793.8166,
+      "nearest_support": 880.3198,
+      "nearest_resistance": 885.1565,
+      "recent_high_10d": 895.8292,
+      "recent_high_20d": 900.1022,
+      "recent_closes_5d": [
+        883.7717,
+        889.39,
+        883.7025,
+        881.5265,
+        881.2694
+      ],
+      "recent_lows_5d": [
+        874.6916,
+        885.2555,
+        878.5987,
+        880.3198,
+        880.3198
+      ],
+      "volume_ratio": 0.587,
+      "volume_ratio_3d": [
+        0.96,
+        0.882,
+        0.587
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "sideways",
+        "structure_quality": "fragmented",
+        "pattern": "Three Black Crows",
+        "breakout_status": "none",
+        "support": 881.2594,
+        "resistance": 881.4275,
+        "volume_confirmation": "shrinking",
+        "confidence": 0.6
+      },
+      "long_term_structure": {
+        "trend": "transition",
+        "market_phase": "unclear",
+        "key_level": 875.8687,
+        "risk_state": "transition",
+        "confidence": 0.64
+      },
+      "detected_patterns": [
+        {
+          "name": "Three Black Crows",
+          "direction": "bearish",
+          "confidence": 0.68
+        },
+        {
+          "name": "Triple Top",
+          "direction": "bearish",
+          "confidence": 0.64
+        },
+        {
+          "name": "Triple Bottom",
+          "direction": "bullish",
+          "confidence": 0.64
+        },
+        {
+          "name": "Double Top",
+          "direction": "bearish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Double Bottom",
+          "direction": "bullish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bullish",
+          "confidence": 0.58
+        },
+        {
+          "name": "Cup and Handle",
+          "direction": "bullish",
+          "confidence": 0.54
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-10-28",
+        "trend_regime": "ascending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "6f8b9651a419046dcd316bc6a7f5288d9015a4e60f226964957dec279ecfaca3"
+  }
+}

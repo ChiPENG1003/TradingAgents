@@ -1,0 +1,437 @@
+{
+  "schema_version": "v3",
+  "ticker": "JPM",
+  "as_of_date": "2024-05-06",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "JPM is in a transition environment: a positive short-term recovery and constructive moving-average hierarchy coexist with an unresolved descending higher-timeframe structure and confirmed lower-high/lower-low swing evidence. Participation is contracting and recent dispersion is increasing, reducing confidence in persistence despite positive near-term momentum. No concrete event is supplied as a dominant state driver. | trend_regime=transition | volatility_regime=expanding | momentum_regime=positive | liquidity_regime=volume_contraction | event_regime=none | structure_quality=fragmented | exhaustion_state=none | policy_adapter_regime=unclear | policy_adapter_phase=unclear | trend_direction=0.16 | trend_strength=0.42 | momentum=0.28 | risk_pressure=0.65 | event_impact=0.00 | confidence=0.52 | volume_regime=soft | invalidation_type=timeframe_reclassification | invalidation_detail=reclassify_to_descending_if_the_recent_short_term_recovery_fails_and_the_confirmed_lower_high_lower_low_sequence_resumes; reclassify_to_ascending_if_the_long_term_descending_structure_is_reclaimed_with_persistent_higher_high_higher_low_structure_and_participation_normalization | risks=higher- and lower-timeframe trend conflict; lower-high/lower-low structure remains unresolved; contracting participation during recovery; expanding short-horizon dispersion; nearby resistance without volume confirmation | notes=market_context=^GSPC: continuous_multiplier=1.03, trend_regime=ascending, volatility_regime=normal, momentum_regime=positive, trend_direction=0.35, risk_pressure=0.45 | target_weight=0.00 below threshold; HOLD. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-05-17",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "JPM",
+    "as_of_date": "2024-05-06",
+    "trend_regime": "transition",
+    "volatility_regime": "expanding",
+    "momentum_regime": "positive",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "none",
+    "structure_quality": "fragmented",
+    "exhaustion_state": "none",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.16,
+    "trend_strength": 0.42,
+    "momentum_score_value": 0.28,
+    "risk_pressure_score": 0.65,
+    "event_impact_score": 0.0,
+    "confidence": 0.52,
+    "confidence_components": {
+      "anchor_agreement": 0.43,
+      "timeframe_consistency": 0.31,
+      "volatility_stability": 0.62,
+      "contradiction_absence": 0.35,
+      "event_certainty": 0.92
+    },
+    "horizon_days": 20,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "descending",
+      "trading_timeframe_trend": "transition",
+      "lower_timeframe_trend": "ascending",
+      "alignment": "higher_timeframe_transition",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "timeframe_reclassification",
+      "invalidation_detail": "reclassify_to_descending_if_the_recent_short_term_recovery_fails_and_the_confirmed_lower_high_lower_low_sequence_resumes; reclassify_to_ascending_if_the_long_term_descending_structure_is_reclaimed_with_persistent_higher_high_higher_low_structure_and_participation_normalization",
+      "reference_timeframe": "multi_timeframe"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Short-horizon moving averages are positively ordered and price is above the supplied intermediate moving-average references.",
+        "Deterministic short-term trend is ascending and coherent, but its recorded swing pattern is lower-high/lower-low.",
+        "Deterministic long-term trend remains descending, with transition risk and an early-reversal phase designation.",
+        "Recent range dispersion is above the longer ATR measure, indicating volatility is expanding from an otherwise moderate realized-volatility baseline.",
+        "Price is positioned near nearby resistance while also close to nearby support, leaving limited structural separation.",
+        "Latest volume and each of the last three relative-volume observations are below the twenty-session reference, confirming contracting participation.",
+        "A bullish hammer and modest-confidence bullish flag and imbalance signals support the recent recovery but do not resolve the adverse higher-timeframe swing structure."
+      ],
+      "event_modifiers": [
+        "No supplied earnings, macroeconomic release, policy action, filing, or idiosyncratic shock dominates the classification horizon."
+      ],
+      "narrative_residual": [
+        "Research-manager recommendation and all execution-oriented advocacy were excluded from state scoring.",
+        "Bullish and bearish researcher framing was treated as non-determinative residual narrative only."
+      ],
+      "contradictory_signals": [
+        "Positive short-term moving-average structure and ascending short-term classification conflict with the descending long-term trend and lower-high/lower-low pattern.",
+        "Bullish hammer, flag, and imbalance detections conflict with the bearish market-structure detection.",
+        "Recovery toward resistance is not confirmed by participation because volume remains persistently below average."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.4,
+      "reversal_risk": 0.68,
+      "breakout_quality": 0.31,
+      "pullback_quality": 0.46,
+      "volume_support": 0.2,
+      "event_risk": 0.12,
+      "reward_risk_quality": 0.32
+    },
+    "state_summary": "JPM is in a transition environment: a positive short-term recovery and constructive moving-average hierarchy coexist with an unresolved descending higher-timeframe structure and confirmed lower-high/lower-low swing evidence. Participation is contracting and recent dispersion is increasing, reducing confidence in persistence despite positive near-term momentum. No concrete event is supplied as a dominant state driver.",
+    "key_risks": [
+      "higher- and lower-timeframe trend conflict",
+      "lower-high/lower-low structure remains unresolved",
+      "contracting participation during recovery",
+      "expanding short-horizon dispersion",
+      "nearby resistance without volume confirmation"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "JPM",
+    "as_of_date": "2024-05-06",
+    "short_term_structure": {
+      "trend": "ascending",
+      "structure_quality": "coherent",
+      "pattern": "Lower High Lower Low",
+      "breakout_status": "none",
+      "support": 176.9425,
+      "resistance": 186.0964,
+      "volume_confirmation": "soft",
+      "confidence": 0.83,
+      "signals": [
+        "Lower High Lower Low",
+        "Hammer",
+        "Fair Value Gap",
+        "Flag"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "descending",
+      "market_phase": "early_bull_reversal",
+      "key_level": 181.9422,
+      "risk_state": "transition",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Lower High Lower Low",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.76,
+        "structure_features": [
+          "successive lower highs",
+          "successive lower lows",
+          "downtrend structure"
+        ],
+        "matched_features": [
+          "successive lower highs",
+          "successive lower lows",
+          "downtrend structure"
+        ],
+        "evidence": "2024-05-06: highs 190.572->186.096, lows 184.135->171.027",
+        "lookback_days": 9
+      },
+      {
+        "name": "Hammer",
+        "category": "single_candlestick",
+        "direction": "bullish",
+        "confidence": 0.65,
+        "structure_features": [
+          "long lower wick",
+          "small real body near top",
+          "appears after downtrend",
+          "liquidity sweep below support",
+          "buying absorption"
+        ],
+        "matched_features": [
+          "long lower wick",
+          "small real body near top",
+          "appears after downtrend",
+          "buying absorption"
+        ],
+        "evidence": "2024-05-06: lower_wick/range=0.80, close_position=0.92, prior_support=177.5",
+        "lookback_days": 1
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-05-06: latest bullish imbalance from 181.5 to 181.5 at bar_index=251",
+        "lookback_days": 9,
+        "abbreviation": "FVG"
+      },
+      {
+        "name": "Flag",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "sharp move followed by small channel",
+          "trend continuation"
+        ],
+        "matched_features": [
+          "sharp move followed by small channel",
+          "trend continuation"
+        ],
+        "evidence": "2024-05-06: impulse_return=6.8%, consolidation_range/impulse_range=0.47",
+        "lookback_days": 15
+      }
+    ],
+    "conflicts": [
+      "short-term trend ascending conflicts with long-term trend descending"
+    ],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "JPM:2024-05-06",
+    "ticker": "JPM",
+    "trade_date": "2024-05-06",
+    "as_of_close_date": "2024-05-06",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "JPM",
+      "as_of_date": "2024-05-06",
+      "trend_regime": "transition",
+      "volatility_regime": "expanding",
+      "momentum_regime": "positive",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "none",
+      "structure_quality": "fragmented",
+      "exhaustion_state": "none",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.16,
+      "trend_strength": 0.42,
+      "momentum_score_value": 0.28,
+      "risk_pressure_score": 0.65,
+      "event_impact_score": 0.0,
+      "confidence": 0.52,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "descending",
+        "trading_timeframe_trend": "transition",
+        "lower_timeframe_trend": "ascending",
+        "alignment": "higher_timeframe_transition",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.4,
+        "reversal_risk": 0.68,
+        "breakout_quality": 0.31,
+        "pullback_quality": 0.46,
+        "volume_support": 0.2,
+        "event_risk": 0.12,
+        "reward_risk_quality": 0.32
+      },
+      "event_certainty": 0.92
+    },
+    "ohlcv_anchors": {
+      "current_price": 183.2428,
+      "atr5": 3.3308,
+      "atr14": 3.0881,
+      "ema5": 182.8825,
+      "ema10": 182.5946,
+      "ema20": 182.3024,
+      "sma20": 181.0573,
+      "sma50": 181.9422,
+      "sma200": 156.1137,
+      "nearest_support": 182.8992,
+      "nearest_resistance": 183.4337,
+      "recent_high_10d": 186.0964,
+      "recent_high_20d": 189.809,
+      "recent_closes_5d": [
+        182.9947,
+        183.1092,
+        182.9183,
+        181.8208,
+        183.2428
+      ],
+      "recent_lows_5d": [
+        182.8992,
+        182.088,
+        180.8759,
+        179.8643,
+        181.1623
+      ],
+      "volume_ratio": 0.76,
+      "volume_ratio_3d": [
+        0.632,
+        0.857,
+        0.76
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "ascending",
+        "structure_quality": "coherent",
+        "pattern": "Lower High Lower Low",
+        "breakout_status": "none",
+        "support": 176.9425,
+        "resistance": 186.0964,
+        "volume_confirmation": "soft",
+        "confidence": 0.83
+      },
+      "long_term_structure": {
+        "trend": "descending",
+        "market_phase": "early_bull_reversal",
+        "key_level": 181.9422,
+        "risk_state": "transition",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Lower High Lower Low",
+          "direction": "bearish",
+          "confidence": 0.76
+        },
+        {
+          "name": "Hammer",
+          "direction": "bullish",
+          "confidence": 0.65
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bullish",
+          "confidence": 0.58
+        },
+        {
+          "name": "Flag",
+          "direction": "bullish",
+          "confidence": 0.58
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-05-06",
+        "trend_regime": "ascending",
+        "volatility_regime": "normal",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "breakout_attempt",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.35,
+        "trend_strength": 0.5,
+        "momentum_score_value": 0.25,
+        "risk_pressure_score": 0.45,
+        "event_impact_score": 0.0,
+        "confidence": 0.69,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.68,
+          "reversal_risk": 0.45,
+          "breakout_quality": 0.7,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.58
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "37bc90692d0887f5a692835c3dc2b978ce275137ecc2922faa77759593ba82aa"
+  }
+}

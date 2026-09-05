@@ -1,0 +1,525 @@
+{
+  "schema_version": "v3",
+  "ticker": "XOM",
+  "as_of_date": "2024-04-29",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "XOM retains an ascending higher-timeframe and trading-timeframe structure, but the current observation is a range-bound consolidation within a late-stage advance. Recent impulse is mixed: a bullish reversal candle and preserved intermediate trend support conflict with price below the fastest moving-average cluster and repeated overhead resistance failures. Volatility and participation are normal, while topping-pattern evidence raises reversal sensitivity without confirming a structural breakdown. | trend_regime=ascending | volatility_regime=normal | momentum_regime=divergent | liquidity_regime=normal | event_regime=none | structure_quality=range_bound | exhaustion_state=late_trend_fatigue | policy_adapter_regime=range | policy_adapter_phase=late_bull_distribution | trend_direction=0.46 | trend_strength=0.57 | momentum=0.12 | risk_pressure=0.57 | event_impact=0.00 | confidence=0.62 | volume_regime=normal | invalidation_type=structure_break | invalidation_detail=reclassify_ascending_trading_structure_if_price_accepts_below_the_latest_rising_swing_low_and_range_support | risks=Late-stage distribution characteristics within an intact advance; Repeated rejection near range resistance; Mixed short-term momentum around the fast moving-average cluster; Normal rather than directional volume confirmation; Failure of the latest rising swing-low and range-support structure | notes=market_context=^GSPC: continuous_multiplier=1.03, trend_regime=ascending, volatility_regime=normal, momentum_regime=positive, trend_direction=0.35, risk_pressure=0.45 | LLM regime=weak_uptrend downgraded to range — EMA5/10/20 structure does not confirm short-term uptrend. | market_phase=late_bull_distribution blocks new entries. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-05-10",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "XOM",
+    "as_of_date": "2024-04-29",
+    "trend_regime": "ascending",
+    "volatility_regime": "normal",
+    "momentum_regime": "divergent",
+    "liquidity_regime": "normal",
+    "event_regime": "none",
+    "structure_quality": "range_bound",
+    "exhaustion_state": "late_trend_fatigue",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.46,
+    "trend_strength": 0.57,
+    "momentum_score_value": 0.12,
+    "risk_pressure_score": 0.57,
+    "event_impact_score": 0.0,
+    "confidence": 0.62,
+    "confidence_components": {
+      "anchor_agreement": 0.68,
+      "timeframe_consistency": 0.71,
+      "volatility_stability": 0.73,
+      "contradiction_absence": 0.46,
+      "event_certainty": 0.95
+    },
+    "horizon_days": 10,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "ascending",
+      "trading_timeframe_trend": "ascending",
+      "lower_timeframe_trend": "transition",
+      "alignment": "pullback_against_higher_timeframe",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "structure_break",
+      "invalidation_detail": "reclassify_ascending_trading_structure_if_price_accepts_below_the_latest_rising_swing_low_and_range_support",
+      "reference_timeframe": "trading"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Long-term structure remains ascending but is classified as late-bull-distribution with elevated risk.",
+        "Short-term deterministic structure retains a higher-high/higher-low sequence but is range-bound rather than in a confirmed breakout.",
+        "Price remains above the intermediate moving-average reference and longer moving-average reference, while sitting below the fastest moving-average cluster.",
+        "The latest candle is a bullish engulfing reversal, but nearby moving-average resistance and a narrow local support/resistance band constrain confirmation.",
+        "Short-horizon realized range is only modestly above the intermediate measure; the consolidation classification supports normal rather than shock-like volatility.",
+        "Latest participation is approximately in line with its rolling average; recent volume includes one downside expansion but lacks persistent directional confirmation.",
+        "Repeated highs near range resistance coexist with rising lows, producing conflicting triangle, double-top, and triple-top pattern evidence."
+      ],
+      "event_modifiers": [
+        "No concrete earnings, macroeconomic, policy, filing, or idiosyncratic event is supplied as dominant for the observation date."
+      ],
+      "narrative_residual": [
+        "Research-manager recommendation and conditional execution language are excluded from state determination.",
+        "Bullish and bearish descriptive framing in the supplied materials is treated as non-decisive residual context."
+      ],
+      "contradictory_signals": [
+        "The intact higher-high/higher-low sequence and bullish engulfing candle conflict with repeated resistance failures and bearish topping-pattern detections.",
+        "Price is above intermediate and long-horizon trend references but below the fastest moving-average cluster.",
+        "Normal volume does not resolve the competing continuation and reversal interpretations."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.55,
+      "reversal_risk": 0.58,
+      "breakout_quality": 0.38,
+      "pullback_quality": 0.57,
+      "volume_support": 0.49,
+      "event_risk": 0.04,
+      "reward_risk_quality": 0.43
+    },
+    "state_summary": "XOM retains an ascending higher-timeframe and trading-timeframe structure, but the current observation is a range-bound consolidation within a late-stage advance. Recent impulse is mixed: a bullish reversal candle and preserved intermediate trend support conflict with price below the fastest moving-average cluster and repeated overhead resistance failures. Volatility and participation are normal, while topping-pattern evidence raises reversal sensitivity without confirming a structural breakdown.",
+    "key_risks": [
+      "Late-stage distribution characteristics within an intact advance",
+      "Repeated rejection near range resistance",
+      "Mixed short-term momentum around the fast moving-average cluster",
+      "Normal rather than directional volume confirmation",
+      "Failure of the latest rising swing-low and range-support structure"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "XOM",
+    "as_of_date": "2024-04-29",
+    "short_term_structure": {
+      "trend": "ascending",
+      "structure_quality": "range_bound",
+      "pattern": "Higher High Higher Low",
+      "breakout_status": "none",
+      "support": 108.094,
+      "resistance": 112.2011,
+      "volume_confirmation": "normal",
+      "confidence": 0.73,
+      "signals": [
+        "Higher High Higher Low",
+        "Bullish Engulfing",
+        "Consolidation",
+        "Triple Top",
+        "Double Top"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "ascending",
+      "market_phase": "late_bull_distribution",
+      "key_level": 108.094,
+      "risk_state": "elevated",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Higher High Higher Low",
+        "category": "market_structure",
+        "direction": "bullish",
+        "confidence": 0.76,
+        "structure_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "matched_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "evidence": "2024-04-29: highs 112.201->112.376, lows 96.0128->108.094",
+        "lookback_days": 37
+      },
+      {
+        "name": "Bullish Engulfing",
+        "category": "double_candlestick",
+        "direction": "bullish",
+        "confidence": 0.74,
+        "structure_features": [
+          "second bullish candle fully engulfs previous bearish candle",
+          "strong buyer takeover",
+          "momentum reversal"
+        ],
+        "matched_features": [
+          "second bullish candle fully engulfs previous bearish candle",
+          "strong buyer takeover",
+          "momentum reversal"
+        ],
+        "evidence": "2024-04-29: current real body [108.7, 110.4] engulfs previous [108.9, 109.8]",
+        "lookback_days": 2
+      },
+      {
+        "name": "Consolidation",
+        "category": "market_structure",
+        "direction": "neutral",
+        "confidence": 0.65,
+        "structure_features": [
+          "sideways movement",
+          "volatility compression",
+          "temporary equilibrium"
+        ],
+        "matched_features": [
+          "sideways movement",
+          "volatility compression",
+          "temporary equilibrium"
+        ],
+        "evidence": "2024-04-29: 20-bar range 6.95 <= 3x ATR14 2.339",
+        "lookback_days": 20
+      },
+      {
+        "name": "Triple Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.64,
+        "structure_features": [
+          "three failed highs",
+          "strong resistance zone"
+        ],
+        "matched_features": [
+          "three failed highs",
+          "strong resistance zone"
+        ],
+        "evidence": "2024-04-29: last three swing highs clustered near 112.9",
+        "lookback_days": 60
+      },
+      {
+        "name": "Double Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "matched_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "evidence": "2024-04-29: swing highs 112.201 and 112.376 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Ascending Triangle",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.62,
+        "structure_features": [
+          "flat resistance",
+          "rising lows",
+          "buying pressure increasing"
+        ],
+        "matched_features": [
+          "flat resistance",
+          "rising lows",
+          "buying pressure increasing"
+        ],
+        "evidence": "2024-04-29: resistance clustered near 112.9, lows rising",
+        "lookback_days": 60
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-04-29: latest bearish imbalance from 109.9 to 110.2 at bar_index=258",
+        "lookback_days": 2,
+        "abbreviation": "FVG"
+      },
+      {
+        "name": "Distribution",
+        "category": "wyckoff",
+        "direction": "bearish",
+        "confidence": 0.56,
+        "structure_features": [
+          "sideways range after rally",
+          "institutional selling",
+          "demand exhaustion"
+        ],
+        "matched_features": [
+          "sideways range after rally",
+          "institutional selling",
+          "demand exhaustion"
+        ],
+        "evidence": "2024-04-29: prior_return=12.8%, recent_range_pct=6.3%",
+        "lookback_days": 50
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "XOM:2024-04-29",
+    "ticker": "XOM",
+    "trade_date": "2024-04-29",
+    "as_of_close_date": "2024-04-29",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "XOM",
+      "as_of_date": "2024-04-29",
+      "trend_regime": "ascending",
+      "volatility_regime": "normal",
+      "momentum_regime": "divergent",
+      "liquidity_regime": "normal",
+      "event_regime": "none",
+      "structure_quality": "range_bound",
+      "exhaustion_state": "late_trend_fatigue",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.46,
+      "trend_strength": 0.57,
+      "momentum_score_value": 0.12,
+      "risk_pressure_score": 0.57,
+      "event_impact_score": 0.0,
+      "confidence": 0.62,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "ascending",
+        "trading_timeframe_trend": "ascending",
+        "lower_timeframe_trend": "transition",
+        "alignment": "pullback_against_higher_timeframe",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.55,
+        "reversal_risk": 0.58,
+        "breakout_quality": 0.38,
+        "pullback_quality": 0.57,
+        "volume_support": 0.49,
+        "event_risk": 0.04,
+        "reward_risk_quality": 0.43
+      },
+      "event_certainty": 0.95
+    },
+    "ohlcv_anchors": {
+      "current_price": 110.4198,
+      "atr5": 2.4439,
+      "atr14": 2.339,
+      "ema5": 110.537,
+      "ema10": 110.5941,
+      "ema20": 109.7442,
+      "sma20": 110.878,
+      "sma50": 104.6561,
+      "sma200": 98.4979,
+      "nearest_support": 110.2445,
+      "nearest_resistance": 110.7982,
+      "recent_high_10d": 112.3764,
+      "recent_high_20d": 114.2131,
+      "recent_closes_5d": [
+        111.7027,
+        111.7211,
+        111.9796,
+        108.8693,
+        110.4198
+      ],
+      "recent_lows_5d": [
+        110.2445,
+        110.1891,
+        110.1983,
+        107.2634,
+        108.6847
+      ],
+      "volume_ratio": 0.987,
+      "volume_ratio_3d": [
+        0.948,
+        1.571,
+        0.987
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "ascending",
+        "structure_quality": "range_bound",
+        "pattern": "Higher High Higher Low",
+        "breakout_status": "none",
+        "support": 108.094,
+        "resistance": 112.2011,
+        "volume_confirmation": "normal",
+        "confidence": 0.73
+      },
+      "long_term_structure": {
+        "trend": "ascending",
+        "market_phase": "late_bull_distribution",
+        "key_level": 108.094,
+        "risk_state": "elevated",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Higher High Higher Low",
+          "direction": "bullish",
+          "confidence": 0.76
+        },
+        {
+          "name": "Bullish Engulfing",
+          "direction": "bullish",
+          "confidence": 0.74
+        },
+        {
+          "name": "Consolidation",
+          "direction": "neutral",
+          "confidence": 0.65
+        },
+        {
+          "name": "Triple Top",
+          "direction": "bearish",
+          "confidence": 0.64
+        },
+        {
+          "name": "Double Top",
+          "direction": "bearish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Ascending Triangle",
+          "direction": "bullish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bearish",
+          "confidence": 0.58
+        },
+        {
+          "name": "Distribution",
+          "direction": "bearish",
+          "confidence": 0.56
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-04-29",
+        "trend_regime": "ascending",
+        "volatility_regime": "normal",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "breakout_attempt",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.35,
+        "trend_strength": 0.5,
+        "momentum_score_value": 0.25,
+        "risk_pressure_score": 0.45,
+        "event_impact_score": 0.0,
+        "confidence": 0.69,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.68,
+          "reversal_risk": 0.45,
+          "breakout_quality": 0.7,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.58
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "7a39501f37ee2530c3efc411d558dc6e1a0fe0bb3a30ffdb04f38cdc56dc32ca"
+  }
+}

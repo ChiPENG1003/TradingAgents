@@ -1,0 +1,619 @@
+{
+  "schema_version": "v3",
+  "ticker": "COST",
+  "as_of_date": "2024-05-13",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "COST retains an ascending higher-timeframe and moving-average structure, but the trading horizon is fragmented after a failed upside excursion and a negative lower-timeframe reversal impulse. Realized volatility is normal with mild short-horizon firming, participation is near baseline, and no concrete event is dominating the classification. The combination is consistent with a pullback against an intact higher-timeframe ascent, accompanied by late-trend fatigue and elevated reversal uncertainty. | trend_regime=ascending | volatility_regime=normal | momentum_regime=negative | liquidity_regime=normal | event_regime=none | structure_quality=fragmented | exhaustion_state=late_trend_fatigue | policy_adapter_regime=weak_uptrend | policy_adapter_phase=late_bull_distribution | trend_direction=0.42 | trend_strength=0.58 | momentum=-0.46 | risk_pressure=0.63 | event_impact=0.00 | confidence=0.64 | volume_regime=normal | invalidation_type=failed_breakout | invalidation_detail=upside_range_sweep_rejected_back_inside_short_term_range_with_bearish_engulfing_and_bearish_marubozu; reclassify_if_rejection_is_followed_by_loss_of_ascending_structure | risks=failed upside-breakout rejection; bearish lower-timeframe candle impulse; late-bull-distribution characteristics; conflicted structure signals; loss of nearby support with increasing participation | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | market_phase=late_bull_distribution blocks new entries. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-05-24",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "COST",
+    "as_of_date": "2024-05-13",
+    "trend_regime": "ascending",
+    "volatility_regime": "normal",
+    "momentum_regime": "negative",
+    "liquidity_regime": "normal",
+    "event_regime": "none",
+    "structure_quality": "fragmented",
+    "exhaustion_state": "late_trend_fatigue",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.42,
+    "trend_strength": 0.58,
+    "momentum_score_value": -0.46,
+    "risk_pressure_score": 0.63,
+    "event_impact_score": 0.0,
+    "confidence": 0.64,
+    "confidence_components": {
+      "anchor_agreement": 0.66,
+      "timeframe_consistency": 0.55,
+      "volatility_stability": 0.73,
+      "contradiction_absence": 0.48,
+      "event_certainty": 0.95
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "ascending",
+      "trading_timeframe_trend": "ascending",
+      "lower_timeframe_trend": "descending",
+      "alignment": "pullback_against_higher_timeframe",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "failed_breakout",
+      "invalidation_detail": "upside_range_sweep_rejected_back_inside_short_term_range_with_bearish_engulfing_and_bearish_marubozu; reclassify_if_rejection_is_followed_by_loss_of_ascending_structure",
+      "reference_timeframe": "trading"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Long-term deterministic structure remains ascending but is classified as late-bull-distribution with elevated structural risk.",
+        "Short-term deterministic structure is ascending yet fragmented, and its reported breakout status is false_breakout.",
+        "Price remains above the short and intermediate EMA hierarchy and above the longer simple-moving-average references.",
+        "The latest session produced a bearish engulfing candle and bearish marubozu after an upside sweep and rejection near the short-term range ceiling.",
+        "Short-horizon ATR is modestly above ATR14 while ATR14 is moderate relative to price, consistent with normal but mildly firming realized movement.",
+        "Latest volume and the recent volume sequence are approximately in line with the trailing baseline rather than showing decisive expansion.",
+        "Current price is close to nearby support after rejection from overhead resistance."
+      ],
+      "event_modifiers": [
+        "No concrete earnings, macroeconomic, policy, filing, or idiosyncratic event modifier was supplied for this observation date."
+      ],
+      "narrative_residual": [
+        "The research-plan recommendation, business-quality discussion, valuation arguments, and conditional directional advocacy are excluded from primary state scoring."
+      ],
+      "contradictory_signals": [
+        "Ascending EMA hierarchy and higher-timeframe structure conflict with the latest bearish reversal candles and false-breakout classification.",
+        "Bullish break-of-structure detection conflicts with the same-session upthrust and liquidity-sweep rejection.",
+        "Normal baseline volume does not provide strong confirmation for either continuation or reversal."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.53,
+      "reversal_risk": 0.64,
+      "breakout_quality": 0.22,
+      "pullback_quality": 0.44,
+      "volume_support": 0.49,
+      "event_risk": 0.05,
+      "reward_risk_quality": 0.36
+    },
+    "state_summary": "COST retains an ascending higher-timeframe and moving-average structure, but the trading horizon is fragmented after a failed upside excursion and a negative lower-timeframe reversal impulse. Realized volatility is normal with mild short-horizon firming, participation is near baseline, and no concrete event is dominating the classification. The combination is consistent with a pullback against an intact higher-timeframe ascent, accompanied by late-trend fatigue and elevated reversal uncertainty.",
+    "key_risks": [
+      "failed upside-breakout rejection",
+      "bearish lower-timeframe candle impulse",
+      "late-bull-distribution characteristics",
+      "conflicted structure signals",
+      "loss of nearby support with increasing participation"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "COST",
+    "as_of_date": "2024-05-13",
+    "short_term_structure": {
+      "trend": "ascending",
+      "structure_quality": "fragmented",
+      "pattern": "Break of Structure",
+      "breakout_status": "false_breakout",
+      "support": 728.9998,
+      "resistance": 776.1666,
+      "volume_confirmation": "normal",
+      "confidence": 0.73,
+      "signals": [
+        "Break of Structure",
+        "Bearish Engulfing",
+        "Marubozu",
+        "Upthrust",
+        "Liquidity Sweep"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "ascending",
+      "market_phase": "late_bull_distribution",
+      "key_level": 723.9685,
+      "risk_state": "elevated",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Break of Structure",
+        "category": "market_structure",
+        "direction": "bullish",
+        "confidence": 0.75,
+        "structure_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "matched_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "evidence": "2024-05-13: close 765.6 broke prior swing high 723.3",
+        "lookback_days": 10,
+        "abbreviation": "BOS"
+      },
+      {
+        "name": "Bearish Engulfing",
+        "category": "double_candlestick",
+        "direction": "bearish",
+        "confidence": 0.74,
+        "structure_features": [
+          "second bearish candle fully engulfs previous bullish candle",
+          "strong seller takeover",
+          "momentum reversal"
+        ],
+        "matched_features": [
+          "second bearish candle fully engulfs previous bullish candle",
+          "strong seller takeover",
+          "momentum reversal"
+        ],
+        "evidence": "2024-05-13: current real body [765.6, 778.3] engulfs previous [769.5, 777.5]",
+        "lookback_days": 2
+      },
+      {
+        "name": "Marubozu",
+        "category": "single_candlestick",
+        "direction": "bearish",
+        "confidence": 0.72,
+        "structure_features": [
+          "little or no wick",
+          "strong directional momentum",
+          "dominant orderflow"
+        ],
+        "matched_features": [
+          "little or no wick",
+          "strong directional momentum",
+          "dominant orderflow"
+        ],
+        "evidence": "2024-05-13: body/range=0.81, upper=0.09, lower=0.10",
+        "lookback_days": 1
+      },
+      {
+        "name": "Upthrust",
+        "category": "wyckoff",
+        "direction": "bearish",
+        "confidence": 0.68,
+        "structure_features": [
+          "false breakout above resistance",
+          "bull trap",
+          "reversal rejection"
+        ],
+        "matched_features": [
+          "false breakout above resistance",
+          "bull trap",
+          "reversal rejection"
+        ],
+        "evidence": "2024-05-13: high 779.8 swept resistance 777.8, close rejected",
+        "lookback_days": 20
+      },
+      {
+        "name": "Liquidity Sweep",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.67,
+        "structure_features": [
+          "stop-loss hunting",
+          "temporary breakout",
+          "rapid reversal"
+        ],
+        "matched_features": [
+          "stop-loss hunting",
+          "temporary breakout",
+          "rapid reversal"
+        ],
+        "evidence": "2024-05-13: upside sweep above 777.8 closed back inside range",
+        "lookback_days": 20
+      },
+      {
+        "name": "Triple Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.64,
+        "structure_features": [
+          "three failed highs",
+          "strong resistance zone"
+        ],
+        "matched_features": [
+          "three failed highs",
+          "strong resistance zone"
+        ],
+        "evidence": "2024-05-13: last three swing highs clustered near 726.6",
+        "lookback_days": 60
+      },
+      {
+        "name": "Double Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "matched_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "evidence": "2024-05-13: swing highs 730.726 and 723.256 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Double Bottom",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed lows",
+          "support holding",
+          "bullish reversal potential"
+        ],
+        "matched_features": [
+          "two failed lows",
+          "support holding",
+          "bullish reversal potential"
+        ],
+        "evidence": "2024-05-13: swing lows 705.635 and 706.534 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Ascending Triangle",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.62,
+        "structure_features": [
+          "flat resistance",
+          "rising lows",
+          "buying pressure increasing"
+        ],
+        "matched_features": [
+          "flat resistance",
+          "rising lows",
+          "buying pressure increasing"
+        ],
+        "evidence": "2024-05-13: resistance clustered near 726.6, lows rising",
+        "lookback_days": 60
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-05-13: latest bullish imbalance from 763.9 to 768.6 at bar_index=258",
+        "lookback_days": 2,
+        "abbreviation": "FVG"
+      },
+      {
+        "name": "Head and Shoulders",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.58,
+        "structure_features": [
+          "three peaks",
+          "middle peak highest",
+          "trend exhaustion",
+          "bearish reversal"
+        ],
+        "matched_features": [
+          "three peaks",
+          "middle peak highest",
+          "trend exhaustion",
+          "bearish reversal"
+        ],
+        "evidence": "2024-05-13: peak sequence 725.687, 730.726, 723.256",
+        "lookback_days": 80
+      },
+      {
+        "name": "Mitigation Block",
+        "category": "smc_ict",
+        "direction": "neutral",
+        "confidence": 0.55,
+        "structure_features": [
+          "return to previous imbalance zone",
+          "liquidity rebalance"
+        ],
+        "matched_features": [
+          "return to previous imbalance zone",
+          "liquidity rebalance"
+        ],
+        "evidence": "2024-05-13: close 765.6 returned into FVG zone [763.9, 768.6]",
+        "lookback_days": 2
+      }
+    ],
+    "conflicts": [
+      "bearish rejection pattern appears inside short-term ascending structure"
+    ],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "COST:2024-05-13",
+    "ticker": "COST",
+    "trade_date": "2024-05-13",
+    "as_of_close_date": "2024-05-13",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "COST",
+      "as_of_date": "2024-05-13",
+      "trend_regime": "ascending",
+      "volatility_regime": "normal",
+      "momentum_regime": "negative",
+      "liquidity_regime": "normal",
+      "event_regime": "none",
+      "structure_quality": "fragmented",
+      "exhaustion_state": "late_trend_fatigue",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.42,
+      "trend_strength": 0.58,
+      "momentum_score_value": -0.46,
+      "risk_pressure_score": 0.63,
+      "event_impact_score": 0.0,
+      "confidence": 0.64,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "ascending",
+        "trading_timeframe_trend": "ascending",
+        "lower_timeframe_trend": "descending",
+        "alignment": "pullback_against_higher_timeframe",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.53,
+        "reversal_risk": 0.64,
+        "breakout_quality": 0.22,
+        "pullback_quality": 0.44,
+        "volume_support": 0.49,
+        "event_risk": 0.05,
+        "reward_risk_quality": 0.36
+      },
+      "event_certainty": 0.95
+    },
+    "ohlcv_anchors": {
+      "current_price": 765.629,
+      "atr5": 13.5989,
+      "atr14": 13.0276,
+      "ema5": 762.9039,
+      "ema10": 751.025,
+      "ema20": 737.3743,
+      "sma20": 727.814,
+      "sma50": 723.9685,
+      "sma200": 625.7952,
+      "nearest_support": 764.0782,
+      "nearest_resistance": 770.1329,
+      "recent_high_10d": 779.7829,
+      "recent_high_20d": 779.7829,
+      "recent_closes_5d": [
+        761.8361,
+        754.0331,
+        769.4711,
+        777.5211,
+        765.629
+      ],
+      "recent_lows_5d": [
+        746.2895,
+        753.3417,
+        754.2307,
+        768.6019,
+        764.0782
+      ],
+      "volume_ratio": 0.969,
+      "volume_ratio_3d": [
+        1.04,
+        0.997,
+        0.969
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "ascending",
+        "structure_quality": "fragmented",
+        "pattern": "Break of Structure",
+        "breakout_status": "false_breakout",
+        "support": 728.9998,
+        "resistance": 776.1666,
+        "volume_confirmation": "normal",
+        "confidence": 0.73
+      },
+      "long_term_structure": {
+        "trend": "ascending",
+        "market_phase": "late_bull_distribution",
+        "key_level": 723.9685,
+        "risk_state": "elevated",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Break of Structure",
+          "direction": "bullish",
+          "confidence": 0.75
+        },
+        {
+          "name": "Bearish Engulfing",
+          "direction": "bearish",
+          "confidence": 0.74
+        },
+        {
+          "name": "Marubozu",
+          "direction": "bearish",
+          "confidence": 0.72
+        },
+        {
+          "name": "Upthrust",
+          "direction": "bearish",
+          "confidence": 0.68
+        },
+        {
+          "name": "Liquidity Sweep",
+          "direction": "bearish",
+          "confidence": 0.67
+        },
+        {
+          "name": "Triple Top",
+          "direction": "bearish",
+          "confidence": 0.64
+        },
+        {
+          "name": "Double Top",
+          "direction": "bearish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Double Bottom",
+          "direction": "bullish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Ascending Triangle",
+          "direction": "bullish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bullish",
+          "confidence": 0.58
+        },
+        {
+          "name": "Head and Shoulders",
+          "direction": "bearish",
+          "confidence": 0.58
+        },
+        {
+          "name": "Mitigation Block",
+          "direction": "neutral",
+          "confidence": 0.55
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-05-13",
+        "trend_regime": "ascending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "b30716318b3b329a5a58d37c68bad80b3c17d9cf6d14f759b1fe79ecf695c2e9"
+  }
+}

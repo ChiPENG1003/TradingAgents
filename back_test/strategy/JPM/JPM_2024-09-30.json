@@ -1,0 +1,500 @@
+{
+  "schema_version": "v3",
+  "ticker": "JPM",
+  "as_of_date": "2024-09-30",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "JPM exhibits aligned ascending higher, trading, and lower timeframe structure with a positive short-term recovery impulse. Realized volatility is normal and stable, but participation is contracting and price remains constrained by an intermediate moving-average and nearby resistance cluster. Late-trend fatigue is present because the long-term advance is classified as late-bull distribution and has opposing reversal-pattern evidence; no concrete event dominates the state. | trend_regime=ascending | volatility_regime=normal | momentum_regime=positive | liquidity_regime=volume_contraction | event_regime=none | structure_quality=coherent | exhaustion_state=late_trend_fatigue | policy_adapter_regime=range | policy_adapter_phase=late_bull_distribution | trend_direction=0.42 | trend_strength=0.64 | momentum=0.31 | risk_pressure=0.48 | event_impact=0.00 | confidence=0.72 | volume_regime=soft | invalidation_type=structure_break | invalidation_detail=reclassify_ascending_structure_if_the_confirmed_higher_high_higher_low_sequence_fails_through_the_recent_structural_higher_low_with_persistent_weak_participation_or_volatility_expansion | risks=late-bull-distribution fatigue; soft participation during recovery; intermediate moving-average resistance overhead; lower-confidence double-top reversal evidence; failure of the higher-high/higher-low sequence | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=normal, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | LLM regime=strong_uptrend downgraded to range — EMA5/10/20 structure does not confirm short-term uptrend. | market_phase=late_bull_distribution blocks new entries. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-10-11",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "JPM",
+    "as_of_date": "2024-09-30",
+    "trend_regime": "ascending",
+    "volatility_regime": "normal",
+    "momentum_regime": "positive",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "none",
+    "structure_quality": "coherent",
+    "exhaustion_state": "late_trend_fatigue",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.42,
+    "trend_strength": 0.64,
+    "momentum_score_value": 0.31,
+    "risk_pressure_score": 0.48,
+    "event_impact_score": 0.0,
+    "confidence": 0.72,
+    "confidence_components": {
+      "anchor_agreement": 0.75,
+      "timeframe_consistency": 0.78,
+      "volatility_stability": 0.82,
+      "contradiction_absence": 0.61,
+      "event_certainty": 0.95
+    },
+    "horizon_days": 20,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "ascending",
+      "trading_timeframe_trend": "ascending",
+      "lower_timeframe_trend": "ascending",
+      "alignment": "aligned",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "structure_break",
+      "invalidation_detail": "reclassify_ascending_structure_if_the_confirmed_higher_high_higher_low_sequence_fails_through_the_recent_structural_higher_low_with_persistent_weak_participation_or_volatility_expansion",
+      "reference_timeframe": "multi_timeframe"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Deterministic short-term structure is an ascending, coherent higher-high/higher-low sequence, while the long-term structure remains ascending.",
+        "The latest recovery produced bullish reversal-candle evidence and restored the close above the fast moving-average references.",
+        "The close remains below the intermediate moving-average cluster and immediately adjacent overhead resistance, so the recovery is not fully confirmed across average horizons.",
+        "Short-horizon ATR is modestly below longer-horizon ATR, indicating stable normal realized volatility rather than a fresh expansion.",
+        "Recent volume has remained below its trailing average across three sessions, indicating contracting participation and limited confirmation of the recovery.",
+        "Long-term structure is classified as late-bull distribution; a nearby double-top pattern provides a lower-confidence opposing anchor."
+      ],
+      "event_modifiers": [
+        "No concrete earnings, macroeconomic, policy, filing, or idiosyncratic event was supplied as dominant on the classification date."
+      ],
+      "narrative_residual": [
+        "Research-manager recommendation, directional advocacy, oscillator commentary, and execution framing were excluded from state scoring."
+      ],
+      "contradictory_signals": [
+        "The coherent ascending swing structure and bullish short-term reversal conflict with the close below intermediate moving averages and nearby resistance.",
+        "Soft recent volume does not confirm the bullish recovery.",
+        "Late-bull-distribution classification and a lower-confidence double-top pattern raise fatigue and reversal risk within the broader ascending structure."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.58,
+      "reversal_risk": 0.52,
+      "breakout_quality": 0.39,
+      "pullback_quality": 0.57,
+      "volume_support": 0.31,
+      "event_risk": 0.05,
+      "reward_risk_quality": 0.48
+    },
+    "state_summary": "JPM exhibits aligned ascending higher, trading, and lower timeframe structure with a positive short-term recovery impulse. Realized volatility is normal and stable, but participation is contracting and price remains constrained by an intermediate moving-average and nearby resistance cluster. Late-trend fatigue is present because the long-term advance is classified as late-bull distribution and has opposing reversal-pattern evidence; no concrete event dominates the state.",
+    "key_risks": [
+      "late-bull-distribution fatigue",
+      "soft participation during recovery",
+      "intermediate moving-average resistance overhead",
+      "lower-confidence double-top reversal evidence",
+      "failure of the higher-high/higher-low sequence"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "JPM",
+    "as_of_date": "2024-09-30",
+    "short_term_structure": {
+      "trend": "ascending",
+      "structure_quality": "coherent",
+      "pattern": "Higher High Higher Low",
+      "breakout_status": "none",
+      "support": 200.4959,
+      "resistance": 203.3654,
+      "volume_confirmation": "soft",
+      "confidence": 0.83,
+      "signals": [
+        "Higher High Higher Low",
+        "Bullish Engulfing",
+        "Morning Star",
+        "Double Top",
+        "Fair Value Gap"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "ascending",
+      "market_phase": "late_bull_distribution",
+      "key_level": 200.1984,
+      "risk_state": "elevated",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Higher High Higher Low",
+        "category": "market_structure",
+        "direction": "bullish",
+        "confidence": 0.76,
+        "structure_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "matched_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "evidence": "2024-09-30: highs 203.365->204.363, lows 192.521->200.198",
+        "lookback_days": 10
+      },
+      {
+        "name": "Bullish Engulfing",
+        "category": "double_candlestick",
+        "direction": "bullish",
+        "confidence": 0.74,
+        "structure_features": [
+          "second bullish candle fully engulfs previous bearish candle",
+          "strong buyer takeover",
+          "momentum reversal"
+        ],
+        "matched_features": [
+          "second bullish candle fully engulfs previous bearish candle",
+          "strong buyer takeover",
+          "momentum reversal"
+        ],
+        "evidence": "2024-09-30: current real body [198, 202.4] engulfs previous [202, 202.2]",
+        "lookback_days": 2
+      },
+      {
+        "name": "Morning Star",
+        "category": "three_candlestick",
+        "direction": "bullish",
+        "confidence": 0.72,
+        "structure_features": [
+          "downtrend candle",
+          "indecision candle",
+          "strong bullish recovery",
+          "trend exhaustion"
+        ],
+        "matched_features": [
+          "downtrend candle",
+          "indecision candle",
+          "strong bullish recovery",
+          "trend exhaustion"
+        ],
+        "evidence": "2024-09-30: third close 202.4 recovered above first-candle midpoint 202",
+        "lookback_days": 3
+      },
+      {
+        "name": "Double Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "matched_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "evidence": "2024-09-30: swing highs 203.365 and 204.363 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-09-30: latest bearish imbalance from 199.3 to 205.5 at bar_index=246",
+        "lookback_days": 14,
+        "abbreviation": "FVG"
+      },
+      {
+        "name": "Mitigation Block",
+        "category": "smc_ict",
+        "direction": "neutral",
+        "confidence": 0.55,
+        "structure_features": [
+          "return to previous imbalance zone",
+          "liquidity rebalance"
+        ],
+        "matched_features": [
+          "return to previous imbalance zone",
+          "liquidity rebalance"
+        ],
+        "evidence": "2024-09-30: close 202.4 returned into FVG zone [199.3, 205.5]",
+        "lookback_days": 14
+      },
+      {
+        "name": "Order Block",
+        "category": "smc_ict",
+        "direction": "bullish",
+        "confidence": 0.54,
+        "structure_features": [
+          "institutional transaction zone",
+          "strong reaction area"
+        ],
+        "matched_features": [
+          "institutional transaction zone",
+          "strong reaction area"
+        ],
+        "evidence": "2024-09-30: prior opposite candle body zone [202, 202.2] before displacement",
+        "lookback_days": 1
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "JPM:2024-09-30",
+    "ticker": "JPM",
+    "trade_date": "2024-09-30",
+    "as_of_close_date": "2024-09-30",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "JPM",
+      "as_of_date": "2024-09-30",
+      "trend_regime": "ascending",
+      "volatility_regime": "normal",
+      "momentum_regime": "positive",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "none",
+      "structure_quality": "coherent",
+      "exhaustion_state": "late_trend_fatigue",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.42,
+      "trend_strength": 0.64,
+      "momentum_score_value": 0.31,
+      "risk_pressure_score": 0.48,
+      "event_impact_score": 0.0,
+      "confidence": 0.72,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "ascending",
+        "trading_timeframe_trend": "ascending",
+        "lower_timeframe_trend": "ascending",
+        "alignment": "aligned",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.58,
+        "reversal_risk": 0.52,
+        "breakout_quality": 0.39,
+        "pullback_quality": 0.57,
+        "volume_support": 0.31,
+        "event_risk": 0.05,
+        "reward_risk_quality": 0.48
+      },
+      "event_certainty": 0.95
+    },
+    "ohlcv_anchors": {
+      "current_price": 202.3577,
+      "atr5": 3.3992,
+      "atr14": 3.5234,
+      "ema5": 202.0294,
+      "ema10": 201.9949,
+      "ema20": 202.5259,
+      "sma20": 202.5309,
+      "sma50": 202.6727,
+      "sma200": 185.0884,
+      "nearest_support": 201.8874,
+      "nearest_resistance": 202.4537,
+      "recent_high_10d": 204.3634,
+      "recent_high_20d": 215.0639,
+      "recent_closes_5d": [
+        203.0583,
+        201.7147,
+        201.3212,
+        202.0122,
+        202.3577
+      ],
+      "recent_lows_5d": [
+        201.8874,
+        200.1984,
+        200.5823,
+        200.8894,
+        196.9835
+      ],
+      "volume_ratio": 0.839,
+      "volume_ratio_3d": [
+        0.759,
+        0.681,
+        0.839
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "ascending",
+        "structure_quality": "coherent",
+        "pattern": "Higher High Higher Low",
+        "breakout_status": "none",
+        "support": 200.4959,
+        "resistance": 203.3654,
+        "volume_confirmation": "soft",
+        "confidence": 0.83
+      },
+      "long_term_structure": {
+        "trend": "ascending",
+        "market_phase": "late_bull_distribution",
+        "key_level": 200.1984,
+        "risk_state": "elevated",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Higher High Higher Low",
+          "direction": "bullish",
+          "confidence": 0.76
+        },
+        {
+          "name": "Bullish Engulfing",
+          "direction": "bullish",
+          "confidence": 0.74
+        },
+        {
+          "name": "Morning Star",
+          "direction": "bullish",
+          "confidence": 0.72
+        },
+        {
+          "name": "Double Top",
+          "direction": "bearish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bearish",
+          "confidence": 0.58
+        },
+        {
+          "name": "Mitigation Block",
+          "direction": "neutral",
+          "confidence": 0.55
+        },
+        {
+          "name": "Order Block",
+          "direction": "bullish",
+          "confidence": 0.54
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-09-30",
+        "trend_regime": "ascending",
+        "volatility_regime": "normal",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "9a20be5f411c1ce03d346ef9e0543cd502e823a44c6f73f5d05257eddc54d966"
+  }
+}

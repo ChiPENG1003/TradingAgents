@@ -1,0 +1,630 @@
+{
+  "schema_version": "v3",
+  "ticker": "AAPL",
+  "as_of_date": "2025-07-14",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "AAPL is in a transition regime with fragmented short-term structure. Price has slipped below the 5- and 10-day EMAs while still holding above the 20-day EMA and higher simple moving averages, which indicates deterioration from the prior constructive uptrend without full higher-timeframe trend failure. Bearish reversal evidence from an Evening Star and local double-top structure is pressuring momentum negative, while below-average volume and proximity to support argue for a fragile, low-participation environment rather than a decisive breakdown or breakout state. | trend_regime=transition | volatility_regime=normal | momentum_regime=negative | liquidity_regime=volume_contraction | event_regime=none | structure_quality=fragmented | exhaustion_state=late_trend_fatigue | policy_adapter_regime=unclear | policy_adapter_phase=unclear | trend_direction=-0.18 | trend_strength=0.42 | momentum=-0.36 | risk_pressure=0.58 | event_impact=0.00 | confidence=0.81 | volume_regime=soft | invalidation_type=timeframe_reclassification | invalidation_detail=AAPL 2025-07-14 transition/fragmented classification should be reclassified if daily price re-establishes acceptance above the EMA5/EMA10 cluster and recent resistance zone after the Evening Star and double-top reversal evidence, or if price decisively loses the 206.4-207.3 support/key-level area and converts the current transition into a coherent descending structure. | risks=Support is extremely close and vulnerable to a structure reclassification.; Bearish reversal patterns increase continuation-to-downside risk.; Soft volume weakens structural confirmation on either side.; Transition state can flip quickly if price reclaims short moving averages or loses the 206.4-207.3 support band.; Recent highs leave overhead supply near 210.1-211.8. | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | target_weight=0.00 below threshold; HOLD. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2025-07-25",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "AAPL",
+    "as_of_date": "2025-07-14",
+    "trend_regime": "transition",
+    "volatility_regime": "normal",
+    "momentum_regime": "negative",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "none",
+    "structure_quality": "fragmented",
+    "exhaustion_state": "late_trend_fatigue",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": -0.18,
+    "trend_strength": 0.42,
+    "momentum_score_value": -0.36,
+    "risk_pressure_score": 0.58,
+    "event_impact_score": 0.0,
+    "confidence": 0.81,
+    "confidence_components": {
+      "anchor_agreement": 0.86,
+      "timeframe_consistency": 0.79,
+      "volatility_stability": 0.84,
+      "contradiction_absence": 0.78,
+      "event_certainty": 0.95
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "transition",
+      "trading_timeframe_trend": "transition",
+      "lower_timeframe_trend": "descending",
+      "alignment": "countertrend_move",
+      "short_term_override": "confirmed_structure_break"
+    },
+    "invalidation": {
+      "invalidation_type": "timeframe_reclassification",
+      "invalidation_detail": "AAPL 2025-07-14 transition/fragmented classification should be reclassified if daily price re-establishes acceptance above the EMA5/EMA10 cluster and recent resistance zone after the Evening Star and double-top reversal evidence, or if price decisively loses the 206.4-207.3 support/key-level area and converts the current transition into a coherent descending structure.",
+      "reference_timeframe": "multi_timeframe"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "AAPL current price 207.796 is below EMA5 209.356 and EMA10 208.284 but above EMA20 206.007, indicating short-term deterioration without a full medium short-term breakdown.",
+        "Current price 207.796 is below SMA5 209.835 and SMA10 209.396 but above SMA20 203.981 and SMA50 203.02, consistent with a transition state rather than a clean higher-timeframe downtrend.",
+        "Deterministic short_term structure is trend=transition, quality=fragmented, pattern=Evening Star, breakout_status=none, support=207.3, resistance=211.8, volume=soft, confidence=0.61.",
+        "Deterministic long_term structure is trend=transition, market_phase=unclear, key_level=206.4, risk_state=transition, confidence=0.64.",
+        "Detected Evening Star reversal pattern is bearish with confidence 0.72 and evidence that the third close 207.8 fell below the first-candle midpoint 210.6, signaling trend exhaustion and near-term downside impulse.",
+        "Detected Double Top pattern is bearish with confidence 0.62, based on swing highs 215.376 and 212.636 within 1.8%, adding local reversal risk near recent highs.",
+        "Detected bearish fair value gap from 210.6 to 211 adds overhead imbalance/resistance above current price.",
+        "ATR(5) 3.3288 is below ATR(14) 4.1734 and ATR(14) is about 2.008% of price, indicating realized volatility has eased from prior higher movement into a stable normal regime rather than a shock regime.",
+        "Nearest resistance 210.077 is about 1.10% above current price while nearest support 207.626 is about 0.08% below current price, placing price directly on top of support with unfavorable local symmetry.",
+        "Latest volume ratio 0.714 versus the 20-day average, with last three ratios [0.798, 0.728, 0.714], indicates persistent below-average participation and contracting liquidity support during the pullback/reversal phase.",
+        "Five-day range 212.636 to 206.401 and ten-day range 215.376 to 198.473 show a wider recent swing backdrop but no current volatility shock."
+      ],
+      "event_modifiers": [
+        "No dominant earnings, macro, policy, filing, or idiosyncratic shock catalyst is supplied for AAPL on 2025-07-14.",
+        "State estimation is anchor-dominant, with event influence low relative to price structure, volatility, and volume evidence."
+      ],
+      "narrative_residual": [
+        "Research-manager, trader, and aggressive analyst materials are directionally bullish, but that advocacy is treated as rhetoric rather than primary evidence.",
+        "Bullish framing around support and reclaim scenarios is residual narrative only and does not override the anchor-derived transition/fragmented structure.",
+        "Absence of a developed bearish debate case is not treated as bullish evidence."
+      ],
+      "contradictory_signals": [
+        "Price remains above EMA20, SMA20, and SMA50, which prevents classification as a coherent descending regime despite bearish reversal patterns.",
+        "ATR has normalized rather than expanded, so price damage is occurring without volatility confirmation of a full breakdown.",
+        "Support at 207.626 and long-term key level 206.4 are still nearby, so the current bearish impulse has not yet completed a decisive structure failure."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.39,
+      "reversal_risk": 0.64,
+      "breakout_quality": 0.22,
+      "pullback_quality": 0.35,
+      "volume_support": 0.29,
+      "event_risk": 0.08,
+      "reward_risk_quality": 0.34
+    },
+    "state_summary": "AAPL is in a transition regime with fragmented short-term structure. Price has slipped below the 5- and 10-day EMAs while still holding above the 20-day EMA and higher simple moving averages, which indicates deterioration from the prior constructive uptrend without full higher-timeframe trend failure. Bearish reversal evidence from an Evening Star and local double-top structure is pressuring momentum negative, while below-average volume and proximity to support argue for a fragile, low-participation environment rather than a decisive breakdown or breakout state.",
+    "key_risks": [
+      "Support is extremely close and vulnerable to a structure reclassification.",
+      "Bearish reversal patterns increase continuation-to-downside risk.",
+      "Soft volume weakens structural confirmation on either side.",
+      "Transition state can flip quickly if price reclaims short moving averages or loses the 206.4-207.3 support band.",
+      "Recent highs leave overhead supply near 210.1-211.8."
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "AAPL",
+    "as_of_date": "2025-07-14",
+    "short_term_structure": {
+      "trend": "transition",
+      "structure_quality": "fragmented",
+      "pattern": "Evening Star",
+      "breakout_status": "none",
+      "support": 207.3245,
+      "resistance": 211.8208,
+      "volume_confirmation": "soft",
+      "confidence": 0.61,
+      "signals": [
+        "Evening Star",
+        "Double Top",
+        "Fair Value Gap"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "transition",
+      "market_phase": "unclear",
+      "key_level": 206.4012,
+      "risk_state": "transition",
+      "confidence": 0.64
+    },
+    "detected_patterns": [
+      {
+        "name": "Evening Star",
+        "category": "three_candlestick",
+        "direction": "bearish",
+        "confidence": 0.72,
+        "structure_features": [
+          "uptrend candle",
+          "indecision candle",
+          "strong bearish reversal",
+          "trend exhaustion"
+        ],
+        "matched_features": [
+          "uptrend candle",
+          "indecision candle",
+          "strong bearish reversal",
+          "trend exhaustion"
+        ],
+        "evidence": "2025-07-14: third close 207.8 fell below first-candle midpoint 210.6",
+        "lookback_days": 3
+      },
+      {
+        "name": "Double Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "matched_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "evidence": "2025-07-14: swing highs 215.376 and 212.636 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2025-07-14: latest bearish imbalance from 210.6 to 211 at bar_index=255",
+        "lookback_days": 5,
+        "abbreviation": "FVG"
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "feature_snapshot_v1",
+    "ticker": "AAPL",
+    "trade_date": "2025-07-14",
+    "as_of_close_date": "2025-07-14",
+    "feature_columns": {
+      "llm": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "feature_scores.*",
+        "confidence_components.*",
+        "timeframe_hierarchy.*",
+        "invalidation.*"
+      ],
+      "ohlcv": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "atr14_pct",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma5",
+        "sma10",
+        "sma20",
+        "sma50",
+        "recent_high_5d",
+        "recent_low_5d",
+        "recent_high_10d",
+        "recent_low_10d",
+        "recent_high_20d",
+        "recent_low_20d",
+        "nearest_resistance",
+        "nearest_support",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "execution_context": [
+        "holdings_info.*",
+        "trading_history_summary.*",
+        "prior_pending_orders[]",
+        "constraints.*"
+      ],
+      "exclude_from_ml_features": [
+        "prior_policy_output_do_not_use_as_label.*"
+      ]
+    },
+    "llm_market_state": {
+      "schema_version": "state_v2",
+      "ticker": "AAPL",
+      "as_of_date": "2025-07-14",
+      "trend_regime": "transition",
+      "volatility_regime": "normal",
+      "momentum_regime": "negative",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "none",
+      "structure_quality": "fragmented",
+      "exhaustion_state": "late_trend_fatigue",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": -0.18,
+      "trend_strength": 0.42,
+      "momentum_score_value": -0.36,
+      "risk_pressure_score": 0.58,
+      "event_impact_score": 0.0,
+      "confidence": 0.81,
+      "confidence_components": {
+        "anchor_agreement": 0.86,
+        "timeframe_consistency": 0.79,
+        "volatility_stability": 0.84,
+        "contradiction_absence": 0.78,
+        "event_certainty": 0.95
+      },
+      "horizon_days": 15,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "transition",
+        "trading_timeframe_trend": "transition",
+        "lower_timeframe_trend": "descending",
+        "alignment": "countertrend_move",
+        "short_term_override": "confirmed_structure_break"
+      },
+      "invalidation": {
+        "invalidation_type": "timeframe_reclassification",
+        "invalidation_detail": "AAPL 2025-07-14 transition/fragmented classification should be reclassified if daily price re-establishes acceptance above the EMA5/EMA10 cluster and recent resistance zone after the Evening Star and double-top reversal evidence, or if price decisively loses the 206.4-207.3 support/key-level area and converts the current transition into a coherent descending structure.",
+        "reference_timeframe": "multi_timeframe"
+      },
+      "evidence": {
+        "hard_anchors": [
+          "AAPL current price 207.796 is below EMA5 209.356 and EMA10 208.284 but above EMA20 206.007, indicating short-term deterioration without a full medium short-term breakdown.",
+          "Current price 207.796 is below SMA5 209.835 and SMA10 209.396 but above SMA20 203.981 and SMA50 203.02, consistent with a transition state rather than a clean higher-timeframe downtrend.",
+          "Deterministic short_term structure is trend=transition, quality=fragmented, pattern=Evening Star, breakout_status=none, support=207.3, resistance=211.8, volume=soft, confidence=0.61.",
+          "Deterministic long_term structure is trend=transition, market_phase=unclear, key_level=206.4, risk_state=transition, confidence=0.64.",
+          "Detected Evening Star reversal pattern is bearish with confidence 0.72 and evidence that the third close 207.8 fell below the first-candle midpoint 210.6, signaling trend exhaustion and near-term downside impulse.",
+          "Detected Double Top pattern is bearish with confidence 0.62, based on swing highs 215.376 and 212.636 within 1.8%, adding local reversal risk near recent highs.",
+          "Detected bearish fair value gap from 210.6 to 211 adds overhead imbalance/resistance above current price.",
+          "ATR(5) 3.3288 is below ATR(14) 4.1734 and ATR(14) is about 2.008% of price, indicating realized volatility has eased from prior higher movement into a stable normal regime rather than a shock regime.",
+          "Nearest resistance 210.077 is about 1.10% above current price while nearest support 207.626 is about 0.08% below current price, placing price directly on top of support with unfavorable local symmetry.",
+          "Latest volume ratio 0.714 versus the 20-day average, with last three ratios [0.798, 0.728, 0.714], indicates persistent below-average participation and contracting liquidity support during the pullback/reversal phase.",
+          "Five-day range 212.636 to 206.401 and ten-day range 215.376 to 198.473 show a wider recent swing backdrop but no current volatility shock."
+        ],
+        "event_modifiers": [
+          "No dominant earnings, macro, policy, filing, or idiosyncratic shock catalyst is supplied for AAPL on 2025-07-14.",
+          "State estimation is anchor-dominant, with event influence low relative to price structure, volatility, and volume evidence."
+        ],
+        "narrative_residual": [
+          "Research-manager, trader, and aggressive analyst materials are directionally bullish, but that advocacy is treated as rhetoric rather than primary evidence.",
+          "Bullish framing around support and reclaim scenarios is residual narrative only and does not override the anchor-derived transition/fragmented structure.",
+          "Absence of a developed bearish debate case is not treated as bullish evidence."
+        ],
+        "contradictory_signals": [
+          "Price remains above EMA20, SMA20, and SMA50, which prevents classification as a coherent descending regime despite bearish reversal patterns.",
+          "ATR has normalized rather than expanded, so price damage is occurring without volatility confirmation of a full breakdown.",
+          "Support at 207.626 and long-term key level 206.4 are still nearby, so the current bearish impulse has not yet completed a decisive structure failure."
+        ]
+      },
+      "feature_scores": {
+        "trend_continuation": 0.39,
+        "reversal_risk": 0.64,
+        "breakout_quality": 0.22,
+        "pullback_quality": 0.35,
+        "volume_support": 0.29,
+        "event_risk": 0.08,
+        "reward_risk_quality": 0.34
+      },
+      "state_summary": "AAPL is in a transition regime with fragmented short-term structure. Price has slipped below the 5- and 10-day EMAs while still holding above the 20-day EMA and higher simple moving averages, which indicates deterioration from the prior constructive uptrend without full higher-timeframe trend failure. Bearish reversal evidence from an Evening Star and local double-top structure is pressuring momentum negative, while below-average volume and proximity to support argue for a fragile, low-participation environment rather than a decisive breakdown or breakout state.",
+      "key_risks": [
+        "Support is extremely close and vulnerable to a structure reclassification.",
+        "Bearish reversal patterns increase continuation-to-downside risk.",
+        "Soft volume weakens structural confirmation on either side.",
+        "Transition state can flip quickly if price reclaims short moving averages or loses the 206.4-207.3 support band.",
+        "Recent highs leave overhead supply near 210.1-211.8."
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "soft",
+      "state": {
+        "schema_version": "state_v2",
+        "ticker": "^GSPC",
+        "as_of_date": "2025-07-14",
+        "trend_regime": "ascending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "positive",
+        "liquidity_regime": "volume_contraction",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "confidence_components": {
+          "anchor_agreement": 0.7,
+          "timeframe_consistency": 0.7,
+          "volatility_stability": 0.75,
+          "contradiction_absence": 0.65,
+          "event_certainty": 0.8
+        },
+        "horizon_days": 5,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "invalidation": {
+          "invalidation_type": "timeframe_reclassification",
+          "invalidation_detail": "Anchor structure changes materially at the next review.",
+          "reference_timeframe": "trading"
+        },
+        "evidence": {
+          "hard_anchors": [
+            "Fallback state derived from price structure, moving averages, ATR, support/resistance, and volume anchors."
+          ],
+          "event_modifiers": [],
+          "narrative_residual": [],
+          "contradictory_signals": []
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.35,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "state_summary": "LLM MarketState JSON was unavailable; fallback latent-state classification was derived from hard OHLCV anchors.",
+        "key_risks": [
+          "Fallback state excludes qualitative news/fundamental nuance",
+          "Single-date technical classification may be noisy"
+        ]
+      }
+    },
+    "ohlcv_anchors": {
+      "as_of_close_date": "2025-07-14",
+      "current_price": 207.7956,
+      "atr5": 3.3288,
+      "atr14": 4.1734,
+      "atr14_pct": 2.008,
+      "ema5": 209.3563,
+      "ema10": 208.2835,
+      "ema20": 206.0071,
+      "sma5": 209.8355,
+      "sma10": 209.3963,
+      "sma20": 203.9808,
+      "sma50": 203.0203,
+      "sma200": null,
+      "recent_high_5d": 212.6364,
+      "recent_low_5d": 206.4012,
+      "recent_high_10d": 215.3756,
+      "recent_low_10d": 198.4726,
+      "recent_high_20d": 215.3756,
+      "recent_low_20d": 194.2992,
+      "recent_closes_5d": [
+        209.1801,
+        210.3057,
+        211.5706,
+        210.3256,
+        207.7956
+      ],
+      "recent_lows_5d": [
+        207.6263,
+        206.4012,
+        209.2,
+        209.0307,
+        206.7199
+      ],
+      "nearest_resistance": 210.0766,
+      "nearest_support": 207.6263,
+      "latest_volume": 38840100.0,
+      "volume_20_sma": 54370010.0,
+      "volume_50_sma": 54854016.0,
+      "volume_ratio": 0.714,
+      "volume_ratio_3d": [
+        0.798,
+        0.728,
+        0.714
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "transition",
+        "structure_quality": "fragmented",
+        "pattern": "Evening Star",
+        "breakout_status": "none",
+        "support": 207.3245,
+        "resistance": 211.8208,
+        "volume_confirmation": "soft",
+        "confidence": 0.61,
+        "signals": [
+          "Evening Star",
+          "Double Top",
+          "Fair Value Gap"
+        ]
+      },
+      "long_term_structure": {
+        "trend": "transition",
+        "market_phase": "unclear",
+        "key_level": 206.4012,
+        "risk_state": "transition",
+        "confidence": 0.64
+      },
+      "detected_patterns": [
+        {
+          "name": "Evening Star",
+          "category": "three_candlestick",
+          "direction": "bearish",
+          "confidence": 0.72,
+          "structure_features": [
+            "uptrend candle",
+            "indecision candle",
+            "strong bearish reversal",
+            "trend exhaustion"
+          ],
+          "matched_features": [
+            "uptrend candle",
+            "indecision candle",
+            "strong bearish reversal",
+            "trend exhaustion"
+          ],
+          "evidence": "2025-07-14: third close 207.8 fell below first-candle midpoint 210.6",
+          "lookback_days": 3
+        },
+        {
+          "name": "Double Top",
+          "category": "classical_chart",
+          "direction": "bearish",
+          "confidence": 0.62,
+          "structure_features": [
+            "two failed highs",
+            "resistance rejection",
+            "bearish reversal potential"
+          ],
+          "matched_features": [
+            "two failed highs",
+            "resistance rejection",
+            "bearish reversal potential"
+          ],
+          "evidence": "2025-07-14: swing highs 215.376 and 212.636 within 1.8%",
+          "lookback_days": 40
+        },
+        {
+          "name": "Fair Value Gap",
+          "category": "smc_ict",
+          "direction": "bearish",
+          "confidence": 0.58,
+          "structure_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "matched_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "evidence": "2025-07-14: latest bearish imbalance from 210.6 to 211 at bar_index=255",
+          "lookback_days": 5,
+          "abbreviation": "FVG"
+        }
+      ],
+      "conflicts": []
+    },
+    "derived_regimes": {
+      "volume_regime": "soft",
+      "recent_phases": [
+        "late_bear_exhaustion",
+        "late_bull_distribution"
+      ]
+    },
+    "execution_context": {
+      "constraints": {
+        "available": true,
+        "allowed_actions": [
+          "BUY",
+          "HOLD",
+          "SELL"
+        ],
+        "entry_mode": "pullback_or_reduced_size",
+        "max_entry_size_pct": 45,
+        "max_add_position_size_pct": 30,
+        "volume_regime": "soft",
+        "strong_uptrend": false,
+        "short_term_uptrend": false,
+        "broad_index": false,
+        "bearish_volume_divergence": false,
+        "notes": [
+          "Sub-normal 20-day volume caps short-term entries at 45% and adds at 30%."
+        ]
+      },
+      "holdings_info": {
+        "quantity": 0.0,
+        "cash": 99654.61328149046,
+        "mark_price": 210.3255920410156,
+        "equity": 99654.61328149046,
+        "as_of_date": "2025-07-11"
+      },
+      "trading_history_summary": {
+        "window_days": 28,
+        "as_of": "2025-07-11",
+        "n_trades": 1,
+        "n_wins": 1,
+        "win_rate": 1.0,
+        "total_pnl": 72.75271477586115,
+        "avg_pnl": 72.75271477586115,
+        "last_n_pnl": [
+          {
+            "exit_date": "2025-06-30",
+            "entry_date": "2025-06-13",
+            "pnl": 72.75271477586115,
+            "reason": "market_close"
+          }
+        ]
+      },
+      "prior_pending_orders": []
+    },
+    "prior_policy_output_do_not_use_as_label": {
+      "schema_version": "v3",
+      "ticker": "AAPL",
+      "as_of_date": "2025-07-14",
+      "action": "HOLD",
+      "entry": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "add_position": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "take_profit": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "reduce_stop": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "stop_loss": {
+        "price": null
+      },
+      "rationale_summary": "AAPL is in a transition regime with fragmented short-term structure. Price has slipped below the 5- and 10-day EMAs while still holding above the 20-day EMA and higher simple moving averages, which indicates deterioration from the prior constructive uptrend without full higher-timeframe trend failure. Bearish reversal evidence from an Evening Star and local double-top structure is pressuring momentum negative, while below-average volume and proximity to support argue for a fragile, low-participation environment rather than a decisive breakdown or breakout state. | trend_regime=transition | volatility_regime=normal | momentum_regime=negative | liquidity_regime=volume_contraction | event_regime=none | structure_quality=fragmented | exhaustion_state=late_trend_fatigue | policy_adapter_regime=unclear | policy_adapter_phase=unclear | trend_direction=-0.18 | trend_strength=0.42 | momentum=-0.36 | risk_pressure=0.58 | event_impact=0.00 | confidence=0.81 | volume_regime=soft | invalidation_type=timeframe_reclassification | invalidation_detail=AAPL 2025-07-14 transition/fragmented classification should be reclassified if daily price re-establishes acceptance above the EMA5/EMA10 cluster and recent resistance zone after the Evening Star and double-top reversal evidence, or if price decisively loses the 206.4-207.3 support/key-level area and converts the current transition into a coherent descending structure. | risks=Support is extremely close and vulnerable to a structure reclassification.; Bearish reversal patterns increase continuation-to-downside risk.; Soft volume weakens structural confirmation on either side.; Transition state can flip quickly if price reclaims short moving averages or loses the 206.4-207.3 support band.; Recent highs leave overhead supply near 210.1-211.8. | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | target_weight=0.00 below threshold; HOLD. | hardcoded_order_size_multiplier=0.8"
+    }
+  }
+}

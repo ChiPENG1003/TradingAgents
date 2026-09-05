@@ -1,0 +1,615 @@
+{
+  "schema_version": "v3",
+  "ticker": "AAPL",
+  "as_of_date": "2025-04-30",
+  "action": "BUY",
+  "entry": {
+    "price": 208.97,
+    "size_pct": 24.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": 228.28,
+    "size_pct": 8.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": 205.11
+  },
+  "rationale_summary": "AAPL is in an ascending, coherent trading environment with aligned higher, trading, and lower timeframe structure. Price is holding above the 5-, 10-, and 20-day EMAs and above the short moving-average stack, while realized volatility has compressed meaningfully from prior elevated readings toward a more normal regime. The main qualifiers are below-average volume participation and very close overhead resistance, which make the uptrend statistically favorable but somewhat extended and less strongly confirmed by participation. | trend_regime=ascending | volatility_regime=normal | momentum_regime=positive | liquidity_regime=volume_contraction | event_regime=none | structure_quality=coherent | exhaustion_state=positive_extension | policy_adapter_regime=strong_uptrend | policy_adapter_phase=healthy_bull_trend | trend_direction=0.72 | trend_strength=0.81 | momentum=0.66 | risk_pressure=0.36 | event_impact=0.00 | confidence=0.90 | volume_regime=shrinking | invalidation_type=structure_break | invalidation_detail=AAPL ascending/coherent classification weakens if daily price loses the 210.2 short-term support area and then fails to hold the 207.275 nearest-support zone, breaking the higher-high/higher-low sequence and forcing timeframe reclassification. | risks=Below-average volume weakens confirmation quality.; Price is within 1% of nearby resistance, raising stall or rejection risk.; Loss of the 210.2 short-term support area would damage the current higher-high/higher-low structure.; Failure to clear the medium-term SMA50 ceiling would keep overhead supply relevant.; Short-term extension after consecutive bullish closes can shift the regime toward digestion or mean reversion. | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=normal, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | LLM market_phase=overextended_bull downgraded to healthy_bull_trend — distance from EMA5 is only 0.60 ATR (< 0.8 threshold). | obvious bull trend-following override: relaxed add/chase/take-profit rules. | obvious bull: volume multiplier floor raised to 0.80. | target_weight=0.60, phase_tp_size=10. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2025-05-11",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "AAPL",
+    "as_of_date": "2025-04-30",
+    "trend_regime": "ascending",
+    "volatility_regime": "normal",
+    "momentum_regime": "positive",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "none",
+    "structure_quality": "coherent",
+    "exhaustion_state": "positive_extension",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.72,
+    "trend_strength": 0.81,
+    "momentum_score_value": 0.66,
+    "risk_pressure_score": 0.36,
+    "event_impact_score": 0.0,
+    "confidence": 0.9,
+    "confidence_components": {
+      "anchor_agreement": 0.94,
+      "timeframe_consistency": 0.9,
+      "volatility_stability": 0.82,
+      "contradiction_absence": 0.9,
+      "event_certainty": 0.97
+    },
+    "horizon_days": 15,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "ascending",
+      "trading_timeframe_trend": "ascending",
+      "lower_timeframe_trend": "ascending",
+      "alignment": "aligned",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "structure_break",
+      "invalidation_detail": "AAPL ascending/coherent classification weakens if daily price loses the 210.2 short-term support area and then fails to hold the 207.275 nearest-support zone, breaking the higher-high/higher-low sequence and forcing timeframe reclassification.",
+      "reference_timeframe": "trading"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "AAPL current price 211.383 is above EMA5 208.474, EMA10 205.373, and EMA20 204.815, confirming positive short-term trend alignment.",
+        "Current price 211.383 is above SMA5 209.195, SMA10 202.953, and SMA20 199.032, while still below SMA50 215.889, indicating a strong trading-timeframe uptrend that has not yet cleared the medium-term moving-average ceiling.",
+        "Deterministic short_term structure is ascending, quality=coherent, pattern=Higher High Higher Low, support=210.2, resistance=211.8, volume=shrinking, confidence=0.83.",
+        "Deterministic long_term structure is ascending with market_phase=healthy_bull_trend, key_level=188.8, risk_state=normal, confidence=0.76.",
+        "Detected market_structure pattern shows successive higher highs and higher lows, with evidence highs 199.556->211.821 and lows 168.321->188.812.",
+        "Three White Soldiers pattern is present with three bullish closes from 209 to 211.4, supporting recent continuation momentum.",
+        "A bullish fair value gap from 200.5 to 201.9 remains below current price, supporting the repaired trend structure.",
+        "ATR(14) 7.8357 is about 3.707% of price and ATR(5) 4.8265 is below ATR(14), indicating realized volatility has compressed from prior elevated conditions toward a more normal and more stable state.",
+        "Nearest resistance 212.457 is only about 0.51% above current price while nearest support 207.275 is about 1.94% below, placing AAPL near the upper edge of its recent range and increasing local extension risk.",
+        "Latest volume ratio 0.666 versus the 20-day average, with last three ratios [0.489, 0.474, 0.666], indicates participation remains below average despite the advance."
+      ],
+      "event_modifiers": [
+        "No dominant earnings, macro, policy, filing, or idiosyncratic shock catalyst is supplied for AAPL on 2025-04-30.",
+        "State estimation is anchor-dominant, with event influence low relative to price structure, volatility, and volume evidence."
+      ],
+      "narrative_residual": [
+        "Research-manager, trader, and debate materials are directionally bullish, but that advocacy is treated as low-weight rhetoric rather than primary evidence.",
+        "Constructive commentary broadly aligns with the anchor-derived uptrend, but it does not override the still-soft volume participation and proximity to nearby resistance.",
+        "Absence of fresh negative company-specific rhetoric marginally reduces narrative drag but is not itself a state driver."
+      ],
+      "contradictory_signals": [
+        "Price structure, EMA alignment, and detected continuation patterns are bullish, but latest volume participation remains below the 20-day average.",
+        "Price is near the nearest resistance band and still below SMA50 215.889, so local upside persistence faces nearby overhead supply even though the primary structure is ascending.",
+        "Positive continuation evidence is present, but short-term extension after three bullish closes raises stall or digestion risk without implying a trend break."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.74,
+      "reversal_risk": 0.31,
+      "breakout_quality": 0.58,
+      "pullback_quality": 0.49,
+      "volume_support": 0.38,
+      "event_risk": 0.07,
+      "reward_risk_quality": 0.55
+    },
+    "state_summary": "AAPL is in an ascending, coherent trading environment with aligned higher, trading, and lower timeframe structure. Price is holding above the 5-, 10-, and 20-day EMAs and above the short moving-average stack, while realized volatility has compressed meaningfully from prior elevated readings toward a more normal regime. The main qualifiers are below-average volume participation and very close overhead resistance, which make the uptrend statistically favorable but somewhat extended and less strongly confirmed by participation.",
+    "key_risks": [
+      "Below-average volume weakens confirmation quality.",
+      "Price is within 1% of nearby resistance, raising stall or rejection risk.",
+      "Loss of the 210.2 short-term support area would damage the current higher-high/higher-low structure.",
+      "Failure to clear the medium-term SMA50 ceiling would keep overhead supply relevant.",
+      "Short-term extension after consecutive bullish closes can shift the regime toward digestion or mean reversion."
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "AAPL",
+    "as_of_date": "2025-04-30",
+    "short_term_structure": {
+      "trend": "ascending",
+      "structure_quality": "coherent",
+      "pattern": "Higher High Higher Low",
+      "breakout_status": "none",
+      "support": 210.1695,
+      "resistance": 211.8208,
+      "volume_confirmation": "shrinking",
+      "confidence": 0.83,
+      "signals": [
+        "Higher High Higher Low",
+        "Three White Soldiers",
+        "Fair Value Gap"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "ascending",
+      "market_phase": "healthy_bull_trend",
+      "key_level": 188.8124,
+      "risk_state": "normal",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Higher High Higher Low",
+        "category": "market_structure",
+        "direction": "bullish",
+        "confidence": 0.76,
+        "structure_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "matched_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "evidence": "2025-04-30: highs 199.556->211.821, lows 168.321->188.812",
+        "lookback_days": 4
+      },
+      {
+        "name": "Three White Soldiers",
+        "category": "three_candlestick",
+        "direction": "bullish",
+        "confidence": 0.68,
+        "structure_features": [
+          "three consecutive bullish candles",
+          "strong bullish continuation",
+          "short covering"
+        ],
+        "matched_features": [
+          "three consecutive bullish candles",
+          "strong bullish continuation"
+        ],
+        "evidence": "2025-04-30: three bullish closes from 209 to 211.4",
+        "lookback_days": 3
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2025-04-30: latest bullish imbalance from 200.5 to 201.9 at bar_index=255",
+        "lookback_days": 5,
+        "abbreviation": "FVG"
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "feature_snapshot_v1",
+    "ticker": "AAPL",
+    "trade_date": "2025-04-30",
+    "as_of_close_date": "2025-04-30",
+    "feature_columns": {
+      "llm": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "feature_scores.*",
+        "confidence_components.*",
+        "timeframe_hierarchy.*",
+        "invalidation.*"
+      ],
+      "ohlcv": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "atr14_pct",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma5",
+        "sma10",
+        "sma20",
+        "sma50",
+        "recent_high_5d",
+        "recent_low_5d",
+        "recent_high_10d",
+        "recent_low_10d",
+        "recent_high_20d",
+        "recent_low_20d",
+        "nearest_resistance",
+        "nearest_support",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "execution_context": [
+        "holdings_info.*",
+        "trading_history_summary.*",
+        "prior_pending_orders[]",
+        "constraints.*"
+      ],
+      "exclude_from_ml_features": [
+        "prior_policy_output_do_not_use_as_label.*"
+      ]
+    },
+    "llm_market_state": {
+      "schema_version": "state_v2",
+      "ticker": "AAPL",
+      "as_of_date": "2025-04-30",
+      "trend_regime": "ascending",
+      "volatility_regime": "normal",
+      "momentum_regime": "positive",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "none",
+      "structure_quality": "coherent",
+      "exhaustion_state": "positive_extension",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.72,
+      "trend_strength": 0.81,
+      "momentum_score_value": 0.66,
+      "risk_pressure_score": 0.36,
+      "event_impact_score": 0.0,
+      "confidence": 0.9,
+      "confidence_components": {
+        "anchor_agreement": 0.94,
+        "timeframe_consistency": 0.9,
+        "volatility_stability": 0.82,
+        "contradiction_absence": 0.9,
+        "event_certainty": 0.97
+      },
+      "horizon_days": 15,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "ascending",
+        "trading_timeframe_trend": "ascending",
+        "lower_timeframe_trend": "ascending",
+        "alignment": "aligned",
+        "short_term_override": "none"
+      },
+      "invalidation": {
+        "invalidation_type": "structure_break",
+        "invalidation_detail": "AAPL ascending/coherent classification weakens if daily price loses the 210.2 short-term support area and then fails to hold the 207.275 nearest-support zone, breaking the higher-high/higher-low sequence and forcing timeframe reclassification.",
+        "reference_timeframe": "trading"
+      },
+      "evidence": {
+        "hard_anchors": [
+          "AAPL current price 211.383 is above EMA5 208.474, EMA10 205.373, and EMA20 204.815, confirming positive short-term trend alignment.",
+          "Current price 211.383 is above SMA5 209.195, SMA10 202.953, and SMA20 199.032, while still below SMA50 215.889, indicating a strong trading-timeframe uptrend that has not yet cleared the medium-term moving-average ceiling.",
+          "Deterministic short_term structure is ascending, quality=coherent, pattern=Higher High Higher Low, support=210.2, resistance=211.8, volume=shrinking, confidence=0.83.",
+          "Deterministic long_term structure is ascending with market_phase=healthy_bull_trend, key_level=188.8, risk_state=normal, confidence=0.76.",
+          "Detected market_structure pattern shows successive higher highs and higher lows, with evidence highs 199.556->211.821 and lows 168.321->188.812.",
+          "Three White Soldiers pattern is present with three bullish closes from 209 to 211.4, supporting recent continuation momentum.",
+          "A bullish fair value gap from 200.5 to 201.9 remains below current price, supporting the repaired trend structure.",
+          "ATR(14) 7.8357 is about 3.707% of price and ATR(5) 4.8265 is below ATR(14), indicating realized volatility has compressed from prior elevated conditions toward a more normal and more stable state.",
+          "Nearest resistance 212.457 is only about 0.51% above current price while nearest support 207.275 is about 1.94% below, placing AAPL near the upper edge of its recent range and increasing local extension risk.",
+          "Latest volume ratio 0.666 versus the 20-day average, with last three ratios [0.489, 0.474, 0.666], indicates participation remains below average despite the advance."
+        ],
+        "event_modifiers": [
+          "No dominant earnings, macro, policy, filing, or idiosyncratic shock catalyst is supplied for AAPL on 2025-04-30.",
+          "State estimation is anchor-dominant, with event influence low relative to price structure, volatility, and volume evidence."
+        ],
+        "narrative_residual": [
+          "Research-manager, trader, and debate materials are directionally bullish, but that advocacy is treated as low-weight rhetoric rather than primary evidence.",
+          "Constructive commentary broadly aligns with the anchor-derived uptrend, but it does not override the still-soft volume participation and proximity to nearby resistance.",
+          "Absence of fresh negative company-specific rhetoric marginally reduces narrative drag but is not itself a state driver."
+        ],
+        "contradictory_signals": [
+          "Price structure, EMA alignment, and detected continuation patterns are bullish, but latest volume participation remains below the 20-day average.",
+          "Price is near the nearest resistance band and still below SMA50 215.889, so local upside persistence faces nearby overhead supply even though the primary structure is ascending.",
+          "Positive continuation evidence is present, but short-term extension after three bullish closes raises stall or digestion risk without implying a trend break."
+        ]
+      },
+      "feature_scores": {
+        "trend_continuation": 0.74,
+        "reversal_risk": 0.31,
+        "breakout_quality": 0.58,
+        "pullback_quality": 0.49,
+        "volume_support": 0.38,
+        "event_risk": 0.07,
+        "reward_risk_quality": 0.55
+      },
+      "state_summary": "AAPL is in an ascending, coherent trading environment with aligned higher, trading, and lower timeframe structure. Price is holding above the 5-, 10-, and 20-day EMAs and above the short moving-average stack, while realized volatility has compressed meaningfully from prior elevated readings toward a more normal regime. The main qualifiers are below-average volume participation and very close overhead resistance, which make the uptrend statistically favorable but somewhat extended and less strongly confirmed by participation.",
+      "key_risks": [
+        "Below-average volume weakens confirmation quality.",
+        "Price is within 1% of nearby resistance, raising stall or rejection risk.",
+        "Loss of the 210.2 short-term support area would damage the current higher-high/higher-low structure.",
+        "Failure to clear the medium-term SMA50 ceiling would keep overhead supply relevant.",
+        "Short-term extension after consecutive bullish closes can shift the regime toward digestion or mean reversion."
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "schema_version": "state_v2",
+        "ticker": "^GSPC",
+        "as_of_date": "2025-04-30",
+        "trend_regime": "ascending",
+        "volatility_regime": "normal",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "confidence_components": {
+          "anchor_agreement": 0.7,
+          "timeframe_consistency": 0.7,
+          "volatility_stability": 0.75,
+          "contradiction_absence": 0.65,
+          "event_certainty": 0.8
+        },
+        "horizon_days": 5,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "invalidation": {
+          "invalidation_type": "timeframe_reclassification",
+          "invalidation_detail": "Anchor structure changes materially at the next review.",
+          "reference_timeframe": "trading"
+        },
+        "evidence": {
+          "hard_anchors": [
+            "Fallback state derived from price structure, moving averages, ATR, support/resistance, and volume anchors."
+          ],
+          "event_modifiers": [],
+          "narrative_residual": [],
+          "contradictory_signals": []
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "state_summary": "LLM MarketState JSON was unavailable; fallback latent-state classification was derived from hard OHLCV anchors.",
+        "key_risks": [
+          "Fallback state excludes qualitative news/fundamental nuance",
+          "Single-date technical classification may be noisy"
+        ]
+      }
+    },
+    "ohlcv_anchors": {
+      "as_of_close_date": "2025-04-30",
+      "current_price": 211.3831,
+      "atr5": 4.8265,
+      "atr14": 7.8357,
+      "atr14_pct": 3.707,
+      "ema5": 208.4741,
+      "ema10": 205.373,
+      "ema20": 204.815,
+      "sma5": 209.1947,
+      "sma10": 202.9526,
+      "sma20": 199.0319,
+      "sma50": 215.8895,
+      "sma200": null,
+      "recent_high_5d": 212.4574,
+      "recent_low_5d": 201.8734,
+      "recent_high_10d": 212.4574,
+      "recent_low_10d": 188.8124,
+      "recent_high_20d": 224.0064,
+      "recent_low_20d": 168.3206,
+      "recent_closes_5d": [
+        207.2748,
+        208.18,
+        209.0355,
+        210.0999,
+        211.3831
+      ],
+      "recent_lows_5d": [
+        201.8734,
+        205.1162,
+        206.3696,
+        207.2748,
+        205.5837
+      ],
+      "nearest_resistance": 212.4574,
+      "nearest_support": 207.2748,
+      "latest_volume": 52286500.0,
+      "volume_20_sma": 78545295.0,
+      "volume_50_sma": 61640738.0,
+      "volume_ratio": 0.666,
+      "volume_ratio_3d": [
+        0.489,
+        0.474,
+        0.666
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "ascending",
+        "structure_quality": "coherent",
+        "pattern": "Higher High Higher Low",
+        "breakout_status": "none",
+        "support": 210.1695,
+        "resistance": 211.8208,
+        "volume_confirmation": "shrinking",
+        "confidence": 0.83,
+        "signals": [
+          "Higher High Higher Low",
+          "Three White Soldiers",
+          "Fair Value Gap"
+        ]
+      },
+      "long_term_structure": {
+        "trend": "ascending",
+        "market_phase": "healthy_bull_trend",
+        "key_level": 188.8124,
+        "risk_state": "normal",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Higher High Higher Low",
+          "category": "market_structure",
+          "direction": "bullish",
+          "confidence": 0.76,
+          "structure_features": [
+            "successive higher highs",
+            "successive higher lows",
+            "uptrend structure"
+          ],
+          "matched_features": [
+            "successive higher highs",
+            "successive higher lows",
+            "uptrend structure"
+          ],
+          "evidence": "2025-04-30: highs 199.556->211.821, lows 168.321->188.812",
+          "lookback_days": 4
+        },
+        {
+          "name": "Three White Soldiers",
+          "category": "three_candlestick",
+          "direction": "bullish",
+          "confidence": 0.68,
+          "structure_features": [
+            "three consecutive bullish candles",
+            "strong bullish continuation",
+            "short covering"
+          ],
+          "matched_features": [
+            "three consecutive bullish candles",
+            "strong bullish continuation"
+          ],
+          "evidence": "2025-04-30: three bullish closes from 209 to 211.4",
+          "lookback_days": 3
+        },
+        {
+          "name": "Fair Value Gap",
+          "category": "smc_ict",
+          "direction": "bullish",
+          "confidence": 0.58,
+          "structure_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "matched_features": [
+            "price imbalance",
+            "low traded region",
+            "fast displacement"
+          ],
+          "evidence": "2025-04-30: latest bullish imbalance from 200.5 to 201.9 at bar_index=255",
+          "lookback_days": 5,
+          "abbreviation": "FVG"
+        }
+      ],
+      "conflicts": []
+    },
+    "derived_regimes": {
+      "volume_regime": "shrinking",
+      "recent_phases": [
+        "unclear",
+        "healthy_bull_trend"
+      ]
+    },
+    "execution_context": {
+      "constraints": {
+        "available": true,
+        "allowed_actions": [
+          "BUY",
+          "HOLD",
+          "SELL"
+        ],
+        "entry_mode": "pullback_or_small_only",
+        "max_entry_size_pct": 30,
+        "max_add_position_size_pct": 20,
+        "volume_regime": "shrinking",
+        "strong_uptrend": true,
+        "short_term_uptrend": true,
+        "broad_index": false,
+        "bearish_volume_divergence": false,
+        "notes": [
+          "Shrinking 20-day volume confirmation limits short-term exposure."
+        ]
+      },
+      "holdings_info": {
+        "quantity": 0.0,
+        "cash": 99924.82160735999,
+        "mark_price": 210.0998992919922,
+        "equity": 99924.82160735999,
+        "as_of_date": "2025-04-29"
+      },
+      "trading_history_summary": {
+        "window_days": 28,
+        "as_of": "2025-04-29",
+        "n_trades": 0,
+        "n_wins": 0,
+        "win_rate": null,
+        "total_pnl": 0,
+        "avg_pnl": null,
+        "last_n_pnl": []
+      },
+      "prior_pending_orders": []
+    },
+    "prior_policy_output_do_not_use_as_label": {
+      "schema_version": "v3",
+      "ticker": "AAPL",
+      "as_of_date": "2025-04-30",
+      "action": "BUY",
+      "entry": {
+        "price": 208.97,
+        "size_pct": 24.0
+      },
+      "add_position": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "take_profit": {
+        "price": 228.28,
+        "size_pct": 8.0
+      },
+      "reduce_stop": {
+        "price": null,
+        "size_pct": 0.0
+      },
+      "stop_loss": {
+        "price": 205.11
+      },
+      "rationale_summary": "AAPL is in an ascending, coherent trading environment with aligned higher, trading, and lower timeframe structure. Price is holding above the 5-, 10-, and 20-day EMAs and above the short moving-average stack, while realized volatility has compressed meaningfully from prior elevated readings toward a more normal regime. The main qualifiers are below-average volume participation and very close overhead resistance, which make the uptrend statistically favorable but somewhat extended and less strongly confirmed by participation. | trend_regime=ascending | volatility_regime=normal | momentum_regime=positive | liquidity_regime=volume_contraction | event_regime=none | structure_quality=coherent | exhaustion_state=positive_extension | policy_adapter_regime=strong_uptrend | policy_adapter_phase=healthy_bull_trend | trend_direction=0.72 | trend_strength=0.81 | momentum=0.66 | risk_pressure=0.36 | event_impact=0.00 | confidence=0.90 | volume_regime=shrinking | invalidation_type=structure_break | invalidation_detail=AAPL ascending/coherent classification weakens if daily price loses the 210.2 short-term support area and then fails to hold the 207.275 nearest-support zone, breaking the higher-high/higher-low sequence and forcing timeframe reclassification. | risks=Below-average volume weakens confirmation quality.; Price is within 1% of nearby resistance, raising stall or rejection risk.; Loss of the 210.2 short-term support area would damage the current higher-high/higher-low structure.; Failure to clear the medium-term SMA50 ceiling would keep overhead supply relevant.; Short-term extension after consecutive bullish closes can shift the regime toward digestion or mean reversion. | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=normal, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | LLM market_phase=overextended_bull downgraded to healthy_bull_trend — distance from EMA5 is only 0.60 ATR (< 0.8 threshold). | obvious bull trend-following override: relaxed add/chase/take-profit rules. | obvious bull: volume multiplier floor raised to 0.80. | target_weight=0.60, phase_tp_size=10. | hardcoded_order_size_multiplier=0.8"
+    }
+  }
+}

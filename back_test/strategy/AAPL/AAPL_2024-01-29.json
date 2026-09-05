@@ -1,0 +1,435 @@
+{
+  "schema_version": "v3",
+  "ticker": "AAPL",
+  "as_of_date": "2024-01-29",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "AAPL retains an ascending higher and trading-timeframe structure, but the immediate tape is a soft-volume bearish pullback within a fragmented, late-stage structure. Realized volatility is presently normal rather than expanding, while scheduled earnings inside the classification horizon materially raises state uncertainty. | trend_regime=ascending | volatility_regime=normal | momentum_regime=negative | liquidity_regime=volume_contraction | event_regime=earnings_dominant | structure_quality=fragmented | exhaustion_state=late_trend_fatigue | policy_adapter_regime=weak_uptrend | policy_adapter_phase=late_bull_distribution | trend_direction=0.31 | trend_strength=0.49 | momentum=-0.38 | risk_pressure=0.61 | event_impact=0.00 | confidence=0.62 | volume_regime=soft | invalidation_type=structure_break | invalidation_detail=TRADING_ASCENDING_INVALID_IF: sustained close below deterministic key-level cluster near 188.8-189.1 with failure to restore higher-high/higher-low sequencing; LOWER_TIMEFRAME_WEAKNESS_CONFIRMED_IF: continuation below the recent support boundary. | risks=Scheduled earnings may reclassify price and volatility conditions.; Consecutive bearish closes conflict with the broader ascending structure.; Late-bull distribution characteristics weaken structural persistence.; Below-average volume reduces confirmation quality.; Nearby support/resistance clustering increases whipsaw risk. | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | market_phase=late_bull_distribution blocks new entries. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-02-09",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "AAPL",
+    "as_of_date": "2024-01-29",
+    "trend_regime": "ascending",
+    "volatility_regime": "normal",
+    "momentum_regime": "negative",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "earnings_dominant",
+    "structure_quality": "fragmented",
+    "exhaustion_state": "late_trend_fatigue",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.31,
+    "trend_strength": 0.49,
+    "momentum_score_value": -0.38,
+    "risk_pressure_score": 0.61,
+    "event_impact_score": 0.0,
+    "confidence": 0.62,
+    "confidence_components": {
+      "anchor_agreement": 0.68,
+      "timeframe_consistency": 0.55,
+      "volatility_stability": 0.74,
+      "contradiction_absence": 0.54,
+      "event_certainty": 0.62
+    },
+    "horizon_days": 10,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "ascending",
+      "trading_timeframe_trend": "ascending",
+      "lower_timeframe_trend": "descending",
+      "alignment": "pullback_against_higher_timeframe",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "structure_break",
+      "invalidation_detail": "TRADING_ASCENDING_INVALID_IF: sustained close below deterministic key-level cluster near 188.8-189.1 with failure to restore higher-high/higher-low sequencing; LOWER_TIMEFRAME_WEAKNESS_CONFIRMED_IF: continuation below the recent support boundary.",
+      "reference_timeframe": "trading"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Deterministic short-term structure is ascending with Higher High Higher Low sequencing, but quality is fragmented and current price is below the EMA5 while remaining above EMA10 and EMA20.",
+        "Deterministic long-term structure is ascending but classified as late_bull_distribution with elevated risk; its key level is near the intermediate moving-average cluster.",
+        "Three consecutive bearish closes from 191.8 to 189.4 establish negative recent impulse against the broader ascending structure.",
+        "ATR(5) is below ATR(14), indicating no current short-horizon volatility expansion, while the 10-day range remains materially wider than the 5-day range.",
+        "Latest volume is 0.843 of its 20-session average and each of the last three volume ratios is below average, indicating soft/contractionary participation.",
+        "Current price is between nearby deterministic support/resistance boundaries and below the nearest resistance, with no confirmed breakout status."
+      ],
+      "event_modifiers": [
+        "AAPL earnings are scheduled within the 10-day classification horizon, making event risk material to near-term state stability.",
+        "No supplied hard evidence establishes a signed pre-event price impact; event impact is therefore neutral rather than directional."
+      ],
+      "narrative_residual": [
+        "The research recommendation, fundamental cash-flow arguments, and advocated strategic actions are excluded from directional state determination.",
+        "Bullish consolidation language and bearish caution in the research plan are treated as competing low-weight narrative residuals."
+      ],
+      "contradictory_signals": [
+        "Higher-high/higher-low structure and price above the EMA10/EMA20 conflict with three consecutive bearish closes and price below EMA5.",
+        "Long-term ascending structure conflicts with the deterministic late_bull_distribution and elevated-risk designation.",
+        "Double-bottom detection is bullish but lower confidence, while bearish three-candle and imbalance patterns indicate short-term downside pressure.",
+        "Soft volume does not confirm either decisive continuation or decisive distribution."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.52,
+      "reversal_risk": 0.56,
+      "breakout_quality": 0.32,
+      "pullback_quality": 0.49,
+      "volume_support": 0.31,
+      "event_risk": 0.76,
+      "reward_risk_quality": 0.39
+    },
+    "state_summary": "AAPL retains an ascending higher and trading-timeframe structure, but the immediate tape is a soft-volume bearish pullback within a fragmented, late-stage structure. Realized volatility is presently normal rather than expanding, while scheduled earnings inside the classification horizon materially raises state uncertainty.",
+    "key_risks": [
+      "Scheduled earnings may reclassify price and volatility conditions.",
+      "Consecutive bearish closes conflict with the broader ascending structure.",
+      "Late-bull distribution characteristics weaken structural persistence.",
+      "Below-average volume reduces confirmation quality.",
+      "Nearby support/resistance clustering increases whipsaw risk."
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "AAPL",
+    "as_of_date": "2024-01-29",
+    "short_term_structure": {
+      "trend": "ascending",
+      "structure_quality": "fragmented",
+      "pattern": "Higher High Higher Low",
+      "breakout_status": "none",
+      "support": 189.1144,
+      "resistance": 189.7763,
+      "volume_confirmation": "soft",
+      "confidence": 0.73,
+      "signals": [
+        "Higher High Higher Low",
+        "Three Black Crows",
+        "Double Bottom",
+        "Fair Value Gap"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "ascending",
+      "market_phase": "late_bull_distribution",
+      "key_level": 188.7883,
+      "risk_state": "elevated",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Higher High Higher Low",
+        "category": "market_structure",
+        "direction": "bullish",
+        "confidence": 0.76,
+        "structure_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "matched_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "evidence": "2024-01-29: highs 184.797->194.015, lows 178->178.128",
+        "lookback_days": 12
+      },
+      {
+        "name": "Three Black Crows",
+        "category": "three_candlestick",
+        "direction": "bearish",
+        "confidence": 0.68,
+        "structure_features": [
+          "three consecutive bearish candles",
+          "strong bearish continuation",
+          "persistent selling pressure"
+        ],
+        "matched_features": [
+          "three consecutive bearish candles",
+          "strong bearish continuation",
+          "persistent selling pressure"
+        ],
+        "evidence": "2024-01-29: three bearish closes from 191.8 to 189.4",
+        "lookback_days": 3
+      },
+      {
+        "name": "Double Bottom",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed lows",
+          "support holding",
+          "bullish reversal potential"
+        ],
+        "matched_features": [
+          "two failed lows",
+          "support holding",
+          "bullish reversal potential"
+        ],
+        "evidence": "2024-01-29: swing lows 178 and 178.128 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-01-29: latest bearish imbalance from 189.9 to 190.8 at bar_index=259",
+        "lookback_days": 1,
+        "abbreviation": "FVG"
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "AAPL:2024-01-29",
+    "ticker": "AAPL",
+    "trade_date": "2024-01-29",
+    "as_of_close_date": "2024-01-29",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "AAPL",
+      "as_of_date": "2024-01-29",
+      "trend_regime": "ascending",
+      "volatility_regime": "normal",
+      "momentum_regime": "negative",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "earnings_dominant",
+      "structure_quality": "fragmented",
+      "exhaustion_state": "late_trend_fatigue",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.31,
+      "trend_strength": 0.49,
+      "momentum_score_value": -0.38,
+      "risk_pressure_score": 0.61,
+      "event_impact_score": 0.0,
+      "confidence": 0.62,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "ascending",
+        "trading_timeframe_trend": "ascending",
+        "lower_timeframe_trend": "descending",
+        "alignment": "pullback_against_higher_timeframe",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.52,
+        "reversal_risk": 0.56,
+        "breakout_quality": 0.32,
+        "pullback_quality": 0.49,
+        "volume_support": 0.31,
+        "event_risk": 0.76,
+        "reward_risk_quality": 0.39
+      },
+      "event_certainty": 0.62
+    },
+    "ohlcv_anchors": {
+      "current_price": 189.4207,
+      "atr5": 2.5252,
+      "atr14": 3.1713,
+      "ema5": 190.1626,
+      "ema10": 189.1005,
+      "ema20": 188.0853,
+      "sma20": 185.8492,
+      "sma50": 188.625,
+      "sma200": 179.5907,
+      "nearest_support": 187.2966,
+      "nearest_resistance": 189.885,
+      "recent_high_10d": 194.0146,
+      "recent_high_20d": 194.0146,
+      "recent_closes_5d": [
+        192.8291,
+        192.1573,
+        191.8313,
+        190.1024,
+        189.4207
+      ],
+      "recent_lows_5d": [
+        191.4954,
+        191.9992,
+        190.784,
+        189.6282,
+        187.2966
+      ],
+      "volume_ratio": 0.843,
+      "volume_ratio_3d": [
+        0.988,
+        0.807,
+        0.843
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "ascending",
+        "structure_quality": "fragmented",
+        "pattern": "Higher High Higher Low",
+        "breakout_status": "none",
+        "support": 189.1144,
+        "resistance": 189.7763,
+        "volume_confirmation": "soft",
+        "confidence": 0.73
+      },
+      "long_term_structure": {
+        "trend": "ascending",
+        "market_phase": "late_bull_distribution",
+        "key_level": 188.7883,
+        "risk_state": "elevated",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Higher High Higher Low",
+          "direction": "bullish",
+          "confidence": 0.76
+        },
+        {
+          "name": "Three Black Crows",
+          "direction": "bearish",
+          "confidence": 0.68
+        },
+        {
+          "name": "Double Bottom",
+          "direction": "bullish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bearish",
+          "confidence": 0.58
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-01-29",
+        "trend_regime": "ascending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "bbdb100c4471a5b0ea869cc5677bee7394742a800c2ed488a972f606a42cb806"
+  }
+}

@@ -1,0 +1,459 @@
+{
+  "schema_version": "v3",
+  "ticker": "AAPL",
+  "as_of_date": "2024-12-02",
+  "action": "BUY",
+  "entry": {
+    "price": 236.32,
+    "size_pct": 12.6
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": 239.06,
+    "size_pct": 32.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": 232.3
+  },
+  "rationale_summary": "AAPL has coherent positive short-term structure and momentum following a confirmed break of structure and recent range breakout. The trading and lower timeframes are ascending, while the higher timeframe remains transitional; this limits classification to a transition environment with a breakout attempt rather than a fully aligned trend. Realized volatility is normal and participation is modestly supportive but not consistently expansive. | trend_regime=transition | volatility_regime=normal | momentum_regime=positive | liquidity_regime=normal | event_regime=none | structure_quality=breakout_attempt | exhaustion_state=none | policy_adapter_regime=unclear | policy_adapter_phase=unclear | trend_direction=0.48 | trend_strength=0.58 | momentum=0.67 | risk_pressure=0.46 | event_impact=0.00 | confidence=0.66 | volume_regime=normal | invalidation_type=failed_breakout | invalidation_detail=FAILED_BREAKOUT_IF: trading-timeframe price returns into the prior consolidation after the confirmed short-term break and loses the rising short moving-average structure. | risks=Higher-timeframe transition conflicts with the short-term advance.; Breakout acceptance near overhead resistance remains unresolved.; Recent volume confirmation is uneven across sessions.; Return into the prior consolidation would weaken short-term structural coherence. | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | target_weight=0.16, phase_tp_size=40. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-12-13",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "AAPL",
+    "as_of_date": "2024-12-02",
+    "trend_regime": "transition",
+    "volatility_regime": "normal",
+    "momentum_regime": "positive",
+    "liquidity_regime": "normal",
+    "event_regime": "none",
+    "structure_quality": "breakout_attempt",
+    "exhaustion_state": "none",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.48,
+    "trend_strength": 0.58,
+    "momentum_score_value": 0.67,
+    "risk_pressure_score": 0.46,
+    "event_impact_score": 0.0,
+    "confidence": 0.66,
+    "confidence_components": {
+      "anchor_agreement": 0.74,
+      "timeframe_consistency": 0.49,
+      "volatility_stability": 0.73,
+      "contradiction_absence": 0.57,
+      "event_certainty": 0.93
+    },
+    "horizon_days": 10,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "transition",
+      "trading_timeframe_trend": "ascending",
+      "lower_timeframe_trend": "ascending",
+      "alignment": "higher_timeframe_transition",
+      "short_term_override": "confirmed_structure_break"
+    },
+    "invalidation": {
+      "invalidation_type": "failed_breakout",
+      "invalidation_detail": "FAILED_BREAKOUT_IF: trading-timeframe price returns into the prior consolidation after the confirmed short-term break and loses the rising short moving-average structure.",
+      "reference_timeframe": "trading"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Closing structure is above the supplied short, intermediate, and medium moving-average references, preserving a positive short-term hierarchy.",
+        "Deterministic short-term analysis classifies trend as ascending and coherent, with a bullish break of structure and a breakout from the recent consolidation.",
+        "Three consecutive bullish closes and a detected bullish imbalance confirm recent positive impulse.",
+        "The current close is near the nearest overhead resistance, so breakout acceptance is not yet fully established across the trading horizon.",
+        "Short-horizon ATR is below medium-horizon ATR and ATR relative to price is moderate, consistent with normal, stabilizing realized volatility.",
+        "Latest volume is modestly above its trailing average, but the prior two sessions were below baseline; participation confirms the move only moderately.",
+        "Deterministic long-term structure remains transition, conflicting with the short-term ascending classification."
+      ],
+      "event_modifiers": [
+        "No supplied earnings, macroeconomic, policy, filing, or idiosyncratic event is identified as dominant on the classification date."
+      ],
+      "narrative_residual": [
+        "The research-manager recommendation, valuation discussion, fundamental assertions, and implementation language are excluded from state scoring.",
+        "Bullish and bearish advocacy in the supplied plan is treated as non-determinative narrative residual."
+      ],
+      "contradictory_signals": [
+        "The short-term confirmed break conflicts with the deterministic long-term transition state.",
+        "Price is testing nearby overhead resistance, making sustained breakout acceptance unresolved.",
+        "Volume improved on the latest session but lacks consistent multi-session expansion."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.63,
+      "reversal_risk": 0.45,
+      "breakout_quality": 0.64,
+      "pullback_quality": 0.54,
+      "volume_support": 0.55,
+      "event_risk": 0.07,
+      "reward_risk_quality": 0.51
+    },
+    "state_summary": "AAPL has coherent positive short-term structure and momentum following a confirmed break of structure and recent range breakout. The trading and lower timeframes are ascending, while the higher timeframe remains transitional; this limits classification to a transition environment with a breakout attempt rather than a fully aligned trend. Realized volatility is normal and participation is modestly supportive but not consistently expansive.",
+    "key_risks": [
+      "Higher-timeframe transition conflicts with the short-term advance.",
+      "Breakout acceptance near overhead resistance remains unresolved.",
+      "Recent volume confirmation is uneven across sessions.",
+      "Return into the prior consolidation would weaken short-term structural coherence."
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "AAPL",
+    "as_of_date": "2024-12-02",
+    "short_term_structure": {
+      "trend": "ascending",
+      "structure_quality": "coherent",
+      "pattern": "Break of Structure",
+      "breakout_status": "breakout",
+      "support": 225.8705,
+      "resistance": 239.0552,
+      "volume_confirmation": "normal",
+      "confidence": 0.83,
+      "signals": [
+        "Break of Structure",
+        "Three White Soldiers",
+        "Range Breakout",
+        "Symmetrical Triangle",
+        "Fair Value Gap"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "transition",
+      "market_phase": "unclear",
+      "key_level": 227.2918,
+      "risk_state": "transition",
+      "confidence": 0.64
+    },
+    "detected_patterns": [
+      {
+        "name": "Break of Structure",
+        "category": "market_structure",
+        "direction": "bullish",
+        "confidence": 0.75,
+        "structure_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "matched_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "evidence": "2024-12-02: close 237.9 broke prior swing high 227",
+        "lookback_days": 10,
+        "abbreviation": "BOS"
+      },
+      {
+        "name": "Three White Soldiers",
+        "category": "three_candlestick",
+        "direction": "bullish",
+        "confidence": 0.68,
+        "structure_features": [
+          "three consecutive bullish candles",
+          "strong bullish continuation",
+          "short covering"
+        ],
+        "matched_features": [
+          "three consecutive bullish candles",
+          "strong bullish continuation"
+        ],
+        "evidence": "2024-12-02: three bullish closes from 233.2 to 237.9",
+        "lookback_days": 3
+      },
+      {
+        "name": "Range Breakout",
+        "category": "market_structure",
+        "direction": "bullish",
+        "confidence": 0.66,
+        "structure_features": [
+          "break outside consolidation range",
+          "volatility expansion",
+          "price discovery"
+        ],
+        "matched_features": [
+          "break outside consolidation range",
+          "volatility expansion",
+          "price discovery"
+        ],
+        "evidence": "2024-12-02: close 237.9 broke 20-bar level 236.1, volume_ratio20=1.10",
+        "lookback_days": 20
+      },
+      {
+        "name": "Symmetrical Triangle",
+        "category": "classical_chart",
+        "direction": "neutral",
+        "confidence": 0.6,
+        "structure_features": [
+          "converging highs and lows",
+          "volatility compression",
+          "breakout setup"
+        ],
+        "matched_features": [
+          "converging highs and lows",
+          "volatility compression",
+          "breakout setup"
+        ],
+        "evidence": "2024-12-02: swing highs falling while swing lows rise",
+        "lookback_days": 60
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-12-02: latest bullish imbalance from 234 to 235.5 at bar_index=259",
+        "lookback_days": 1,
+        "abbreviation": "FVG"
+      }
+    ],
+    "conflicts": [
+      "short-term trend ascending conflicts with long-term trend transition"
+    ],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "AAPL:2024-12-02",
+    "ticker": "AAPL",
+    "trade_date": "2024-12-02",
+    "as_of_close_date": "2024-12-02",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "AAPL",
+      "as_of_date": "2024-12-02",
+      "trend_regime": "transition",
+      "volatility_regime": "normal",
+      "momentum_regime": "positive",
+      "liquidity_regime": "normal",
+      "event_regime": "none",
+      "structure_quality": "breakout_attempt",
+      "exhaustion_state": "none",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.48,
+      "trend_strength": 0.58,
+      "momentum_score_value": 0.67,
+      "risk_pressure_score": 0.46,
+      "event_impact_score": 0.0,
+      "confidence": 0.66,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "transition",
+        "trading_timeframe_trend": "ascending",
+        "lower_timeframe_trend": "ascending",
+        "alignment": "higher_timeframe_transition",
+        "short_term_override": "confirmed_structure_break"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.63,
+        "reversal_risk": 0.45,
+        "breakout_quality": 0.64,
+        "pullback_quality": 0.54,
+        "volume_support": 0.55,
+        "event_risk": 0.07,
+        "reward_risk_quality": 0.51
+      },
+      "event_certainty": 0.93
+    },
+    "ohlcv_anchors": {
+      "current_price": 237.8638,
+      "atr5": 3.0896,
+      "atr14": 3.467,
+      "ema5": 234.3612,
+      "ema10": 231.6826,
+      "ema20": 229.3176,
+      "sma20": 226.9483,
+      "sma50": 227.2918,
+      "sma200": 204.2143,
+      "nearest_support": 235.4513,
+      "nearest_resistance": 239.0552,
+      "recent_high_10d": 239.0552,
+      "recent_high_20d": 239.0552,
+      "recent_closes_5d": [
+        231.1922,
+        233.3665,
+        233.2374,
+        235.6201,
+        237.8638
+      ],
+      "recent_lows_5d": [
+        228.0848,
+        231.6489,
+        232.1254,
+        232.2843,
+        235.4513
+      ],
+      "volume_ratio": 1.101,
+      "volume_ratio_3d": [
+        0.722,
+        0.639,
+        1.101
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "ascending",
+        "structure_quality": "coherent",
+        "pattern": "Break of Structure",
+        "breakout_status": "breakout",
+        "support": 225.8705,
+        "resistance": 239.0552,
+        "volume_confirmation": "normal",
+        "confidence": 0.83
+      },
+      "long_term_structure": {
+        "trend": "transition",
+        "market_phase": "unclear",
+        "key_level": 227.2918,
+        "risk_state": "transition",
+        "confidence": 0.64
+      },
+      "detected_patterns": [
+        {
+          "name": "Break of Structure",
+          "direction": "bullish",
+          "confidence": 0.75
+        },
+        {
+          "name": "Three White Soldiers",
+          "direction": "bullish",
+          "confidence": 0.68
+        },
+        {
+          "name": "Range Breakout",
+          "direction": "bullish",
+          "confidence": 0.66
+        },
+        {
+          "name": "Symmetrical Triangle",
+          "direction": "neutral",
+          "confidence": 0.6
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bullish",
+          "confidence": 0.58
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-12-02",
+        "trend_regime": "ascending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "94af448b4840a8f061edf49c9709ea4a204ee5b52b82a76dd65e6c4ebbb81b59"
+  }
+}

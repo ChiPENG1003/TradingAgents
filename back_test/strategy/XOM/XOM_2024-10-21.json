@@ -1,0 +1,458 @@
+{
+  "schema_version": "v3",
+  "ticker": "XOM",
+  "as_of_date": "2024-10-21",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "XOM is in a fragmented transition regime: a confirmed bearish short-term structural break and negative recent impulse have weakened the prior ascent, while the longer moving-average reference remains intact and prevents a fully coherent descending classification. Realized volatility is normal and stable, but below-average participation provides limited confirmation; conflicting longer-pattern evidence and nearby range constraints sustain elevated reclassification risk. | trend_regime=transition | volatility_regime=normal | momentum_regime=negative | liquidity_regime=volume_contraction | event_regime=none | structure_quality=fragmented | exhaustion_state=late_trend_fatigue | policy_adapter_regime=unclear | policy_adapter_phase=unclear | trend_direction=-0.28 | trend_strength=0.46 | momentum=-0.42 | risk_pressure=0.67 | event_impact=0.00 | confidence=0.65 | volume_regime=soft | invalidation_type=timeframe_reclassification | invalidation_detail=reclassify_transition_state_if_trading_timeframe_reclaims_broken_prior_swing_structure_with_restored_short_ema_alignment_or_if_acceptance_below_long_term_key_structure_confirms_descending_regime | risks=Confirmed bearish structural break during higher-timeframe transition; Soft participation limits directional confirmation; Mixed moving-average horizon signals; Bearish reversal-pattern evidence conflicts with lower-confidence accumulation pattern; Potential transition into a coherent descending regime | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | target_weight=0.00 below threshold; HOLD. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-11-01",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "XOM",
+    "as_of_date": "2024-10-21",
+    "trend_regime": "transition",
+    "volatility_regime": "normal",
+    "momentum_regime": "negative",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "none",
+    "structure_quality": "fragmented",
+    "exhaustion_state": "late_trend_fatigue",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": -0.28,
+    "trend_strength": 0.46,
+    "momentum_score_value": -0.42,
+    "risk_pressure_score": 0.67,
+    "event_impact_score": 0.0,
+    "confidence": 0.65,
+    "confidence_components": {
+      "anchor_agreement": 0.73,
+      "timeframe_consistency": 0.58,
+      "volatility_stability": 0.82,
+      "contradiction_absence": 0.57,
+      "event_certainty": 0.95
+    },
+    "horizon_days": 10,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "transition",
+      "trading_timeframe_trend": "transition",
+      "lower_timeframe_trend": "descending",
+      "alignment": "higher_timeframe_transition",
+      "short_term_override": "confirmed_structure_break"
+    },
+    "invalidation": {
+      "invalidation_type": "timeframe_reclassification",
+      "invalidation_detail": "reclassify_transition_state_if_trading_timeframe_reclaims_broken_prior_swing_structure_with_restored_short_ema_alignment_or_if_acceptance_below_long_term_key_structure_confirms_descending_regime",
+      "reference_timeframe": "multi_timeframe"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Deterministic short-term structure is fragmented transition with a confirmed bearish break of structure and bearish change of character following loss of a prior swing low.",
+        "Long-term deterministic structure is also classified as transition, indicating the preceding ascending regime is no longer intact.",
+        "Current price is below the supplied short-horizon EMA references and below the intermediate short SMA reference, while remaining above the longer SMA reference; this is a mixed, deteriorating moving-average backdrop.",
+        "Recent realized range is stable: short-horizon ATR is slightly below intermediate ATR, with intermediate ATR moderate relative to price.",
+        "Latest and recent volume are consistently below the rolling average, indicating contracting participation rather than confirmed directional expansion.",
+        "Price is near nearby resistance and support, consistent with a constrained and fragmented trading location.",
+        "Bearish double-top and imbalance detections support reversal risk; a lower-confidence bullish cup-and-handle detection remains a conflicting longer-pattern signal."
+      ],
+      "event_modifiers": [
+        "No concrete earnings, macroeconomic, policy, filing, or idiosyncratic event is supplied as dominant on the observation date."
+      ],
+      "narrative_residual": [
+        "Research-manager recommendation and all conditional execution language are excluded from state estimation.",
+        "Subjective claims about constructive support behavior or missing fundamental confirmation are non-decisive residual context."
+      ],
+      "contradictory_signals": [
+        "Bearish break-of-structure, negative short-term moving-average positioning, and soft participation conflict with price holding above the longer moving-average reference.",
+        "Bearish double-top and change-of-character detections conflict with a lower-confidence bullish cup-and-handle pattern.",
+        "Stable volatility limits shock evidence despite the structural deterioration."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.34,
+      "reversal_risk": 0.7,
+      "breakout_quality": 0.16,
+      "pullback_quality": 0.38,
+      "volume_support": 0.27,
+      "event_risk": 0.05,
+      "reward_risk_quality": 0.3
+    },
+    "state_summary": "XOM is in a fragmented transition regime: a confirmed bearish short-term structural break and negative recent impulse have weakened the prior ascent, while the longer moving-average reference remains intact and prevents a fully coherent descending classification. Realized volatility is normal and stable, but below-average participation provides limited confirmation; conflicting longer-pattern evidence and nearby range constraints sustain elevated reclassification risk.",
+    "key_risks": [
+      "Confirmed bearish structural break during higher-timeframe transition",
+      "Soft participation limits directional confirmation",
+      "Mixed moving-average horizon signals",
+      "Bearish reversal-pattern evidence conflicts with lower-confidence accumulation pattern",
+      "Potential transition into a coherent descending regime"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "XOM",
+    "as_of_date": "2024-10-21",
+    "short_term_structure": {
+      "trend": "transition",
+      "structure_quality": "fragmented",
+      "pattern": "Break of Structure",
+      "breakout_status": "none",
+      "support": 109.0427,
+      "resistance": 112.7364,
+      "volume_confirmation": "soft",
+      "confidence": 0.61,
+      "signals": [
+        "Break of Structure",
+        "Change of Character",
+        "Double Top",
+        "Fair Value Gap",
+        "Cup and Handle"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "transition",
+      "market_phase": "unclear",
+      "key_level": 110.0862,
+      "risk_state": "transition",
+      "confidence": 0.64
+    },
+    "detected_patterns": [
+      {
+        "name": "Break of Structure",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.75,
+        "structure_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "matched_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "evidence": "2024-10-21: close 112.6 broke prior swing low 113.3",
+        "lookback_days": 10,
+        "abbreviation": "BOS"
+      },
+      {
+        "name": "Change of Character",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.7,
+        "structure_features": [
+          "first major structural reversal",
+          "possible regime shift"
+        ],
+        "matched_features": [
+          "first major structural reversal",
+          "possible regime shift"
+        ],
+        "evidence": "2024-10-21: bearish break followed prior uptrend swing structure",
+        "lookback_days": 20,
+        "abbreviation": "ChoCH"
+      },
+      {
+        "name": "Double Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "matched_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "evidence": "2024-10-21: swing highs 118.497 and 116.546 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-10-21: latest bearish imbalance from 113.9 to 115 at bar_index=256",
+        "lookback_days": 4,
+        "abbreviation": "FVG"
+      },
+      {
+        "name": "Cup and Handle",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.54,
+        "structure_features": [
+          "rounded bottom",
+          "small pullback handle",
+          "long-term accumulation"
+        ],
+        "matched_features": [
+          "rounded bottom",
+          "small pullback handle",
+          "long-term accumulation"
+        ],
+        "evidence": "2024-10-21: 80-bar trough centered with rim highs 113/118.5",
+        "lookback_days": 80
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "XOM:2024-10-21",
+    "ticker": "XOM",
+    "trade_date": "2024-10-21",
+    "as_of_close_date": "2024-10-21",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "XOM",
+      "as_of_date": "2024-10-21",
+      "trend_regime": "transition",
+      "volatility_regime": "normal",
+      "momentum_regime": "negative",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "none",
+      "structure_quality": "fragmented",
+      "exhaustion_state": "late_trend_fatigue",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": -0.28,
+      "trend_strength": 0.46,
+      "momentum_score_value": -0.42,
+      "risk_pressure_score": 0.67,
+      "event_impact_score": 0.0,
+      "confidence": 0.65,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "transition",
+        "trading_timeframe_trend": "transition",
+        "lower_timeframe_trend": "descending",
+        "alignment": "higher_timeframe_transition",
+        "short_term_override": "confirmed_structure_break"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.34,
+        "reversal_risk": 0.7,
+        "breakout_quality": 0.16,
+        "pullback_quality": 0.38,
+        "volume_support": 0.27,
+        "event_risk": 0.05,
+        "reward_risk_quality": 0.3
+      },
+      "event_certainty": 0.95
+    },
+    "ohlcv_anchors": {
+      "current_price": 112.6256,
+      "atr5": 1.9715,
+      "atr14": 2.0192,
+      "ema5": 113.1217,
+      "ema10": 113.4471,
+      "ema20": 112.7179,
+      "sma20": 112.9398,
+      "sma50": 110.0862,
+      "sma200": 105.0188,
+      "nearest_support": 112.3442,
+      "nearest_resistance": 113.1508,
+      "recent_high_10d": 116.5461,
+      "recent_high_20d": 118.4969,
+      "recent_closes_5d": [
+        112.8788,
+        113.1696,
+        112.8788,
+        112.5599,
+        112.6256
+      ],
+      "recent_lows_5d": [
+        112.3442,
+        113.1133,
+        112.2785,
+        111.7533,
+        112.2879
+      ],
+      "volume_ratio": 0.735,
+      "volume_ratio_3d": [
+        0.732,
+        0.912,
+        0.735
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "transition",
+        "structure_quality": "fragmented",
+        "pattern": "Break of Structure",
+        "breakout_status": "none",
+        "support": 109.0427,
+        "resistance": 112.7364,
+        "volume_confirmation": "soft",
+        "confidence": 0.61
+      },
+      "long_term_structure": {
+        "trend": "transition",
+        "market_phase": "unclear",
+        "key_level": 110.0862,
+        "risk_state": "transition",
+        "confidence": 0.64
+      },
+      "detected_patterns": [
+        {
+          "name": "Break of Structure",
+          "direction": "bearish",
+          "confidence": 0.75
+        },
+        {
+          "name": "Change of Character",
+          "direction": "bearish",
+          "confidence": 0.7
+        },
+        {
+          "name": "Double Top",
+          "direction": "bearish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bearish",
+          "confidence": 0.58
+        },
+        {
+          "name": "Cup and Handle",
+          "direction": "bullish",
+          "confidence": 0.54
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-10-21",
+        "trend_regime": "ascending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "2f497dcd346e0b17828e6a3c6b13ac5ac6a1aaeb1ff14bc277c18c9efdd3bf8f"
+  }
+}

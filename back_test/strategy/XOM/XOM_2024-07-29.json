@@ -1,0 +1,432 @@
+{
+  "schema_version": "v3",
+  "ticker": "XOM",
+  "as_of_date": "2024-07-29",
+  "action": "HOLD",
+  "entry": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": null
+  },
+  "rationale_summary": "XOM has a coherent ascending trading and higher-timeframe structure, but current impulse is neutral as price consolidates near local boundaries and participation contracts. Realized volatility is normal and stable. Scheduled earnings within the horizon raises event-driven uncertainty without altering the currently intact anchor-derived structure. | trend_regime=ascending | volatility_regime=normal | momentum_regime=neutral | liquidity_regime=volume_contraction | event_regime=earnings_dominant | structure_quality=coherent | exhaustion_state=none | policy_adapter_regime=strong_uptrend | policy_adapter_phase=macro_event_regime | trend_direction=0.58 | trend_strength=0.72 | momentum=0.10 | risk_pressure=0.48 | event_impact=0.00 | confidence=0.71 | volume_regime=soft | invalidation_type=structure_break | invalidation_detail=reclassify_ascending_structure_if_the_higher_high_higher_low_sequence_fails_with_acceptance_below_the_short_term_support_area_and_loss_of_the_intermediate_moving_average_base | risks=Contracting participation weakens continuation confirmation; Neutral short-horizon impulse near local resistance; Scheduled earnings can create discrete volatility; Failure of the higher-low sequence would damage structure; Short-term moving-average positioning remains mixed | notes=market_context=^GSPC: continuous_multiplier=0.92, trend_regime=descending, volatility_regime=normal, momentum_regime=negative, trend_direction=-0.35, risk_pressure=0.65 | market_phase=macro_event_regime blocks new entries. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-08-09",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "XOM",
+    "as_of_date": "2024-07-29",
+    "trend_regime": "ascending",
+    "volatility_regime": "normal",
+    "momentum_regime": "neutral",
+    "liquidity_regime": "volume_contraction",
+    "event_regime": "earnings_dominant",
+    "structure_quality": "coherent",
+    "exhaustion_state": "none",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": 0.58,
+    "trend_strength": 0.72,
+    "momentum_score_value": 0.1,
+    "risk_pressure_score": 0.48,
+    "event_impact_score": 0.0,
+    "confidence": 0.71,
+    "confidence_components": {
+      "anchor_agreement": 0.84,
+      "timeframe_consistency": 0.73,
+      "volatility_stability": 0.82,
+      "contradiction_absence": 0.76,
+      "event_certainty": 0.48
+    },
+    "horizon_days": 10,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "ascending",
+      "trading_timeframe_trend": "ascending",
+      "lower_timeframe_trend": "sideways",
+      "alignment": "lower_timeframe_noise",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "structure_break",
+      "invalidation_detail": "reclassify_ascending_structure_if_the_higher_high_higher_low_sequence_fails_with_acceptance_below_the_short_term_support_area_and_loss_of_the_intermediate_moving_average_base",
+      "reference_timeframe": "trading"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Deterministic short-term structure is coherent ascending with a higher-high/higher-low pattern and no confirmed breakout or breakdown.",
+        "Long-term structure is ascending and classified as a healthy bull trend.",
+        "Price remains above the intermediate and longer moving-average base, while immediate price action is mixed around the fastest moving averages.",
+        "Short- and intermediate-horizon ATR are closely aligned, with intermediate realized range moderate relative to price; volatility is normal and stable.",
+        "Latest turnover is below its rolling average and the recent volume sequence has faded, consistent with volume contraction.",
+        "Price is near a local support/resistance cluster and has returned into a previously identified bullish imbalance zone, consistent with consolidation rather than directional resolution.",
+        "Deterministic structure analysis reports no hard-anchor conflicts."
+      ],
+      "event_modifiers": [
+        "A scheduled earnings release falls within the classification horizon, increasing discrete event uncertainty despite no supplied realized event shock as of the observation date."
+      ],
+      "narrative_residual": [
+        "Research-manager directional recommendation, order framing, and conviction language are excluded from state estimation.",
+        "Bullish and bearish advocacy are treated as residual rhetoric rather than independent evidence."
+      ],
+      "contradictory_signals": [
+        "Coherent ascending short- and long-term structure conflicts with weak latest participation.",
+        "Price is below the fastest exponential average and near short-term resistance despite remaining above the intermediate moving-average base.",
+        "Recent impulse has softened relative to the broader ascending structure."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.68,
+      "reversal_risk": 0.37,
+      "breakout_quality": 0.45,
+      "pullback_quality": 0.64,
+      "volume_support": 0.36,
+      "event_risk": 0.62,
+      "reward_risk_quality": 0.55
+    },
+    "state_summary": "XOM has a coherent ascending trading and higher-timeframe structure, but current impulse is neutral as price consolidates near local boundaries and participation contracts. Realized volatility is normal and stable. Scheduled earnings within the horizon raises event-driven uncertainty without altering the currently intact anchor-derived structure.",
+    "key_risks": [
+      "Contracting participation weakens continuation confirmation",
+      "Neutral short-horizon impulse near local resistance",
+      "Scheduled earnings can create discrete volatility",
+      "Failure of the higher-low sequence would damage structure",
+      "Short-term moving-average positioning remains mixed"
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "XOM",
+    "as_of_date": "2024-07-29",
+    "short_term_structure": {
+      "trend": "ascending",
+      "structure_quality": "coherent",
+      "pattern": "Higher High Higher Low",
+      "breakout_status": "none",
+      "support": 108.0044,
+      "resistance": 108.6184,
+      "volume_confirmation": "soft",
+      "confidence": 0.83,
+      "signals": [
+        "Higher High Higher Low",
+        "Fair Value Gap",
+        "Mitigation Block",
+        "Cup and Handle"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "ascending",
+      "market_phase": "healthy_bull_trend",
+      "key_level": 106.231,
+      "risk_state": "normal",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Higher High Higher Low",
+        "category": "market_structure",
+        "direction": "bullish",
+        "confidence": 0.76,
+        "structure_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "matched_features": [
+          "successive higher highs",
+          "successive higher lows",
+          "uptrend structure"
+        ],
+        "evidence": "2024-07-29: highs 108.618->111.577, lows 102.738->105.204",
+        "lookback_days": 6
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bullish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-07-29: latest bullish imbalance from 107.2 to 108.4 at bar_index=258",
+        "lookback_days": 2,
+        "abbreviation": "FVG"
+      },
+      {
+        "name": "Mitigation Block",
+        "category": "smc_ict",
+        "direction": "neutral",
+        "confidence": 0.55,
+        "structure_features": [
+          "return to previous imbalance zone",
+          "liquidity rebalance"
+        ],
+        "matched_features": [
+          "return to previous imbalance zone",
+          "liquidity rebalance"
+        ],
+        "evidence": "2024-07-29: close 108 returned into FVG zone [107.2, 108.4]",
+        "lookback_days": 2
+      },
+      {
+        "name": "Cup and Handle",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.54,
+        "structure_features": [
+          "rounded bottom",
+          "small pullback handle",
+          "long-term accumulation"
+        ],
+        "matched_features": [
+          "rounded bottom",
+          "small pullback handle",
+          "long-term accumulation"
+        ],
+        "evidence": "2024-07-29: 80-bar trough centered with rim highs 114.2/111.6",
+        "lookback_days": 80
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "XOM:2024-07-29",
+    "ticker": "XOM",
+    "trade_date": "2024-07-29",
+    "as_of_close_date": "2024-07-29",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "XOM",
+      "as_of_date": "2024-07-29",
+      "trend_regime": "ascending",
+      "volatility_regime": "normal",
+      "momentum_regime": "neutral",
+      "liquidity_regime": "volume_contraction",
+      "event_regime": "earnings_dominant",
+      "structure_quality": "coherent",
+      "exhaustion_state": "none",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": 0.58,
+      "trend_strength": 0.72,
+      "momentum_score_value": 0.1,
+      "risk_pressure_score": 0.48,
+      "event_impact_score": 0.0,
+      "confidence": 0.71,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "ascending",
+        "trading_timeframe_trend": "ascending",
+        "lower_timeframe_trend": "sideways",
+        "alignment": "lower_timeframe_noise",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.68,
+        "reversal_risk": 0.37,
+        "breakout_quality": 0.45,
+        "pullback_quality": 0.64,
+        "volume_support": 0.36,
+        "event_risk": 0.62,
+        "reward_risk_quality": 0.55
+      },
+      "event_certainty": 0.48
+    },
+    "ohlcv_anchors": {
+      "current_price": 108.023,
+      "atr5": 2.0972,
+      "atr14": 2.0848,
+      "ema5": 108.1886,
+      "ema10": 107.8095,
+      "ema20": 107.1651,
+      "sma20": 106.8664,
+      "sma50": 106.231,
+      "sma200": 100.6105,
+      "nearest_support": 107.3531,
+      "nearest_resistance": 109.2232,
+      "recent_high_10d": 111.5772,
+      "recent_high_20d": 111.5772,
+      "recent_closes_5d": [
+        105.5201,
+        107.0088,
+        109.2604,
+        109.1674,
+        108.023
+      ],
+      "recent_lows_5d": [
+        105.2968,
+        105.2038,
+        106.5901,
+        108.3672,
+        107.3531
+      ],
+      "volume_ratio": 0.708,
+      "volume_ratio_3d": [
+        1.253,
+        0.846,
+        0.708
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "ascending",
+        "structure_quality": "coherent",
+        "pattern": "Higher High Higher Low",
+        "breakout_status": "none",
+        "support": 108.0044,
+        "resistance": 108.6184,
+        "volume_confirmation": "soft",
+        "confidence": 0.83
+      },
+      "long_term_structure": {
+        "trend": "ascending",
+        "market_phase": "healthy_bull_trend",
+        "key_level": 106.231,
+        "risk_state": "normal",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Higher High Higher Low",
+          "direction": "bullish",
+          "confidence": 0.76
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bullish",
+          "confidence": 0.58
+        },
+        {
+          "name": "Mitigation Block",
+          "direction": "neutral",
+          "confidence": 0.55
+        },
+        {
+          "name": "Cup and Handle",
+          "direction": "bullish",
+          "confidence": 0.54
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-07-29",
+        "trend_regime": "descending",
+        "volatility_regime": "normal",
+        "momentum_regime": "negative",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "breakdown_attempt",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": -0.35,
+        "trend_strength": 0.5,
+        "momentum_score_value": -0.25,
+        "risk_pressure_score": 0.65,
+        "event_impact_score": 0.0,
+        "confidence": 0.69,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "descending",
+          "trading_timeframe_trend": "descending",
+          "lower_timeframe_trend": "descending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.33,
+          "reversal_risk": 0.65,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.53
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "e290a446ac1359252b9ccbf36146aa7a50450c736f9cde786286acdb957c8d51"
+  }
+}

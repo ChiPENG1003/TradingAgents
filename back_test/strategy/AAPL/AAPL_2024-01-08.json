@@ -1,0 +1,501 @@
+{
+  "schema_version": "v3",
+  "ticker": "AAPL",
+  "as_of_date": "2024-01-08",
+  "action": "BUY",
+  "entry": {
+    "price": null,
+    "size_pct": 4.0
+  },
+  "add_position": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "take_profit": {
+    "price": 183.36,
+    "size_pct": 32.0
+  },
+  "reduce_stop": {
+    "price": null,
+    "size_pct": 0.0
+  },
+  "stop_loss": {
+    "price": 177.81
+  },
+  "rationale_summary": "AAPL is in a coherent, aligned descending structure across the supplied timeframes, characterized by a confirmed bearish break of prior swing structure and negative intermediate impulse. Volatility is expanding while participation is broadly normal. Conflicting bottoming detections and a longer-horizon transitional phase elevate mean-reversion and reclassification risk without displacing the anchor-led bearish state. | trend_regime=descending | volatility_regime=expanding | momentum_regime=negative | liquidity_regime=normal | event_regime=none | structure_quality=coherent | exhaustion_state=negative_extension | policy_adapter_regime=breakdown_risk | policy_adapter_phase=oversold_bear | trend_direction=-0.66 | trend_strength=0.74 | momentum=-0.57 | risk_pressure=0.63 | event_impact=0.00 | confidence=0.73 | volume_regime=normal | invalidation_type=failed_breakdown | invalidation_detail=Sustained recovery above the broken prior swing-low region together with loss of the lower-high/lower-low sequence would reclassify the active bearish structure. | risks=Expanding realized volatility during an established descending structure.; Potential mean reversion after negative extension.; Bullish bottoming-pattern detections conflict with bearish structure anchors.; Longer-horizon transitional phase may weaken continuation persistence. | notes=market_context=^GSPC: continuous_multiplier=1.06, trend_regime=ascending, volatility_regime=compressed, momentum_regime=positive, trend_direction=0.65, risk_pressure=0.30 | oversold_bear: fixed 5% exhaustion starter because index context is supportive. | hardcoded_order_size_multiplier=0.8",
+  "valid_until": "2024-01-19",
+  "market_state": {
+    "schema_version": "state_v2",
+    "ticker": "AAPL",
+    "as_of_date": "2024-01-08",
+    "trend_regime": "descending",
+    "volatility_regime": "expanding",
+    "momentum_regime": "negative",
+    "liquidity_regime": "normal",
+    "event_regime": "none",
+    "structure_quality": "coherent",
+    "exhaustion_state": "negative_extension",
+    "breadth_state": "not_applicable",
+    "trend_direction_score": -0.66,
+    "trend_strength": 0.74,
+    "momentum_score_value": -0.57,
+    "risk_pressure_score": 0.63,
+    "event_impact_score": 0.0,
+    "confidence": 0.73,
+    "confidence_components": {
+      "anchor_agreement": 0.84,
+      "timeframe_consistency": 0.77,
+      "volatility_stability": 0.54,
+      "contradiction_absence": 0.65,
+      "event_certainty": 0.95
+    },
+    "horizon_days": 10,
+    "timeframe_hierarchy": {
+      "higher_timeframe_trend": "descending",
+      "trading_timeframe_trend": "descending",
+      "lower_timeframe_trend": "descending",
+      "alignment": "aligned",
+      "short_term_override": "none"
+    },
+    "invalidation": {
+      "invalidation_type": "failed_breakdown",
+      "invalidation_detail": "Sustained recovery above the broken prior swing-low region together with loss of the lower-high/lower-low sequence would reclassify the active bearish structure.",
+      "reference_timeframe": "trading"
+    },
+    "evidence": {
+      "hard_anchors": [
+        "Price remains beneath the short and intermediate moving-average cluster despite holding above the fastest average.",
+        "Deterministic structure identifies successive lower highs and lower lows, with a confirmed bearish break of the prior swing low.",
+        "Short-horizon realized range is materially greater than the longer-horizon range measure, indicating expanding volatility.",
+        "Recent participation is near its average, with moderately above-average activity over the preceding sessions; it does not independently confirm a liquidity expansion.",
+        "The nearest overhead level is very close, while nearby support remains below; this preserves a constrained but bearish short-term structure.",
+        "Longer-horizon structure is still classified as descending but carries a transitional early-reversal phase, limiting full-horizon directional certainty."
+      ],
+      "event_modifiers": [
+        "No supplied earnings, filing, macro, policy, or idiosyncratic event is identified as dominant on the classification date."
+      ],
+      "narrative_residual": [
+        "The research recommendation and its bullish balance-sheet and bearish business arguments are treated as non-determinative narrative.",
+        "Commentary about recovery confirmation, China exposure, margins, and options flow is not used to determine the anchor-led state."
+      ],
+      "contradictory_signals": [
+        "The deterministic pattern scan contains lower-confidence bullish bottoming formations alongside the stronger bearish lower-high/lower-low and break-of-structure evidence.",
+        "Price has stabilized above the fastest moving average while remaining below the broader short-term average cluster.",
+        "The longer-term transitional early-reversal label conflicts partially with aligned short- and trading-timeframe descending structure."
+      ]
+    },
+    "feature_scores": {
+      "trend_continuation": 0.69,
+      "reversal_risk": 0.55,
+      "breakout_quality": 0.32,
+      "pullback_quality": 0.41,
+      "volume_support": 0.52,
+      "event_risk": 0.1,
+      "reward_risk_quality": 0.43
+    },
+    "state_summary": "AAPL is in a coherent, aligned descending structure across the supplied timeframes, characterized by a confirmed bearish break of prior swing structure and negative intermediate impulse. Volatility is expanding while participation is broadly normal. Conflicting bottoming detections and a longer-horizon transitional phase elevate mean-reversion and reclassification risk without displacing the anchor-led bearish state.",
+    "key_risks": [
+      "Expanding realized volatility during an established descending structure.",
+      "Potential mean reversion after negative extension.",
+      "Bullish bottoming-pattern detections conflict with bearish structure anchors.",
+      "Longer-horizon transitional phase may weaken continuation persistence."
+    ]
+  },
+  "structure_analysis": {
+    "schema_version": "structure_v1",
+    "ticker": "AAPL",
+    "as_of_date": "2024-01-08",
+    "short_term_structure": {
+      "trend": "descending",
+      "structure_quality": "coherent",
+      "pattern": "Lower High Lower Low",
+      "breakout_status": "none",
+      "support": 179.9104,
+      "resistance": 184.2459,
+      "volume_confirmation": "normal",
+      "confidence": 0.83,
+      "signals": [
+        "Lower High Lower Low",
+        "Break of Structure",
+        "Triple Bottom",
+        "Double Top",
+        "Double Bottom"
+      ]
+    },
+    "long_term_structure": {
+      "trend": "descending",
+      "market_phase": "early_bull_reversal",
+      "key_level": 177.6439,
+      "risk_state": "transition",
+      "confidence": 0.76
+    },
+    "detected_patterns": [
+      {
+        "name": "Lower High Lower Low",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.76,
+        "structure_features": [
+          "successive lower highs",
+          "successive lower lows",
+          "downtrend structure"
+        ],
+        "matched_features": [
+          "successive lower highs",
+          "successive lower lows",
+          "downtrend structure"
+        ],
+        "evidence": "2024-01-08: highs 195.299->192.315, lows 192.049->188.788",
+        "lookback_days": 4
+      },
+      {
+        "name": "Break of Structure",
+        "category": "market_structure",
+        "direction": "bearish",
+        "confidence": 0.75,
+        "structure_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "matched_features": [
+          "key swing point broken",
+          "trend transition",
+          "structure invalidation"
+        ],
+        "evidence": "2024-01-08: close 183.3 broke prior swing low 188.8",
+        "lookback_days": 10,
+        "abbreviation": "BOS"
+      },
+      {
+        "name": "Triple Bottom",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.64,
+        "structure_features": [
+          "three failed lows",
+          "strong support zone"
+        ],
+        "matched_features": [
+          "three failed lows",
+          "strong support zone"
+        ],
+        "evidence": "2024-01-08: last three swing lows clustered near 190",
+        "lookback_days": 60
+      },
+      {
+        "name": "Double Top",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "matched_features": [
+          "two failed highs",
+          "resistance rejection",
+          "bearish reversal potential"
+        ],
+        "evidence": "2024-01-08: swing highs 195.299 and 192.315 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Double Bottom",
+        "category": "classical_chart",
+        "direction": "bullish",
+        "confidence": 0.62,
+        "structure_features": [
+          "two failed lows",
+          "support holding",
+          "bullish reversal potential"
+        ],
+        "matched_features": [
+          "two failed lows",
+          "support holding",
+          "bullish reversal potential"
+        ],
+        "evidence": "2024-01-08: swing lows 192.049 and 188.788 within 1.8%",
+        "lookback_days": 40
+      },
+      {
+        "name": "Descending Triangle",
+        "category": "classical_chart",
+        "direction": "bearish",
+        "confidence": 0.62,
+        "structure_features": [
+          "flat support",
+          "falling highs",
+          "selling pressure increasing"
+        ],
+        "matched_features": [
+          "flat support",
+          "falling highs",
+          "selling pressure increasing"
+        ],
+        "evidence": "2024-01-08: support clustered near 190, highs falling",
+        "lookback_days": 60
+      },
+      {
+        "name": "Fair Value Gap",
+        "category": "smc_ict",
+        "direction": "bearish",
+        "confidence": 0.58,
+        "structure_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "matched_features": [
+          "price imbalance",
+          "low traded region",
+          "fast displacement"
+        ],
+        "evidence": "2024-01-08: latest bearish imbalance from 180.6 to 181.2 at bar_index=258",
+        "lookback_days": 2,
+        "abbreviation": "FVG"
+      }
+    ],
+    "conflicts": [],
+    "feature_rule_summary": {
+      "candlestick": "Body, wick, engulfing, inside-candle, and three-candle reversal rules are computed from the latest daily OHLC bars.",
+      "market_structure": "Swing highs/lows use confirmed local pivots; HH/HL, LL/LH, BOS, ChoCH, consolidation, and range breakout are derived from those pivots.",
+      "classical_wyckoff_smc": "Chart, Wyckoff, and SMC/ICT labels are heuristic compressions of pivot geometry, recent range behavior, false breaks, gaps, and displacement."
+    }
+  },
+  "feature_snapshot": {
+    "schema_version": "frozen_feature_v2",
+    "dataset_version": "quant_v2",
+    "sample_id": "AAPL:2024-01-08",
+    "ticker": "AAPL",
+    "trade_date": "2024-01-08",
+    "as_of_close_date": "2024-01-08",
+    "feature_columns": {
+      "market_state": [
+        "trend_regime",
+        "volatility_regime",
+        "momentum_regime",
+        "liquidity_regime",
+        "event_regime",
+        "structure_quality",
+        "exhaustion_state",
+        "breadth_state",
+        "trend_direction_score",
+        "trend_strength",
+        "momentum_score_value",
+        "risk_pressure_score",
+        "event_impact_score",
+        "confidence",
+        "timeframe_hierarchy",
+        "feature_scores",
+        "event_certainty"
+      ],
+      "ohlcv_anchors": [
+        "current_price",
+        "atr5",
+        "atr14",
+        "ema5",
+        "ema10",
+        "ema20",
+        "sma20",
+        "sma50",
+        "sma200",
+        "nearest_support",
+        "nearest_resistance",
+        "recent_high_10d",
+        "recent_high_20d",
+        "recent_closes_5d",
+        "recent_lows_5d",
+        "volume_ratio",
+        "volume_ratio_3d"
+      ],
+      "structure_features": [
+        "short_term_structure.*",
+        "long_term_structure.*",
+        "detected_patterns[].name",
+        "detected_patterns[].direction",
+        "detected_patterns[].confidence"
+      ],
+      "market_context": [
+        "ticker",
+        "volume_regime",
+        "state.*"
+      ],
+      "quality": [
+        "stock_state_source",
+        "market_context_state_source"
+      ]
+    },
+    "market_state": {
+      "ticker": "AAPL",
+      "as_of_date": "2024-01-08",
+      "trend_regime": "descending",
+      "volatility_regime": "expanding",
+      "momentum_regime": "negative",
+      "liquidity_regime": "normal",
+      "event_regime": "none",
+      "structure_quality": "coherent",
+      "exhaustion_state": "negative_extension",
+      "breadth_state": "not_applicable",
+      "trend_direction_score": -0.66,
+      "trend_strength": 0.74,
+      "momentum_score_value": -0.57,
+      "risk_pressure_score": 0.63,
+      "event_impact_score": 0.0,
+      "confidence": 0.73,
+      "timeframe_hierarchy": {
+        "higher_timeframe_trend": "descending",
+        "trading_timeframe_trend": "descending",
+        "lower_timeframe_trend": "descending",
+        "alignment": "aligned",
+        "short_term_override": "none"
+      },
+      "feature_scores": {
+        "trend_continuation": 0.69,
+        "reversal_risk": 0.55,
+        "breakout_quality": 0.32,
+        "pullback_quality": 0.41,
+        "volume_support": 0.52,
+        "event_risk": 0.1,
+        "reward_risk_quality": 0.43
+      },
+      "event_certainty": 0.95
+    },
+    "ohlcv_anchors": {
+      "current_price": 183.325,
+      "atr5": 4.2423,
+      "atr14": 2.9801,
+      "ema5": 182.7233,
+      "ema10": 185.1414,
+      "ema20": 187.1813,
+      "sma20": 189.8865,
+      "sma50": 185.3762,
+      "sma200": 177.6439,
+      "nearest_support": 181.6751,
+      "nearest_resistance": 183.3645,
+      "recent_high_10d": 193.0563,
+      "recent_high_20d": 197.2156,
+      "recent_closes_5d": [
+        183.404,
+        182.0308,
+        179.7189,
+        178.9977,
+        183.325
+      ],
+      "recent_lows_5d": [
+        181.6751,
+        181.2206,
+        178.7013,
+        177.9999,
+        179.3139
+      ],
+      "volume_ratio": 1.026,
+      "volume_ratio_3d": [
+        1.285,
+        1.093,
+        1.026
+      ]
+    },
+    "structure_features": {
+      "short_term_structure": {
+        "trend": "descending",
+        "structure_quality": "coherent",
+        "pattern": "Lower High Lower Low",
+        "breakout_status": "none",
+        "support": 179.9104,
+        "resistance": 184.2459,
+        "volume_confirmation": "normal",
+        "confidence": 0.83
+      },
+      "long_term_structure": {
+        "trend": "descending",
+        "market_phase": "early_bull_reversal",
+        "key_level": 177.6439,
+        "risk_state": "transition",
+        "confidence": 0.76
+      },
+      "detected_patterns": [
+        {
+          "name": "Lower High Lower Low",
+          "direction": "bearish",
+          "confidence": 0.76
+        },
+        {
+          "name": "Break of Structure",
+          "direction": "bearish",
+          "confidence": 0.75
+        },
+        {
+          "name": "Triple Bottom",
+          "direction": "bullish",
+          "confidence": 0.64
+        },
+        {
+          "name": "Double Top",
+          "direction": "bearish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Double Bottom",
+          "direction": "bullish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Descending Triangle",
+          "direction": "bearish",
+          "confidence": 0.62
+        },
+        {
+          "name": "Fair Value Gap",
+          "direction": "bearish",
+          "confidence": 0.58
+        }
+      ]
+    },
+    "market_context": {
+      "ticker": "^GSPC",
+      "volume_regime": "normal",
+      "state": {
+        "ticker": "^GSPC",
+        "as_of_date": "2024-01-08",
+        "trend_regime": "ascending",
+        "volatility_regime": "compressed",
+        "momentum_regime": "positive",
+        "liquidity_regime": "normal",
+        "event_regime": "none",
+        "structure_quality": "coherent",
+        "exhaustion_state": "none",
+        "breadth_state": "unavailable",
+        "trend_direction_score": 0.65,
+        "trend_strength": 0.8,
+        "momentum_score_value": 0.55,
+        "risk_pressure_score": 0.3,
+        "event_impact_score": 0.0,
+        "confidence": 0.72,
+        "timeframe_hierarchy": {
+          "higher_timeframe_trend": "ascending",
+          "trading_timeframe_trend": "ascending",
+          "lower_timeframe_trend": "ascending",
+          "alignment": "aligned",
+          "short_term_override": "none"
+        },
+        "feature_scores": {
+          "trend_continuation": 0.82,
+          "reversal_risk": 0.3,
+          "breakout_quality": 0.5,
+          "pullback_quality": 0.45,
+          "volume_support": 0.55,
+          "event_risk": 0.1,
+          "reward_risk_quality": 0.65
+        },
+        "event_certainty": 0.8
+      }
+    },
+    "quality": {
+      "stock_state_source": "llm",
+      "market_context_state_source": "fallback"
+    },
+    "snapshot_hash": "f5161158370ef4b8e574b3ad7ea2959e480fc1a5fabd9d9cbdd799703598f6b9"
+  }
+}
